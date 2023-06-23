@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <cassert>
 #include <iostream>
-#include <vector>
 
 // A simple structure holding the local information shared with the
 // onAdapterRequestEnded callback.
@@ -121,14 +120,15 @@ int main (int, char**) {
 	WGPUDevice device = requestDevice(adapter, &deviceDesc);
     printf("Got device: %p\n", (void*)adapter);
 
-	std::vector<WGPUFeatureName> features;
+	WGPUFeatureName * features;
 	size_t featureCount = wgpuAdapterEnumerateFeatures(adapter, NULL);
-	features.resize(featureCount);
-	wgpuAdapterEnumerateFeatures(adapter, features.data());
+	features = (WGPUFeatureName *)malloc(sizeof(WGPUFeatureName) * featureCount);
+	wgpuAdapterEnumerateFeatures(adapter, features);
     printf("Adapter features:\n");
-	for (auto f : features) {
-        printf(" - %d\n", f);
+	for (size_t i = 0; i < featureCount; i++) {
+        printf(" - %d\n", features[i]);
 	}
+    free(features);
 
 	WGPUQueue queue = wgpuDeviceGetQueue(device);
 	auto onQueueWorkDone = [](WGPUQueueWorkDoneStatus status, void* /* pUserData */) {
