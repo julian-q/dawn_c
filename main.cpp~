@@ -2,10 +2,10 @@
 #include <webgpu/webgpu.h>
 #include <glfw3webgpu.h>
 // #include <assert.h>
-// #include <stdio.h>
-#include<cassert>
-#include<iostream>
-#include<vector>
+#include <stdio.h>
+#include <cassert>
+#include <iostream>
+#include <vector>
 
 // A simple structure holding the local information shared with the
 // onAdapterRequestEnded callback.
@@ -19,7 +19,7 @@ void onAdapterRequestEnded(WGPURequestAdapterStatus status, WGPUAdapter adapter,
 	if (status == WGPURequestAdapterStatus_Success) {
 		userData.adapter = adapter;
 	} else {
-		std::cout << "Could not get WebGPU adapter: " << message << std::endl;
+        printf("Could not get WebGPU adapter: %s\n", message);
 	}
 	userData.requestEnded = true;
 }
@@ -60,13 +60,13 @@ void onDeviceRequestEnded(WGPURequestDeviceStatus status, WGPUDevice device, cha
 	if (status == WGPURequestDeviceStatus_Success) {
 		userData.device = device;
 		auto onDeviceError = [](WGPUErrorType type, char const* message, void* /* pUserData */) {
-			std::cout << "Uncaptured device error: type " << type;
-			if (message) std::cout << " (" << message << ")";
-			std::cout << std::endl;
+            printf("Uncaptured device error: type %u", type);
+			if (message) printf(" (%s)", message);
+            printf("\n");
 		};
 		wgpuDeviceSetUncapturedErrorCallback(device, onDeviceError, NULL /* pUserData */);
 	} else {
-		std::cout << "Could not get WebGPU device: " << message << std::endl;
+        printf("Could not get WebGPU device: %s\n", message);
 	}
 	userData.requestEnded = true;
 }
@@ -79,7 +79,7 @@ void onDeviceRequestEnded(WGPURequestDeviceStatus status, WGPUDevice device, cha
  * It is very similar to requestAdapter
  */
 WGPUDevice requestDevice(WGPUAdapter adapter, WGPUDeviceDescriptor const * descriptor) {
-    UserData userData;
+    DeviceUserData userData;
 
     wgpuAdapterRequestDevice(
         adapter,
@@ -109,7 +109,7 @@ int main (int, char**) {
 	adapterOpts.nextInChain = NULL;
 	adapterOpts.compatibleSurface = surface;
 	WGPUAdapter adapter = requestAdapter(instance, &adapterOpts);
-	std::cout << "Got adapter: " << adapter << std::endl;
+    printf("Got adapter: %p\n", adapter);
 
 	WGPUDeviceDescriptor deviceDesc = {};
 	deviceDesc.nextInChain = NULL;
@@ -119,20 +119,20 @@ int main (int, char**) {
 	deviceDesc.defaultQueue.nextInChain = NULL;
 	deviceDesc.defaultQueue.label = "The default queue";
 	WGPUDevice device = requestDevice(adapter, &deviceDesc);
-	std::cout << "Got device: " << device << std::endl;
+    printf("Got device: %p\n", adapter);
 
 	std::vector<WGPUFeatureName> features;
 	size_t featureCount = wgpuAdapterEnumerateFeatures(adapter, NULL);
 	features.resize(featureCount);
 	wgpuAdapterEnumerateFeatures(adapter, features.data());
-	std::cout << "Adapter features:" << std::endl;
+    printf("Adapter features:\n");
 	for (auto f : features) {
-		std::cout << " - " << f << std::endl;
+        printf(" - %d\n", f);
 	}
 
 	WGPUQueue queue = wgpuDeviceGetQueue(device);
 	auto onQueueWorkDone = [](WGPUQueueWorkDoneStatus status, void* /* pUserData */) {
-		std::cout << "Queued work finished with status: " << status << std::endl;
+        printf("Queued work finished with status: %d\n", status);
 	};
 	// why does below give status 3 at the end of the program?
 	// maybe something to do with the fact that we must provide the extra status
@@ -148,14 +148,14 @@ int main (int, char**) {
 	swapChainDesc.usage = WGPUTextureUsage_RenderAttachment;
 	swapChainDesc.presentMode = WGPUPresentMode_Fifo;
 	WGPUSwapChain swapChain = wgpuDeviceCreateSwapChain(device, surface, &swapChainDesc);
-	std::cout << "Swapchain: " << swapChain << std::endl;
+    printf("Swapchain: %p\n", swapChain);
 
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
 		WGPUTextureView nextTexture = wgpuSwapChainGetCurrentTextureView(swapChain);
-		std::cout << "nextTexture: " << nextTexture << std::endl;
+        printf("nextTexture: %p\n", nextTexture);
 		if (!nextTexture) {
-			std::cerr << "Cannot acquire next swap chain texture" << std::endl;
+            fprintf(stderr, "Cannot acquire next swap chain texture\n");
 			break;
 		}
 
