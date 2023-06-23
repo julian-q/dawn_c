@@ -14,7 +14,7 @@ struct AdapterUserData {
 };
 
 void onAdapterRequestEnded(WGPURequestAdapterStatus status, WGPUAdapter adapter, char const * message, void * pUserData) {
-	AdapterUserData& userData = *reinterpret_cast<AdapterUserData*>(pUserData);
+	AdapterUserData& userData = *(AdapterUserData*)(pUserData);
 	if (status == WGPURequestAdapterStatus_Success) {
 		userData.adapter = adapter;
 	} else {
@@ -61,7 +61,7 @@ void onDeviceError(WGPUErrorType type, char const* message, void* /* pUserData *
 };
 
 void onDeviceRequestEnded(WGPURequestDeviceStatus status, WGPUDevice device, char const * message, void * pUserData) { 
-	DeviceUserData& userData = *reinterpret_cast<DeviceUserData*>(pUserData);
+	DeviceUserData& userData = *(DeviceUserData*)(pUserData);
 	if (status == WGPURequestDeviceStatus_Success) {
 		userData.device = device;
 		wgpuDeviceSetUncapturedErrorCallback(device, onDeviceError, NULL /* pUserData */);
