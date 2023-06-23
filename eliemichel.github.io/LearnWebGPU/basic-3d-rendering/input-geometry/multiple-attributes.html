@@ -1,0 +1,761 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content="Multiple Attributes" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://eliemichel.github.io/basic-3d-rendering/input-geometry/multiple-attributes.html" />
+<meta property="og:site_name" content="Learn WebGPU for C++" />
+<meta property="og:description" content="With webgpu.hpp Resulting code: step033 Vanilla webgpu.h Resulting code: step033-vanilla Vertices can contain more than just a position. A typical example is to add a color attribute to each vertex..." />
+<meta property="og:image" content="https://eliemichel.github.io/images/webgpu-responsive.svg" />
+<meta property="og:image:alt" content="Learn WebGPU for C++" />
+<meta name="description" content="With webgpu.hpp Resulting code: step033 Vanilla webgpu.h Resulting code: step033-vanilla Vertices can contain more than just a position. A typical example is to add a color attribute to each vertex..." />
+    <link rel="icon" type="image/svg+xml" href="../../_static/favicon/favicon.svg">
+    <link rel="icon" sizes="16x16" href="../../_static/favicon/favicon-16x16.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="../../_static/favicon/favicon-32x32.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://eliemichel.github.io/LearnWebGPU/_static/favicon/apple-touch-icon-180x180.png" type="image/png"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Index Buffer" href="index-buffer.html" /><link rel="prev" title="A first Vertex Attribute" href="a-first-vertex-attribute.html" />
+
+    <!-- Generated with Sphinx 5.3.0 and Furo 2023.03.27 -->
+        <title>Multiple Attributes - Learn WebGPU for C++ documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx_literate.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  --color-brand-primary: #ac2800;
+  --color-brand-content: #007cac;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     <em>Important</em> This documentation is a work in progress! <a href="../../appendices/feedback-needed.html">Feedback needed!</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Learn WebGPU for C++  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/webgpu-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/webgpu-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../getting-started/index.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/project-setup.html">Project setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/opening-a-window.html">Opening a window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/hello-webgpu.html">Hello WebGPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-adapter.html">The Adapter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-device.html">The Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-command-queue.html">The Command Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/first-color.html">First Color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/cpp-idioms.html">C++ wrapper</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">Basic 3D Rendering</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../hello-triangle.html">Hello Triangle</a></li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">Input Geometry</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="playing-with-buffers.html">Playing with buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="a-first-vertex-attribute.html">A first Vertex Attribute</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="multiple-attributes.html#">Multiple Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index-buffer.html">Index Buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../shader-uniforms/index.html">Shader Uniforms</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/a-first-uniform.html">A first uniform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/multiple-uniforms.html">More uniforms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/dynamic-uniforms.html">Dynamic uniforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../3d-meshes/index.html">3D Meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/a-simple-example.html">A simple example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/depth-buffer.html">Depth buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/transformation-matrices.html">Transformation matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/projection-matrices.html">Projection matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/basic-shading.html">Basic shading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../texturing/index.html">Texturing</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/a-first-texture.html">A first texture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/texture-mapping.html">Texture mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/sampler.html">Sampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../some-interaction/index.html">Some interaction</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/refactoring.html">Refactoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/resizing-window.html">Resizing the window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/camera-control.html">Camera control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/simple-gui.html">Simple GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../lighting-and-material/index.html">Lighting and Material</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/recap.html">Recap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/specular.html">Specularity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/normal-mapping.html">Normal mapping (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/ibl.html">Image-Based Lighting (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/cubemap.html">Cube Maps (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/pbr.html">Physically-Based Materials (🚧WIP)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../basic-compute/index.html">Basic Compute</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../basic-compute/compute-pipeline.html">Compute Pipeline</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-compute/image-processing/index.html">Image Processing</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/mipmap-generation.html">Mipmap Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/convolution-filters.html">Convolution Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/cubemap-conversion.html">Cubemap Conversion (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/cubemap-prefiltering.html">Cubemap Prefiltering (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-compute/procedural-geometry/index.html">Procedural Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/procedural-geometry/deformation.html">Deformation (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../basic-compute/neural-networks.html">Neural Networks (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../advanced-techniques/index.html">Advanced Techniques</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/raii.html">RAII</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/hdr-textures.html">High Dynamic Range Textures (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/deferred-shading.html">Deferred Shading (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/benchmarking.html">Benchmarking (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/render-bundles.html">Render Bundles (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/multi-sampling.html">Multi-Sampling (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/scene-tree.html">Scene tree (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/screen-capture.html">Screen capture (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/shadow-maps.html">Shadow maps (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/tesselation.html">Tesselation (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/raytracing.html">Raytracing (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../appendices/index.html">Appendices</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/teaching-native-graphics-in-2023.html">Teaching native graphics in 2023</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/feedback-needed.html">Feedback needed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/debugging.html">Debugging (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/building-for-the-web.html">Building for the Web (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/memory-model.html">Memory Model (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/custom-extensions.html">Custom Extensions (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/references.html">References (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/tmp.html">Temporary page</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="multiple-attributes.html#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/eliemichel/LearnWebGPU/edit/main/./basic-3d-rendering/input-geometry/multiple-attributes.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="multiple-attributes">
+<h1>Multiple Attributes<a class="headerlink" href="multiple-attributes.html#multiple-attributes" title="Permalink to this heading">#</a></h1>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step033"><code class="docutils literal notranslate"><span class="pre">step033</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step033-vanilla"><code class="docutils literal notranslate"><span class="pre">step033-vanilla</span></code></a></p>
+</div>
+</div>
+<p>Vertices can contain more than just a position. A typical example is to <strong>add a color attribute</strong> to each vertex. This will also show us how the rasterizer automatically interpolate vertex attributes across triangles.</p>
+<section id="shader">
+<h2>Shader<a class="headerlink" href="multiple-attributes.html#shader" title="Permalink to this heading">#</a></h2>
+<p>You may have guessed that we can simply add a second argument to the vertex shader entry point <code class="docutils literal notranslate"><span class="pre">vs_main</span></code>, with a different <code class="docutils literal notranslate"><span class="pre">&#64;location</span></code> WGSL attribute:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="o">@</span><span class="n">vertex</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">vs_main</span><span class="p">(</span><span class="o">@</span><span class="n">location</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">in_position</span>:<span class="w"> </span><span class="nc">vec2f</span><span class="p">,</span><span class="w"> </span><span class="o">@</span><span class="n">location</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">in_color</span>:<span class="w"> </span><span class="nc">vec3f</span><span class="p">)</span><span class="w"> </span>-&gt;<span class="w"> </span><span class="cm">/*</span><span class="w"> </span><span class="cm">...</span><span class="w"> </span><span class="cm">*/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This works, but you might prefer when the number of input attribute grows to instead take a single argument whose type is a custom struct labeled with locations:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="sd">/**</span>
+<span class="w"> </span><span class="sd">*</span><span class="w"> </span><span class="sd">A</span><span class="w"> </span><span class="sd">structure</span><span class="w"> </span><span class="sd">with</span><span class="w"> </span><span class="sd">fields</span><span class="w"> </span><span class="sd">labeled</span><span class="w"> </span><span class="sd">with</span><span class="w"> </span><span class="sd">vertex</span><span class="w"> </span><span class="sd">attribute</span><span class="w"> </span><span class="sd">locations</span><span class="w"> </span><span class="sd">can</span><span class="w"> </span><span class="sd">be</span><span class="w"> </span><span class="sd">used</span>
+<span class="w"> </span><span class="sd">*</span><span class="w"> </span><span class="sd">as</span><span class="w"> </span><span class="sd">input</span><span class="w"> </span><span class="sd">to</span><span class="w"> </span><span class="sd">the</span><span class="w"> </span><span class="sd">entry</span><span class="w"> </span><span class="sd">point</span><span class="w"> </span><span class="sd">of</span><span class="w"> </span><span class="sd">a</span><span class="w"> </span><span class="sd">shader.</span>
+<span class="w"> </span><span class="sd">*/</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">VertexInput</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="o">@</span><span class="n">location</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">position</span>:<span class="w"> </span><span class="nc">vec2f</span><span class="p">,</span>
+<span class="w">    </span><span class="o">@</span><span class="n">location</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">color</span>:<span class="w"> </span><span class="nc">vec3f</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="o">@</span><span class="n">vertex</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">vs_main</span><span class="p">(</span><span class="k">in</span>:<span class="w"> </span><span class="nc">VertexInput</span><span class="p">)</span><span class="w"> </span>-&gt;<span class="w"> </span><span class="cm">/*</span><span class="w"> </span><span class="cm">...</span><span class="w"> </span><span class="cm">*/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>😐 But I don’t need the color in the vertex shader, I want it in the fragment shader, can I do <code class="docutils literal notranslate"><span class="pre">fn</span> <span class="pre">fs_main(&#64;location(1)</span> <span class="pre">color:</span> <span class="pre">vec3f)</span></code>?</p>
+</div></blockquote>
+<p>Nope. The vertex attributes are only provided to the vertex shader. However, <strong>the fragment shader can receive what the vertex shader returns!</strong> This is where the structure-based approach becomes handy:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">VertexInput</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="o">@</span><span class="n">location</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">position</span>:<span class="w"> </span><span class="nc">vec2f</span><span class="p">,</span>
+<span class="w">    </span><span class="o">@</span><span class="n">location</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">color</span>:<span class="w"> </span><span class="nc">vec3f</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="sd">/**</span>
+<span class="w"> </span><span class="sd">*</span><span class="w"> </span><span class="sd">A</span><span class="w"> </span><span class="sd">structure</span><span class="w"> </span><span class="sd">with</span><span class="w"> </span><span class="sd">fields</span><span class="w"> </span><span class="sd">labeled</span><span class="w"> </span><span class="sd">with</span><span class="w"> </span><span class="sd">builtins</span><span class="w"> </span><span class="sd">and</span><span class="w"> </span><span class="sd">locations</span><span class="w"> </span><span class="sd">can</span><span class="w"> </span><span class="sd">also</span><span class="w"> </span><span class="sd">be</span><span class="w"> </span><span class="sd">used</span>
+<span class="w"> </span><span class="sd">*</span><span class="w"> </span><span class="sd">as</span><span class="w"> </span><span class="sd">*output*</span><span class="w"> </span><span class="sd">of</span><span class="w"> </span><span class="sd">the</span><span class="w"> </span><span class="sd">vertex</span><span class="w"> </span><span class="sd">shader,</span><span class="w"> </span><span class="sd">which</span><span class="w"> </span><span class="sd">is</span><span class="w"> </span><span class="sd">also</span><span class="w"> </span><span class="sd">the</span><span class="w"> </span><span class="sd">input</span><span class="w"> </span><span class="sd">of</span><span class="w"> </span><span class="sd">the</span><span class="w"> </span><span class="sd">fragment</span>
+<span class="w"> </span><span class="sd">*</span><span class="w"> </span><span class="sd">shader.</span>
+<span class="w"> </span><span class="sd">*/</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">VertexOutput</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="o">@</span><span class="n">builtin</span><span class="p">(</span><span class="n">position</span><span class="p">)</span><span class="w"> </span><span class="n">position</span>:<span class="w"> </span><span class="nc">vec4f</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">location</span><span class="w"> </span><span class="c1">here</span><span class="w"> </span><span class="c1">does</span><span class="w"> </span><span class="c1">not</span><span class="w"> </span><span class="c1">refer</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">vertex</span><span class="w"> </span><span class="c1">attribute,</span><span class="w"> </span><span class="c1">it</span><span class="w"> </span><span class="c1">just</span><span class="w"> </span><span class="c1">means</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">that</span><span class="w"> </span><span class="c1">this</span><span class="w"> </span><span class="c1">field</span><span class="w"> </span><span class="c1">must</span><span class="w"> </span><span class="c1">be</span><span class="w"> </span><span class="c1">handled</span><span class="w"> </span><span class="c1">by</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">rasterizer.</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">(It</span><span class="w"> </span><span class="c1">can</span><span class="w"> </span><span class="c1">also</span><span class="w"> </span><span class="c1">refer</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">another</span><span class="w"> </span><span class="c1">field</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">another</span><span class="w"> </span><span class="c1">struct</span><span class="w"> </span><span class="c1">that</span><span class="w"> </span><span class="c1">would</span><span class="w"> </span><span class="c1">be</span><span class="w"> </span><span class="c1">used</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">as</span><span class="w"> </span><span class="c1">input</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">fragment</span><span class="w"> </span><span class="c1">shader.)</span>
+<span class="w">    </span><span class="o">@</span><span class="n">location</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">color</span>:<span class="w"> </span><span class="nc">vec3f</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="o">@</span><span class="n">vertex</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">vs_main</span><span class="p">(</span><span class="k">in</span>:<span class="w"> </span><span class="nc">VertexInput</span><span class="p">)</span><span class="w"> </span>-&gt;<span class="w"> </span><span class="nc">VertexOutput</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">var</span><span class="w"> </span><span class="n">out</span>:<span class="w"> </span><span class="nc">VertexOutput</span><span class="p">;</span>
+<span class="w">    </span><span class="n">out</span><span class="p">.</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec4f</span><span class="p">(</span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">out</span><span class="p">.</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">in</span><span class="p">.</span><span class="n">color</span><span class="p">;</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">forward</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">fragment</span><span class="w"> </span><span class="c1">shader</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">out</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="o">@</span><span class="n">fragment</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">fs_main</span><span class="p">(</span><span class="k">in</span>:<span class="w"> </span><span class="nc">VertexOutput</span><span class="p">)</span><span class="w"> </span>-&gt;<span class="w"> </span><span class="o">@</span><span class="n">location</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">vec4f</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">vec4f</span><span class="p">(</span><span class="k">in</span><span class="p">.</span><span class="n">color</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>There is a limit on the number of components that can be forwarded from vertex to fragment shader. In our case, we ask for 3 (float) components:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxInterStageShaderComponents</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="vertex-buffer-layout">
+<h2>Vertex Buffer Layout<a class="headerlink" href="multiple-attributes.html#vertex-buffer-layout" title="Permalink to this heading">#</a></h2>
+<p>There are different ways of feeding multiple attributes to the vertex fetch stage. The choice usually depends on the way your input data is organized, which varies with the context, so I am going to present two different ways.</p>
+<section id="option-a-interleaved-attributes">
+<h3>Option A: Interleaved attributes<a class="headerlink" href="multiple-attributes.html#option-a-interleaved-attributes" title="Permalink to this heading">#</a></h3>
+<p>Before anything, do not forget to increase the vertex attribute limit of your device:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxVertexAttributes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Interleaved attributes means that we put in a single buffer the values for all the attributes of the first vertex, then all values for the second vertex, etc:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vertexData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">x0,</span><span class="w">  </span><span class="c1">y0,</span><span class="w">  </span><span class="c1">r0,</span><span class="w">  </span><span class="c1">g0,</span><span class="w">  </span><span class="c1">b0</span>
+<span class="w">    </span><span class="mf">-0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">x1,</span><span class="w">  </span><span class="c1">y1,</span><span class="w">  </span><span class="c1">r1,</span><span class="w">  </span><span class="c1">g1,</span><span class="w">  </span><span class="c1">b1</span>
+<span class="w">    </span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">...</span>
+<span class="w">    </span><span class="o">+</span><span class="mf">0.0</span><span class="p">,</span><span class="w">   </span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">-0.55f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">-0.05f</span><span class="p">,</span><span class="w"> </span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">-0.55f</span><span class="p">,</span><span class="w"> </span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span>
+<span class="p">};</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">now</span><span class="w"> </span><span class="c1">divide</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">vector</span><span class="w"> </span><span class="c1">size</span><span class="w"> </span><span class="c1">by</span><span class="w"> </span><span class="c1">5</span><span class="w"> </span><span class="c1">fields.</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">vertexCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">vertexData</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">5</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The first thing we can remark is that now the <strong>stride</strong> of our position attribute has changed from <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">*</span> <span class="pre">sizeof(float)</span></code> to <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">*</span> <span class="pre">sizeof(float)</span></code>:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">new</span><span class="w"> </span><span class="c1">stride</span>
+<span class="n">vertexBufferLayout</span><span class="p">.</span><span class="n">arrayStride</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>We thus need to update the buffer size and stride limits:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxBufferSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+<span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxVertexBufferArrayStride</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This stride is the same for both attributes, so it is not a problem that the stride is set at the level of the while buffer layout. The main difference between our two attributes actually is the offset at which they start in the buffer: the color starts after 2 floats.</p>
+<p>We now need to provide 2 elements in the <code class="docutils literal notranslate"><span class="pre">vertexBufferLayout.attributes</span></code> array. So instead of passing the address <code class="docutils literal notranslate"><span class="pre">&amp;vertexAttrib</span></code> of a single entry, we use a <code class="docutils literal notranslate"><span class="pre">std::vector</span></code>:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">now</span><span class="w"> </span><span class="c1">have</span><span class="w"> </span><span class="c1">2</span><span class="w"> </span><span class="c1">attributes</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">VertexAttribute</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vertexAttribs</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Position</span><span class="w"> </span><span class="c1">attribute</span>
+<span class="n">vertexAttribs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">shaderLocation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">vertexAttribs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VertexFormat</span><span class="o">::</span><span class="n">Float32x2</span><span class="p">;</span>
+<span class="n">vertexAttribs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Color</span><span class="w"> </span><span class="c1">attribute</span>
+<span class="n">vertexAttribs</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">shaderLocation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">vertexAttribs</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VertexFormat</span><span class="o">::</span><span class="n">Float32x3</span><span class="p">;</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">different</span><span class="w"> </span><span class="c1">type!</span>
+<span class="n">vertexAttribs</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">non</span><span class="w"> </span><span class="c1">null</span><span class="w"> </span><span class="c1">offset!</span>
+
+<span class="n">vertexBufferLayout</span><span class="p">.</span><span class="n">attributeCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">vertexAttribs</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+<span class="n">vertexBufferLayout</span><span class="p">.</span><span class="n">attributes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vertexAttribs</span><span class="p">.</span><span class="n">data</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">now</span><span class="w"> </span><span class="c1">have</span><span class="w"> </span><span class="c1">2</span><span class="w"> </span><span class="c1">attributes</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">WGPUVertexAttribute</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vertexAttribs</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Position</span><span class="w"> </span><span class="c1">attribute</span>
+<span class="n">vertexAttribs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">shaderLocation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">vertexAttribs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUVertexFormat_Float32x2</span><span class="p">;</span>
+<span class="n">vertexAttribs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Color</span><span class="w"> </span><span class="c1">attribute</span>
+<span class="n">vertexAttribs</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">shaderLocation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">vertexAttribs</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUVertexFormat_Float32x3</span><span class="p">;</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">different</span><span class="w"> </span><span class="c1">type!</span>
+<span class="n">vertexAttribs</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">non</span><span class="w"> </span><span class="c1">null</span><span class="w"> </span><span class="c1">offset!</span>
+
+<span class="n">vertexBufferLayout</span><span class="p">.</span><span class="n">attributeCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">vertexAttribs</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+<span class="n">vertexBufferLayout</span><span class="p">.</span><span class="n">attributes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vertexAttribs</span><span class="p">.</span><span class="n">data</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="option-b-multiple-buffers">
+<h3>Option B: Multiple buffers<a class="headerlink" href="multiple-attributes.html#option-b-multiple-buffers" title="Permalink to this heading">#</a></h3>
+<p>Another possible data layout is to have two different buffers for the two attributes. Make sure to change the device limit to support this:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxVertexBuffers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>We thus have 2 input vectors:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">x0,</span><span class="w"> </span><span class="c1">y0,</span><span class="w"> </span><span class="c1">x1,</span><span class="w"> </span><span class="c1">y1,</span><span class="w"> </span><span class="c1">...</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">positionData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="mf">-0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5</span><span class="p">,</span>
+<span class="w">    </span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5</span><span class="p">,</span>
+<span class="w">    </span><span class="o">+</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">-0.55f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">-0.05f</span><span class="p">,</span><span class="w"> </span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">-0.55f</span><span class="p">,</span><span class="w"> </span><span class="o">+</span><span class="mf">0.5</span>
+<span class="p">};</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">r0,</span><span class="w">  </span><span class="c1">g0,</span><span class="w">  </span><span class="c1">b0,</span><span class="w"> </span><span class="c1">r1,</span><span class="w">  </span><span class="c1">g1,</span><span class="w">  </span><span class="c1">b1,</span><span class="w"> </span><span class="c1">...</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">colorData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span>
+<span class="p">};</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">vertexCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">positionData</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">vertexCount</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">colorData</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">3</span><span class="p">));</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This time, the maximum buffer size/stride can be lower:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxBufferSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+<span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxVertexBufferArrayStride</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<p>Which lead to two GPU buffers:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">vertex</span><span class="w"> </span><span class="c1">buffers</span>
+<span class="n">BufferDescriptor</span><span class="w"> </span><span class="n">bufferDesc</span><span class="p">;</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">usage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">CopyDst</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">Vertex</span><span class="p">;</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">mappedAtCreation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">positionData</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+<span class="n">Buffer</span><span class="w"> </span><span class="n">positionBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">device</span><span class="p">.</span><span class="n">createBuffer</span><span class="p">(</span><span class="n">bufferDesc</span><span class="p">);</span>
+<span class="n">queue</span><span class="p">.</span><span class="n">writeBuffer</span><span class="p">(</span><span class="n">positionBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">positionData</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">bufferDesc</span><span class="p">.</span><span class="n">size</span><span class="p">);</span>
+
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">colorData</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+<span class="n">Buffer</span><span class="w"> </span><span class="n">colorBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">device</span><span class="p">.</span><span class="n">createBuffer</span><span class="p">(</span><span class="n">bufferDesc</span><span class="p">);</span>
+<span class="n">queue</span><span class="p">.</span><span class="n">writeBuffer</span><span class="p">(</span><span class="n">colorBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">colorData</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">bufferDesc</span><span class="p">.</span><span class="n">size</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">vertex</span><span class="w"> </span><span class="c1">buffers</span>
+<span class="n">WGPUBufferDescriptor</span><span class="w"> </span><span class="n">bufferDesc</span><span class="p">;</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">usage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUBufferUsage_CopyDst</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">WGPUBufferUsage_Vertex</span><span class="p">;</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">mappedAtCreation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">positionData</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+<span class="n">WGPUBuffer</span><span class="w"> </span><span class="n">positionBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuDeviceCreateBuffer</span><span class="p">(</span><span class="n">device</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">bufferDesc</span><span class="p">);</span>
+<span class="n">wgpuQueueWriteBuffer</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">positionBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">positionData</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">bufferDesc</span><span class="p">.</span><span class="n">size</span><span class="p">);</span>
+
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">colorData</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+<span class="n">WGPUBuffer</span><span class="w"> </span><span class="n">colorBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuDeviceCreateBuffer</span><span class="p">(</span><span class="n">device</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">bufferDesc</span><span class="p">);</span>
+<span class="n">wgpuQueueWriteBuffer</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">colorBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">colorData</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">bufferDesc</span><span class="p">.</span><span class="n">size</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>This time it is not the <code class="docutils literal notranslate"><span class="pre">VertexAttribute</span></code> struct but the <code class="docutils literal notranslate"><span class="pre">VertexBufferLayout</span></code> that is replaced with a vector:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--3-input--1" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">now</span><span class="w"> </span><span class="c1">have</span><span class="w"> </span><span class="c1">2</span><span class="w"> </span><span class="c1">attributes</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">VertexBufferLayout</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vertexBufferLayouts</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Position</span><span class="w"> </span><span class="c1">attribute</span><span class="w"> </span><span class="c1">remains</span><span class="w"> </span><span class="c1">untouched</span>
+<span class="n">VertexAttribute</span><span class="w"> </span><span class="n">positionAttrib</span><span class="p">;</span>
+<span class="n">positionAttrib</span><span class="p">.</span><span class="n">shaderLocation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">positionAttrib</span><span class="p">.</span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VertexFormat</span><span class="o">::</span><span class="n">Float32x2</span><span class="p">;</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">size</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">position</span>
+<span class="n">positionAttrib</span><span class="p">.</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="n">vertexBufferLayouts</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">attributeCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">vertexBufferLayouts</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">attributes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">positionAttrib</span><span class="p">;</span>
+<span class="n">vertexBufferLayouts</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">arrayStride</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">stride</span><span class="w"> </span><span class="c1">=</span><span class="w"> </span><span class="c1">size</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">position</span>
+<span class="n">vertexBufferLayouts</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">stepMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VertexStepMode</span><span class="o">::</span><span class="n">Vertex</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Position</span><span class="w"> </span><span class="c1">attribute</span>
+<span class="n">VertexAttribute</span><span class="w"> </span><span class="n">colorAttrib</span><span class="p">;</span>
+<span class="n">colorAttrib</span><span class="p">.</span><span class="n">shaderLocation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">colorAttrib</span><span class="p">.</span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VertexFormat</span><span class="o">::</span><span class="n">Float32x3</span><span class="p">;</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">size</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">color</span>
+<span class="n">colorAttrib</span><span class="p">.</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="n">vertexBufferLayouts</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">attributeCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">vertexBufferLayouts</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">attributes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">colorAttrib</span><span class="p">;</span>
+<span class="n">vertexBufferLayouts</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">arrayStride</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">stride</span><span class="w"> </span><span class="c1">=</span><span class="w"> </span><span class="c1">size</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">color</span>
+<span class="n">vertexBufferLayouts</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">stepMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VertexStepMode</span><span class="o">::</span><span class="n">Vertex</span><span class="p">;</span>
+
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">vertex</span><span class="p">.</span><span class="n">bufferCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">vertexBufferLayouts</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">vertex</span><span class="p">.</span><span class="n">buffers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vertexBufferLayouts</span><span class="p">.</span><span class="n">data</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--3-input--2" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">now</span><span class="w"> </span><span class="c1">have</span><span class="w"> </span><span class="c1">2</span><span class="w"> </span><span class="c1">attributes</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">WGPUVertexBufferLayout</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vertexBufferLayouts</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Position</span><span class="w"> </span><span class="c1">attribute</span><span class="w"> </span><span class="c1">remains</span><span class="w"> </span><span class="c1">untouched</span>
+<span class="n">WGPUVertexAttribute</span><span class="w"> </span><span class="n">positionAttrib</span><span class="p">;</span>
+<span class="n">positionAttrib</span><span class="p">.</span><span class="n">shaderLocation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">positionAttrib</span><span class="p">.</span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUVertexFormat_Float32x2</span><span class="p">;</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">size</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">position</span>
+<span class="n">positionAttrib</span><span class="p">.</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="n">vertexBufferLayouts</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">attributeCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">vertexBufferLayouts</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">attributes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">positionAttrib</span><span class="p">;</span>
+<span class="n">vertexBufferLayouts</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">arrayStride</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">stride</span><span class="w"> </span><span class="c1">=</span><span class="w"> </span><span class="c1">size</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">position</span>
+<span class="n">vertexBufferLayouts</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">stepMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUVertexStepMode_Vertex</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Position</span><span class="w"> </span><span class="c1">attribute</span>
+<span class="n">VertexAttribute</span><span class="w"> </span><span class="n">colorAttrib</span><span class="p">;</span>
+<span class="n">colorAttrib</span><span class="p">.</span><span class="n">shaderLocation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">colorAttrib</span><span class="p">.</span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUVertexFormat_Float32x3</span><span class="p">;</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">size</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">color</span>
+<span class="n">colorAttrib</span><span class="p">.</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="n">vertexBufferLayouts</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">attributeCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">vertexBufferLayouts</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">attributes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">colorAttrib</span><span class="p">;</span>
+<span class="n">vertexBufferLayouts</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">arrayStride</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">stride</span><span class="w"> </span><span class="c1">=</span><span class="w"> </span><span class="c1">size</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">color</span>
+<span class="n">vertexBufferLayouts</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">stepMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUVertexStepMode_Vertex</span><span class="p">;</span>
+
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">vertex</span><span class="p">.</span><span class="n">bufferCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">vertexBufferLayouts</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">vertex</span><span class="p">.</span><span class="n">buffers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vertexBufferLayouts</span><span class="p">.</span><span class="n">data</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And finally we also have 2 calls to <code class="docutils literal notranslate"><span class="pre">renderPass.setVertexBuffer</span></code>. The first argument (<code class="docutils literal notranslate"><span class="pre">slot</span></code>) corresponds to the index of the buffer layout in the <code class="docutils literal notranslate"><span class="pre">pipelineDesc.vertex.buffers</span></code> array.</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--4-input--1" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Set</span><span class="w"> </span><span class="c1">vertex</span><span class="w"> </span><span class="c1">buffers</span><span class="w"> </span><span class="c1">while</span><span class="w"> </span><span class="c1">encoding</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">render</span><span class="w"> </span><span class="c1">pass</span>
+<span class="n">renderPass</span><span class="p">.</span><span class="n">setVertexBuffer</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">positionBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">positionData</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+<span class="n">renderPass</span><span class="p">.</span><span class="n">setVertexBuffer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">colorBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">colorData</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--4-input--2" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Set</span><span class="w"> </span><span class="c1">vertex</span><span class="w"> </span><span class="c1">buffers</span><span class="w"> </span><span class="c1">while</span><span class="w"> </span><span class="c1">encoding</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">render</span><span class="w"> </span><span class="c1">pass</span>
+<span class="n">wgpuRenderPassEncoderSetVertexBuffer</span><span class="p">(</span><span class="n">renderPass</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">positionBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">positionData</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+<span class="n">wgpuRenderPassEncoderSetVertexBuffer</span><span class="p">(</span><span class="n">renderPass</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">colorBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">colorData</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="multiple-attributes.html#conclusion" title="Permalink to this heading">#</a></h2>
+<figure class="align-center" id="id1">
+<img alt="../../_images/color-attribute.png" class="with-shadow" src="../../_images/color-attribute.png" />
+<figcaption>
+<p><span class="caption-text">Triangles with a color attribute (same result for both options).</span><a class="headerlink" href="multiple-attributes.html#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>I changed the background color (<code class="docutils literal notranslate"><span class="pre">clearValue</span></code>) to <code class="docutils literal notranslate"><span class="pre">Color{</span> <span class="pre">0.05,</span> <span class="pre">0.05,</span> <span class="pre">0.05,</span> <span class="pre">1.0</span> <span class="pre">}</span></code> to better appreciate the colors of the triangles.</p>
+</div>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--5-input--1" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step033"><code class="docutils literal notranslate"><span class="pre">step033</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--5-input--2" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step033-vanilla"><code class="docutils literal notranslate"><span class="pre">step033-vanilla</span></code></a></p>
+</div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="index-buffer.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Index Buffer</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="a-first-vertex-attribute.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">A first Vertex Attribute</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022-2023, Élie Michel and contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/eliemichel/LearnWebGPU" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      <div class="toc-sticky toc-scroll">
+	<div class="toc-title-container">
+		<span class="toc-title">
+			On this page
+		</span>
+	</div>
+	<div class="toc-tree-container">
+		<div class="toc-tree">
+			<ul>
+<li><a class="reference internal" href="multiple-attributes.html#">Multiple Attributes</a><ul>
+<li><a class="reference internal" href="multiple-attributes.html#shader">Shader</a></li>
+<li><a class="reference internal" href="multiple-attributes.html#vertex-buffer-layout">Vertex Buffer Layout</a><ul>
+<li><a class="reference internal" href="multiple-attributes.html#option-a-interleaved-attributes">Option A: Interleaved attributes</a></li>
+<li><a class="reference internal" href="multiple-attributes.html#option-b-multiple-buffers">Option B: Multiple buffers</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="multiple-attributes.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+		</div>
+	</div>
+	
+</div>
+    </aside>
+  </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/sphinx_literate.js"></script>
+    </body>
+</html>

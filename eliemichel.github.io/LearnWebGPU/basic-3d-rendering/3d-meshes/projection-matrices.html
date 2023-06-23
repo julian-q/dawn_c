@@ -1,0 +1,1035 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content="Projection matrices" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://eliemichel.github.io/basic-3d-rendering/3d-meshes/projection-matrices.html" />
+<meta property="og:site_name" content="Learn WebGPU for C++" />
+<meta property="og:description" content="With webgpu.hpp Resulting code: step055 Vanilla webgpu.h Resulting code: step055-vanilla Now that we are familiar with the concept of matrices, we see how they are used to represent projections, al..." />
+<meta property="og:image" content="https://eliemichel.github.io/images/webgpu-responsive.svg" />
+<meta property="og:image:alt" content="Learn WebGPU for C++" />
+<meta name="description" content="With webgpu.hpp Resulting code: step055 Vanilla webgpu.h Resulting code: step055-vanilla Now that we are familiar with the concept of matrices, we see how they are used to represent projections, al..." />
+    <link rel="icon" type="image/svg+xml" href="../../_static/favicon/favicon.svg">
+    <link rel="icon" sizes="16x16" href="../../_static/favicon/favicon-16x16.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="../../_static/favicon/favicon-32x32.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://eliemichel.github.io/LearnWebGPU/_static/favicon/apple-touch-icon-180x180.png" type="image/png"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Basic shading" href="basic-shading.html" /><link rel="prev" title="Transformation matrices" href="transformation-matrices.html" />
+
+    <!-- Generated with Sphinx 5.3.0 and Furo 2023.03.27 -->
+        <title>Projection matrices - Learn WebGPU for C++ documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx_literate.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  --color-brand-primary: #ac2800;
+  --color-brand-content: #007cac;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     <em>Important</em> This documentation is a work in progress! <a href="../../appendices/feedback-needed.html">Feedback needed!</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Learn WebGPU for C++  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/webgpu-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/webgpu-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../getting-started/index.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/project-setup.html">Project setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/opening-a-window.html">Opening a window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/hello-webgpu.html">Hello WebGPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-adapter.html">The Adapter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-device.html">The Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-command-queue.html">The Command Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/first-color.html">First Color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/cpp-idioms.html">C++ wrapper</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">Basic 3D Rendering</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../hello-triangle.html">Hello Triangle</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../input-geometry/index.html">Input Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/playing-with-buffers.html">Playing with buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/a-first-vertex-attribute.html">A first Vertex Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/multiple-attributes.html">Multiple Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/index-buffer.html">Index Buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../shader-uniforms/index.html">Shader Uniforms</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/a-first-uniform.html">A first uniform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/multiple-uniforms.html">More uniforms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/dynamic-uniforms.html">Dynamic uniforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">3D Meshes</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="a-simple-example.html">A simple example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="depth-buffer.html">Depth buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformation-matrices.html">Transformation matrices</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="projection-matrices.html#">Projection matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic-shading.html">Basic shading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../texturing/index.html">Texturing</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/a-first-texture.html">A first texture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/texture-mapping.html">Texture mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/sampler.html">Sampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../some-interaction/index.html">Some interaction</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/refactoring.html">Refactoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/resizing-window.html">Resizing the window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/camera-control.html">Camera control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/simple-gui.html">Simple GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../lighting-and-material/index.html">Lighting and Material</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/recap.html">Recap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/specular.html">Specularity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/normal-mapping.html">Normal mapping (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/ibl.html">Image-Based Lighting (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/cubemap.html">Cube Maps (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/pbr.html">Physically-Based Materials (🚧WIP)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../basic-compute/index.html">Basic Compute</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../basic-compute/compute-pipeline.html">Compute Pipeline</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-compute/image-processing/index.html">Image Processing</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/mipmap-generation.html">Mipmap Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/convolution-filters.html">Convolution Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/cubemap-conversion.html">Cubemap Conversion (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/cubemap-prefiltering.html">Cubemap Prefiltering (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-compute/procedural-geometry/index.html">Procedural Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/procedural-geometry/deformation.html">Deformation (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../basic-compute/neural-networks.html">Neural Networks (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../advanced-techniques/index.html">Advanced Techniques</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/raii.html">RAII</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/hdr-textures.html">High Dynamic Range Textures (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/deferred-shading.html">Deferred Shading (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/benchmarking.html">Benchmarking (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/render-bundles.html">Render Bundles (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/multi-sampling.html">Multi-Sampling (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/scene-tree.html">Scene tree (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/screen-capture.html">Screen capture (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/shadow-maps.html">Shadow maps (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/tesselation.html">Tesselation (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/raytracing.html">Raytracing (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../appendices/index.html">Appendices</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/teaching-native-graphics-in-2023.html">Teaching native graphics in 2023</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/feedback-needed.html">Feedback needed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/debugging.html">Debugging (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/building-for-the-web.html">Building for the Web (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/memory-model.html">Memory Model (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/custom-extensions.html">Custom Extensions (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/references.html">References (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/tmp.html">Temporary page</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="projection-matrices.html#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/eliemichel/LearnWebGPU/edit/main/./basic-3d-rendering/3d-meshes/projection-matrices.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="projection-matrices">
+<h1>Projection matrices<a class="headerlink" href="projection-matrices.html#projection-matrices" title="Permalink to this heading">#</a></h1>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step055"><code class="docutils literal notranslate"><span class="pre">step055</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step055-vanilla"><code class="docutils literal notranslate"><span class="pre">step055-vanilla</span></code></a></p>
+</div>
+</div>
+<p>Now that we are familiar with the concept of matrices, we see how they are used to represent projections, although a <strong>perspective projection</strong> is neither a linear nor an affine transform so it is not exactly what matrices are supposed to represent, mathematically speaking.</p>
+<p>We also present in a second part the typical way of managing transform and projection matrices from the C++ code.</p>
+<section id="orthographic-projection">
+<h2>Orthographic projection<a class="headerlink" href="projection-matrices.html#orthographic-projection" title="Permalink to this heading">#</a></h2>
+<p>What have we been doing so far regarding the projection of the 3D scene onto our 2D screen? The <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> coordinates of the output position <code class="docutils literal notranslate"><span class="pre">out.position</span></code> is mapped to the window coordinates, and the <span class="math notranslate nohighlight">\(z\)</span> coordinate does not affect the pixel position of our geometry, so this is <strong>an orthographic projection along the Z axis</strong>:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="n">out</span><span class="p">.</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ratio</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="p">.</span><span class="n">z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Remember that we had to remap the <span class="math notranslate nohighlight">\(z\)</span> coordinate to the range <span class="math notranslate nohighlight">\((0,1)\)</span>, because anything outside this range is <strong>clipped out</strong>, the same way anything outside the range <span class="math notranslate nohighlight">\((-1,1)\)</span> along the <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> axes falls outside the window.</p>
+<img alt="../../_images/clip-space-light.svg" class="only-light align-center" src="../../_images/clip-space-light.svg" /><img alt="../../_images/clip-space-dark.svg" class="only-dark align-center" src="../../_images/clip-space-dark.svg" /><p class="align-center">
+	<span class="caption-text"><em>The normalized clipping volume.</em></span>
+</p>
+<p>We call this the <strong>clipping volume</strong>. Only the geometry that lies inside this volume after the vertex shader can produce visible fragments.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>The expected range for the output <span class="math notranslate nohighlight">\(z\)</span> coordinate differs with the graphics API. All modern APIs (DirectX 12, Metal, Vulkan, WebGPU) use <span class="math notranslate nohighlight">\((0,1)\)</span> but OpenGL and WebGL expect <span class="math notranslate nohighlight">\((-1,1)\)</span>. The projection matrices have thus slightly different definitions.</p>
+</div>
+<p>Of course this orthographic projection can be easily represented as a matrix:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transpose</span><span class="p">(</span><span class="n">mat4x4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">    </span><span class="mf">1.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">ratio</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="p">));</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">homogeneous_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">position</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="n">out</span><span class="p">.</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">homogeneous_position</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Note that the coefficients <span class="math notranslate nohighlight">\(0.5\)</span> in the matrix above come from the fact that we want to remap Z coordinate from the range <span class="math notranslate nohighlight">\((-1,1)\)</span>. In general, if the <span class="math notranslate nohighlight">\(z\)</span> coordinates of our model are in range <span class="math notranslate nohighlight">\((n,f)\)</span>, we get <span class="math notranslate nohighlight">\(z_{\text{out}} = \frac{z - n}{f - n} = \frac{z}{f - n} - \frac{n}{f - n}\)</span> and so the coefficients become <span class="math notranslate nohighlight">\(p_{zz} = \frac{1}{f - n}\)</span> and <span class="math notranslate nohighlight">\(p_{zw} = \frac{- n}{f - n}\)</span>.</p>
+<p>We can also change the range of view by dividing the XY size of the scene to fit a larger part of it in the view frustum.</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">A</span><span class="w"> </span><span class="c1">more</span><span class="w"> </span><span class="c1">generic</span><span class="w"> </span><span class="c1">expression</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">an</span><span class="w"> </span><span class="c1">orthographic</span><span class="w"> </span><span class="c1">projection</span><span class="w"> </span><span class="c1">matrix</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">near</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mf">1.0</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">far</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transpose</span><span class="p">(</span><span class="n">mat4x4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">    </span><span class="mf">1.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">scale</span><span class="p">,</span><span class="w">      </span><span class="mf">0.0</span><span class="p">,</span><span class="w">           </span><span class="mf">0.0</span><span class="p">,</span><span class="w">                  </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">        </span><span class="mf">0.0</span><span class="p">,</span><span class="w">     </span><span class="n">ratio</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">scale</span><span class="p">,</span><span class="w">      </span><span class="mf">0.0</span><span class="p">,</span><span class="w">                  </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">        </span><span class="mf">0.0</span><span class="p">,</span><span class="w">          </span><span class="mf">0.0</span><span class="p">,</span><span class="w">      </span><span class="mf">1.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">far</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">near</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="n">near</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">far</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">near</span><span class="p">),</span>
+<span class="w">        </span><span class="mf">0.0</span><span class="p">,</span><span class="w">          </span><span class="mf">0.0</span><span class="p">,</span><span class="w">           </span><span class="mf">0.0</span><span class="p">,</span><span class="w">                  </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="p">));</span>
+</pre></div>
+</div>
+</section>
+<section id="perspective-projection">
+<h2>Perspective projection<a class="headerlink" href="projection-matrices.html#perspective-projection" title="Permalink to this heading">#</a></h2>
+<section id="focal-point">
+<h3>Focal point<a class="headerlink" href="projection-matrices.html#focal-point" title="Permalink to this heading">#</a></h3>
+<p>A perspective projection is (more or less) the projection that occurs in a camera or a human eye. Instead of projecting the scene onto a plane, it <strong>projects onto a single point</strong>, called the <strong>focal point</strong>.</p>
+<p>The pixels of the screen correspond to different <strong>incoming directions</strong> from which elements of geometry are projected.</p>
+<img alt="../../_images/perspective-light.svg" class="only-light align-center" src="../../_images/perspective-light.svg" /><img alt="../../_images/perspective-dark.svg" class="only-dark align-center" src="../../_images/perspective-dark.svg" /><p>If we want to map the perspective view frustum to the normalized clip space described above, we <strong>need to divide</strong> the XY position by the <span class="math notranslate nohighlight">\(z\)</span> coordinate:</p>
+<img alt="../../_images/perspective2-light.svg" class="only-light align-center" src="../../_images/perspective2-light.svg" /><img alt="../../_images/perspective2-dark.svg" class="only-dark align-center" src="../../_images/perspective2-dark.svg" /><p>The points <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(C\)</span> project along the same direction, so they should have the same <span class="math notranslate nohighlight">\(y_\text{out}\)</span> coordinate. At the same time, the points <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> have the same input <span class="math notranslate nohighlight">\(y\)</span> coordinate.</p>
+<p>The thing is that they have <strong>different depths</strong>, and as we know <strong>objects that are further away look smaller</strong>. This is modeled by a division by the depth:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+y_\text{out} = \frac{y}{z}
+\]</div>
+</div>
+<p>Since <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> have different <span class="math notranslate nohighlight">\(z\)</span>, they end up at different <span class="math notranslate nohighlight">\(y_\text{out}\)</span> coordinates, which means we see them in slightly different directions (i.e., different pixels in the final image).</p>
+<p>We can try this out:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">apply</span><span class="w"> </span><span class="c1">model</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">view</span><span class="w"> </span><span class="c1">transform,</span><span class="w"> </span><span class="c1">but</span><span class="w"> </span><span class="c1">not</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">orthographic</span><span class="w"> </span><span class="c1">projection</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">move</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">view</span><span class="w"> </span><span class="c1">point</span><span class="w"> </span><span class="c1">so</span><span class="w"> </span><span class="c1">that</span><span class="w"> </span><span class="c1">all</span><span class="w"> </span><span class="c1">Z</span><span class="w"> </span><span class="c1">coordinates</span><span class="w"> </span><span class="c1">are</span><span class="w"> </span><span class="c1">&gt;</span><span class="w"> </span><span class="c1">0</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">(this</span><span class="w"> </span><span class="c1">did</span><span class="w"> </span><span class="c1">not</span><span class="w"> </span><span class="c1">make</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">difference</span><span class="w"> </span><span class="c1">with</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">orthographic</span><span class="w"> </span><span class="c1">projection</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">but</span><span class="w"> </span><span class="c1">does</span><span class="w"> </span><span class="c1">now.)</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">focalPoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec3</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">2.0</span><span class="p">);</span>
+<span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">focalPoint</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">divide</span><span class="w"> </span><span class="c1">by</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">Z</span><span class="w"> </span><span class="c1">coord</span>
+<span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">position</span><span class="p">.</span><span class="n">z</span><span class="p">;</span>
+<span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">position</span><span class="p">.</span><span class="n">z</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Apply</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">orthographic</span><span class="w"> </span><span class="c1">matrix</span><span class="w"> </span><span class="c1">for</span><span class="w"> </span><span class="c1">remapping</span><span class="w"> </span><span class="c1">Z</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">handling</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">ratio</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">near</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">far</span><span class="w"> </span><span class="c1">must</span><span class="w"> </span><span class="c1">be</span><span class="w"> </span><span class="c1">positive</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">near</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">far</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">100.0</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="cm">/*</span><span class="w"> </span><span class="cm">...</span><span class="w"> </span><span class="cm">*/</span><span class="p">;</span>
+<span class="n">out</span><span class="p">.</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">position</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+</pre></div>
+</div>
+<figure class="align-center">
+	<video autoplay loop muted inline nocontrols style="width:100%;height:auto;max-width:642px">
+		<source src="../../_static/perspective.mp4" type="video/mp4">
+	</video>
+	<figcaption>
+		<p><span class="caption-text">Our first perspective.</span></p>
+	</figcaption>
+</figure>
+<p>Ta-dam, it works!</p>
+</section>
+<section id="focal-length">
+<h3>Focal length<a class="headerlink" href="projection-matrices.html#focal-length" title="Permalink to this heading">#</a></h3>
+<p>Dividing by the raw <span class="math notranslate nohighlight">\(z\)</span> coordinate was a bit arbitrary, and the formula above is a bit suspicious because its terms are <strong>not commensurable</strong>: <span class="math notranslate nohighlight">\(y_\text{out}\)</span> is a <strong>length</strong> (e.g., in meters or feet), but <span class="math notranslate nohighlight">\(y / z\)</span> is a <strong>ratio</strong> (unit-less). We can in fact scale the division factor:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">position</span><span class="p">.</span><span class="n">z</span><span class="p">;</span>
+<span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">position</span><span class="p">.</span><span class="n">z</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>This corresponds to introducing the <strong>focal length</strong> <span class="math notranslate nohighlight">\(l\)</span> in the formula:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+y_\text{out} = l\frac{y}{z}
+\]</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The focal length can be seen as the distance between the focal point and a virtual sensor corresponding to the output window (can be verified using Thales’s theorem).</p>
+</div>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">focalLength</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span>
+<span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">position</span><span class="p">.</span><span class="n">z</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">focalLength</span><span class="p">;</span>
+<span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">position</span><span class="p">.</span><span class="n">z</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">focalLength</span><span class="p">;</span>
+</pre></div>
+</div>
+<img alt="../../_images/perspective3-light.svg" class="only-light align-center" src="../../_images/perspective3-light.svg" /><img alt="../../_images/perspective3-dark.svg" class="only-dark align-center" src="../../_images/perspective3-dark.svg" /><p>The focal length is an arbitrary parameter that corresponds to the <strong>level of zoom</strong> of our virtual camera.</p>
+<figure class="align-center" id="id1">
+<img alt="../../_images/pexels-alexandru-g-stavrica-2204008.jpg" class="with-shadow" src="../../_images/pexels-alexandru-g-stavrica-2204008.jpg" />
+<figcaption>
+<p><span class="caption-text">This lens ranges from focal length 18mm to 55mm, depending on how the zoom ring is turned.</span><a class="headerlink" href="projection-matrices.html#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The projection depends only on <strong>the ratio</strong> between the <strong>sensor size</strong> and the actual <strong>focal length</strong> (it is easy to see that if we multiply by 2 the size of the sensor and move it twice as far from the focal point, we get the same image).</p>
+<p>As a consequence, commercial focal lengths are generally expressed for a given <strong>standard sensor size</strong>, namely 35 mm along its diagonal (a size called “full frame”).</p>
+<p>Since our clip space has a width of 2 units (from -1 to 1), if we want the visual look of a commercial 50 mm lens, we need to set our <code class="docutils literal notranslate"><span class="pre">focalLength</span></code> to <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">*</span> <span class="pre">50</span> <span class="pre">/</span> <span class="pre">35</span> <span class="pre">=</span> <span class="pre">2.86</span></code>. And actually with the <code class="docutils literal notranslate"><span class="pre">640/480</span></code> ratio the diagonal of our clip space is <code class="docutils literal notranslate"><span class="pre">2.5</span></code> so the <code class="docutils literal notranslate"><span class="pre">focalLength</span></code> ends up being <code class="docutils literal notranslate"><span class="pre">3.57</span></code>.</p>
+</div>
+</section>
+<section id="perspective-matrix">
+<h3>Perspective matrix<a class="headerlink" href="projection-matrices.html#perspective-matrix" title="Permalink to this heading">#</a></h3>
+<p>Unfortunately, a perspective projection is <strong>not a linear transform</strong>, because of the division by <span class="math notranslate nohighlight">\(z\)</span>. However, since this division is that commonly used, it is embedded <strong>in the fixed pipeline</strong>!</p>
+<p>How didn’t we notice it yet? Because for more flexibility it does not divide by <code class="docutils literal notranslate"><span class="pre">out.position.z</span></code> but rather by <code class="docutils literal notranslate"><span class="pre">out.position.w</span></code>.</p>
+<p>We want <span class="math notranslate nohighlight">\(w\)</span> to be <code class="docutils literal notranslate"><span class="pre">position.z</span> <span class="pre">/</span> <span class="pre">focalLength</span></code>, so in the projection matrix <code class="docutils literal notranslate"><span class="pre">P</span></code> we set the coefficient <span class="math notranslate nohighlight">\(p_{wz}\)</span> to <code class="docutils literal notranslate"><span class="pre">1.0</span> <span class="pre">/</span> <span class="pre">focalLength</span></code>, and set the last diagonal coefficient <span class="math notranslate nohighlight">\(p_{ww}\)</span> to <span class="math notranslate nohighlight">\(0\)</span> instead of <span class="math notranslate nohighlight">\(1\)</span>.</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">focalLength</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">no</span><span class="w"> </span><span class="c1">longer</span><span class="w"> </span><span class="c1">divide</span><span class="w"> </span><span class="c1">here!</span>
+<span class="c1">//position.x</span><span class="w"> </span><span class="c1">/=</span><span class="w"> </span><span class="c1">position.z</span><span class="w"> </span><span class="c1">/</span><span class="w"> </span><span class="c1">focalLength;</span>
+<span class="c1">//position.y</span><span class="w"> </span><span class="c1">/=</span><span class="w"> </span><span class="c1">position.z</span><span class="w"> </span><span class="c1">/</span><span class="w"> </span><span class="c1">focalLength;</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="cm">/*</span><span class="w"> </span><span class="cm">...</span><span class="w"> </span><span class="cm">*/</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">homogeneous_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">position</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="n">out</span><span class="p">.</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">homogeneous_position</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">change</span><span class="w"> </span><span class="c1">w</span><span class="w"> </span><span class="c1">instead:</span>
+<span class="n">out</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">position</span><span class="p">.</span><span class="n">z</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">focalLength</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The <span class="math notranslate nohighlight">\(z\)</span> coordinate itself is also divided by <span class="math notranslate nohighlight">\(w\)</span>.</p>
+</div>
+<figure class="align-center" id="id2">
+<img alt="../../_images/divide-w.png" class="with-shadow" src="../../_images/divide-w.png" />
+<figcaption>
+<p><span class="caption-text">The projection is the same, but since the <span class="math notranslate nohighlight">\(z\)</span> coordinate is also divided by <span class="math notranslate nohighlight">\(w\)</span>, the depth information is messed up.</span><a class="headerlink" href="projection-matrices.html#id2" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Before addressing this, we can notice that thanks to the hard-coded division, our perspective projection <strong>can be fully encoded as a matrix</strong>!</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">focalLength</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">near</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">far</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">100.0</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">(no</span><span class="w"> </span><span class="c1">need</span><span class="w"> </span><span class="c1">for</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">scale</span><span class="w"> </span><span class="c1">parameter</span><span class="w"> </span><span class="c1">now</span><span class="w"> </span><span class="c1">that</span><span class="w"> </span><span class="c1">we</span><span class="w"> </span><span class="c1">have</span><span class="w"> </span><span class="c1">focalLength)</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transpose</span><span class="p">(</span><span class="n">mat4x4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">    </span><span class="mf">1.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w">       </span><span class="mf">0.0</span><span class="p">,</span><span class="w">          </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">ratio</span><span class="p">,</span><span class="w">      </span><span class="mf">0.0</span><span class="p">,</span><span class="w">          </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w">       </span><span class="n">p_zz</span><span class="p">,</span><span class="w">         </span><span class="n">p_zw</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">focalLength</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="p">));</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">homogeneous_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">position</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="n">out</span><span class="p">.</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">homogeneous_position</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The coefficients <code class="docutils literal notranslate"><span class="pre">p_zz</span></code> and <code class="docutils literal notranslate"><span class="pre">p_zw</span></code> used to be respectively <code class="docutils literal notranslate"><span class="pre">1.0</span> <span class="pre">/</span> <span class="pre">(far</span> <span class="pre">-</span> <span class="pre">near)</span></code> and <code class="docutils literal notranslate"><span class="pre">-near</span> <span class="pre">/</span> <span class="pre">(far</span> <span class="pre">-</span> <span class="pre">near)</span></code> so that <span class="math notranslate nohighlight">\(z_\text{out}\)</span> is in range <span class="math notranslate nohighlight">\((0,1)\)</span>. Now we need it to be in range <span class="math notranslate nohighlight">\((0, w_\text{out}) = (0, \frac{z_\text{in}}{l})\)</span> so that after the normalization by <span class="math notranslate nohighlight">\(w_\text{out}\)</span> it ends up in <span class="math notranslate nohighlight">\((0,1)\)</span>:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\left\{
+\begin{align}
+p_{zz} &amp; = \frac{f}{l(f - n)} \\
+p_{zw} &amp; = -\frac{fn}{l(f - n)}
+\end{align}
+\right.
+\end{split}\]</div>
+</div>
+<aside class="topic">
+<p class="topic-title">Proof</p>
+<p>For <span class="math notranslate nohighlight">\(z_\text{in} = n\)</span>, the result is <span class="math notranslate nohighlight">\(z_\text{out} = 0\)</span>, and for <span class="math notranslate nohighlight">\(z_\text{in} = f\)</span>, the result is <span class="math notranslate nohighlight">\(z_\text{out} = \frac{z_\text{in}}{l} = \frac{f}{l}\)</span>.</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\left\{
+\begin{align}
+n p_{zz} + p_{zw} &amp; = 0 \quad\quad (L_1)\\
+f p_{zz} + p_{zw} &amp; = \frac{f}{l} \quad\quad (L_2)
+\end{align}
+\right.
+\end{split}\]</div>
+</div>
+<p>Subtract <span class="math notranslate nohighlight">\(L_2 - L_1\)</span> and <span class="math notranslate nohighlight">\(f L_1 - n L_2\)</span>:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\left\{
+\begin{align}
+f p_{zz} - n p_{zz} &amp; = \frac{f}{l} \\
+f p_{zw} - n p_{zw} &amp; = -\frac{fn}{l}
+\end{align}
+\right.
+\end{split}\]</div>
+</div>
+<p>Divide by <span class="math notranslate nohighlight">\(f - n\)</span> and this lead to the result above.</p>
+</aside>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>(TODO: explain) This does not work if <span class="math notranslate nohighlight">\(n\)</span> is <strong>not null</strong>. We must thus set <code class="docutils literal notranslate"><span class="pre">near</span></code> to a small but non-zero value.</p>
+</div>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">focalLength</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">near</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.01</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">far</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">100.0</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">divides</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">focalLength</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">far</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">near</span><span class="p">));</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transpose</span><span class="p">(</span><span class="n">mat4x4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">    </span><span class="mf">1.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w">        </span><span class="mf">0.0</span><span class="p">,</span><span class="w">                  </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">ratio</span><span class="p">,</span><span class="w">       </span><span class="mf">0.0</span><span class="p">,</span><span class="w">                  </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w">    </span><span class="n">far</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">divides</span><span class="p">,</span><span class="w">   </span><span class="o">-</span><span class="n">far</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">near</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">divides</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">focalLength</span><span class="p">,</span><span class="w">          </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="p">));</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">homogeneous_position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">position</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="n">out</span><span class="p">.</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">homogeneous_position</span><span class="p">;</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id3">
+<img alt="../../_images/focal0.5.PNG" class="with-shadow" src="../../_images/focal0.5.PNG" />
+<figcaption>
+<p><span class="caption-text">We are back to what we had with a manual division, only this time it’s all matrices!</span><a class="headerlink" href="projection-matrices.html#id3" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Our matrix <code class="docutils literal notranslate"><span class="pre">P</span></code> as defined in the last code block is a <strong>perspective projection matrix</strong>.</p>
+<p>The projection matrix is in general globally multiplied by <code class="docutils literal notranslate"><span class="pre">focalLength</span></code> compared to our last formula:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transpose</span><span class="p">(</span><span class="n">mat4x4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">    </span><span class="n">focalLength</span><span class="p">,</span><span class="w">         </span><span class="mf">0.0</span><span class="p">,</span><span class="w">                </span><span class="mf">0.0</span><span class="p">,</span><span class="w">                   </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">        </span><span class="mf">0.0</span><span class="p">,</span><span class="w">     </span><span class="n">focalLength</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ratio</span><span class="p">,</span><span class="w">        </span><span class="mf">0.0</span><span class="p">,</span><span class="w">                   </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">        </span><span class="mf">0.0</span><span class="p">,</span><span class="w">             </span><span class="mf">0.0</span><span class="p">,</span><span class="w">         </span><span class="n">far</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">far</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">near</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="n">far</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">near</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">far</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">near</span><span class="p">),</span>
+<span class="w">        </span><span class="mf">0.0</span><span class="p">,</span><span class="w">             </span><span class="mf">0.0</span><span class="p">,</span><span class="w">                </span><span class="mf">1.0</span><span class="p">,</span><span class="w">                   </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="p">));</span>
+</pre></div>
+</div>
+<p>This does not affect the end result because it also scales the <span class="math notranslate nohighlight">\(w\)</span> coordinate. Similarly, multiplying <code class="docutils literal notranslate"><span class="pre">out.position</span></code> by any value does not change the end pixel of the vertex.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The value <code class="docutils literal notranslate"><span class="pre">out.position</span> <span class="pre">/</span> <span class="pre">out.position.w</span></code> that is computed by the fixed pipeline is called the <em><strong>Normalized</strong> Device Coordinate</em>. It is this NDC that must fall within the normalized clipping volume described above.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Mathematically, considering that two vectors are <em>equivalent</em> when they are a multiple of each others (like we do here with <code class="docutils literal notranslate"><span class="pre">out.position</span></code>) defines a <a class="reference external" href="https://en.wikipedia.org/wiki/Projective_space">projective space</a>, namely a space of directions. Its elements are represented by <em>homogeneous coordinates</em>, called so to remind one that they are not unique, so they do not form a regular (Euclidean) coordinate system.</p>
+</div>
+</section>
+</section>
+<section id="matrix-uniforms">
+<h2>Matrix Uniforms<a class="headerlink" href="projection-matrices.html#matrix-uniforms" title="Permalink to this heading">#</a></h2>
+<section id="coordinate-systems">
+<h3>Coordinate systems<a class="headerlink" href="projection-matrices.html#coordinate-systems" title="Permalink to this heading">#</a></h3>
+<p>Instead of building the same matrices for each vertex of each object of the scene, we build them once and store them in a <strong>uniform buffer</strong>.</p>
+<p>We can thus extend our uniform structure:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">C++</span><span class="w"> </span><span class="c1">side</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">MyUniforms</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">projectionMatrix</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">viewMatrix</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">modelMatrix</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="o">&gt;</span><span class="w"> </span><span class="n">color</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">time</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">_pad</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">WGSL</span><span class="w"> </span><span class="c1">side</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">MyUniforms</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">projectionMatrix</span>:<span class="w"> </span><span class="nc">mat4x4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">viewMatrix</span>:<span class="w"> </span><span class="nc">mat4x4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">modelMatrix</span>:<span class="w"> </span><span class="nc">mat4x4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">color</span>:<span class="w"> </span><span class="nc">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">time</span>:<span class="w"> </span><span class="kt">f32</span><span class="p">,</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Remember the <strong>alignment</strong> rules: put the matrices first as they are larger structures.</p>
+</div>
+<p>This is the occasion to more formally introduce <strong>the typical way of splitting the transform</strong>. We could just store one single matrix <span class="math notranslate nohighlight">\(M\)</span> that would encode the whole transform from the input position to the output clip position, but instead we separate it into a product of a <strong>model</strong> matrix, then a <strong>view</strong> matrix, and then the <strong>projection</strong> matrix:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Remember</span><span class="w"> </span><span class="c1">that</span><span class="w"> </span><span class="c1">this</span><span class="w"> </span><span class="c1">reads</span><span class="w"> </span><span class="c1">backwards</span>
+<span class="n">mat4x4</span><span class="w"> </span><span class="n">M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">projectionMatrix</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">viewMatrix</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">modelMatrix</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Changing the <strong>projection</strong> matrix corresponds to changing the virtual camera that captures the scene. It happens rarely (unless we create zoom in/out effects).</p>
+<p>Changing the <strong>view</strong> matrix corresponds to moving and turning the camera. It happens almost all the time, whenever the user interacts with your tool/game usually.</p>
+<p>Changing the <strong>model</strong> matrix corresponds to moving the object with respect to the global scene, which is often called the <strong>world</strong>.</p>
+<p>As a consequence, we give a name to the intermediate <strong>coordinate systems</strong> through which the position passes while being transformed:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">in.position</span></code> is the <strong>local</strong> coordinates, or <strong>model coordinates</strong> of the object. It describes the geometry as if the object was alone and centered around the origin.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">modelMatrix</span> <span class="pre">*</span> <span class="pre">in.position</span></code> gives the <strong>world</strong> coordinates of the points, telling where it is relatively to a global static frame.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">viewMatrix</span> <span class="pre">*</span> <span class="pre">modelMatrix</span> <span class="pre">*</span> <span class="pre">in.position</span></code> gives the <strong>camera</strong> coordinates, or <strong>view</strong> coordinates. This is the coordinates of the point as seen from the camera. You can think of it as if instead of moving the eye, we actually move and rotate the whole scene in the opposite direction.</p></li>
+<li><p>And finally multiplying by <code class="docutils literal notranslate"><span class="pre">projectionMatrix</span></code> applies the projection, either orthographic or perspective, to give us <strong>clip</strong> coordinates.</p></li>
+<li><p>Afterwards, the fixed pipeline divides the clip coordinates by its <span class="math notranslate nohighlight">\(w\)</span>, which gives the <strong>NDC</strong> (normalized device coordinates).</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In order to alleviate notations I omitted above the fact that we actually use the homogeneous coordinates <code class="docutils literal notranslate"><span class="pre">vec3&lt;f32&gt;(in.position,</span> <span class="pre">1.0)</span></code> as the input of the transform.</p>
+</div>
+</section>
+<section id="precomputing">
+<h3>Precomputing<a class="headerlink" href="projection-matrices.html#precomputing" title="Permalink to this heading">#</a></h3>
+<p>For now the content of the matrices is <strong>precomputed on the CPU</strong> and then uploaded, but this could also be done in a compute shader, as we will see in <a class="reference internal" href="../../basic-compute/index.html"><span class="std std-doc">the compute part</span></a> of this documentation.</p>
+<p>Make sure to lift the device limit on the uniform buffer size, and define a value for the matrices:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxUniformBufferBindingSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Upload</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">initial</span><span class="w"> </span><span class="c1">value</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">uniforms</span>
+<span class="n">MyUniforms</span><span class="w"> </span><span class="n">uniforms</span><span class="p">;</span>
+<span class="n">uniforms</span><span class="p">.</span><span class="n">projectionMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="cm">/*</span><span class="w"> </span><span class="cm">...</span><span class="w"> </span><span class="cm">*/</span><span class="p">;</span>
+<span class="n">uniforms</span><span class="p">.</span><span class="n">viewMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="cm">/*</span><span class="w"> </span><span class="cm">...</span><span class="w"> </span><span class="cm">*/</span><span class="p">;</span>
+<span class="n">uniforms</span><span class="p">.</span><span class="n">modelMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="cm">/*</span><span class="w"> </span><span class="cm">...</span><span class="w"> </span><span class="cm">*/</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Remember that we added a <code class="docutils literal notranslate"><span class="pre">transpose</span></code> operation all the time. Make sure to flip the coefficient along the matrices compared to our definitions above.</p>
+</div>
+<blockquote>
+<div><p>😒 Ahem this is a bit annoying, couldn’t we rather define this <code class="docutils literal notranslate"><span class="pre">transpose</span></code> operation? What about the matrix multiplication?</p>
+</div></blockquote>
+<p>Yes we could, or we could even reuse what has already been done! Which leads us to the GLM library.</p>
+</section>
+<section id="glm">
+<h3>GLM<a class="headerlink" href="projection-matrices.html#glm" title="Permalink to this heading">#</a></h3>
+<p>The <a class="reference external" href="https://github.com/g-truc/glm">GLM</a> library reproduces the matrix/vector types and operations that are available in shaders, so that we can <strong>easily port code</strong> between C++ and shaders.</p>
+<p>It was originally designed to be as close as possible to the GLSL syntax, which is close in features to WGSL (although type names are slightly different). It is widely used, supported on multiple platforms, battlefield-tested, header-only (so easy to integrate).</p>
+<section id="integration">
+<h4>Integration<a class="headerlink" href="projection-matrices.html#integration" title="Permalink to this heading">#</a></h4>
+<p>Here is a stripped down version of GLM: <a class="reference download internal" download="" href="../../_downloads/15a988a54e6f4202cb0f78ff80cea69d/glm-0.9.9.8-light.zip"><span class="xref download myst">glm.zip</span></a> (392 KB, as opposed to the 5.5 MB of the official release). Unzip this directly into your source tree. You can include it as follows:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;glm/glm.hpp&gt;</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">all</span><span class="w"> </span><span class="c1">types</span><span class="w"> </span><span class="c1">inspired</span><span class="w"> </span><span class="c1">from</span><span class="w"> </span><span class="c1">GLSL</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Make sure to add the main source directory to the include path in your <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>, as some compiler require it to use the <code class="docutils literal notranslate"><span class="pre">&lt;...&gt;</span></code> brackets in include directives:</p>
+<div class="highlight-CMake notranslate"><div class="highlight"><pre><span></span><span class="nb">target_include_directories</span><span class="p">(</span><span class="s">App</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">.</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="basic-usage">
+<h4>Basic usage<a class="headerlink" href="projection-matrices.html#basic-usage" title="Permalink to this heading">#</a></h4>
+<p>Everything GLM defines is contained in the <code class="docutils literal notranslate"><span class="pre">glm</span></code> namespace. You can either use it globally with a <code class="docutils literal notranslate"><span class="pre">using</span> <span class="pre">namespace</span> <span class="pre">glm;</span></code> or import individual types:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">mat4x4</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">vec4</span><span class="p">;</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">MyUniforms</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">mat4x4</span><span class="w"> </span><span class="n">projectionMatrix</span><span class="p">;</span>
+<span class="w">    </span><span class="n">mat4x4</span><span class="w"> </span><span class="n">viewMatrix</span><span class="p">;</span>
+<span class="w">    </span><span class="n">mat4x4</span><span class="w"> </span><span class="n">modelMatrix</span><span class="p">;</span>
+<span class="w">    </span><span class="n">vec4</span><span class="w"> </span><span class="n">color</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">time</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">_pad</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">mat4x4</span></code> type of GLM corresponds to WGSL’s <code class="docutils literal notranslate"><span class="pre">mat4x4&lt;f32&gt;</span></code>. The equivalent of <code class="docutils literal notranslate"><span class="pre">mat4x4&lt;f64&gt;</span></code> is <code class="docutils literal notranslate"><span class="pre">dmat4x4</span></code>, with the prefix <code class="docutils literal notranslate"><span class="pre">d</span></code> for <code class="docutils literal notranslate"><span class="pre">double</span></code>. It also has an alias called <code class="docutils literal notranslate"><span class="pre">mat4</span></code> to correspond to GLSL, which you might like as it is less characters to type. The same goes for vectors (<code class="docutils literal notranslate"><span class="pre">vec3</span></code> is <code class="docutils literal notranslate"><span class="pre">vec3&lt;f32&gt;</span></code>) for integers (<code class="docutils literal notranslate"><span class="pre">ivec2</span></code> is WGLS’s <code class="docutils literal notranslate"><span class="pre">vec2&lt;i32&gt;</span></code>), etc.</p>
+</div>
+<p>It is thus easy to reproduce what we were doing in WGSL. Let’s start with the <strong>model</strong> transform:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="k">constexpr</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">PI</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.14159265358979323846f</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Scale</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">object</span>
+<span class="n">mat4x4</span><span class="w"> </span><span class="n">S</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transpose</span><span class="p">(</span><span class="n">mat4x4</span><span class="p">(</span>
+<span class="w">    </span><span class="mf">0.3</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.3</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span>
+<span class="p">));</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Translate</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">object</span>
+<span class="n">mat4x4</span><span class="w"> </span><span class="n">T1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transpose</span><span class="p">(</span><span class="n">mat4x4</span><span class="p">(</span>
+<span class="w">    </span><span class="mf">1.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span>
+<span class="p">));</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Rotate</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">object</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">angle1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">glfwGetTime</span><span class="p">();</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">c1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">angle1</span><span class="p">);</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">angle1</span><span class="p">);</span>
+<span class="n">mat4x4</span><span class="w"> </span><span class="n">R1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transpose</span><span class="p">(</span><span class="n">mat4x4</span><span class="p">(</span>
+<span class="w">     </span><span class="n">c1</span><span class="p">,</span><span class="w">  </span><span class="n">s1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="o">-</span><span class="n">s1</span><span class="p">,</span><span class="w">  </span><span class="n">c1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span>
+<span class="p">));</span>
+
+<span class="n">uniforms</span><span class="p">.</span><span class="n">modelMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">T1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">S</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Then comes the <strong>view</strong> transform. Do not forget to include the translation of the focal point (which we did not represent as a matrix product above but the conversion is straightforward):</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Translate</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">view</span>
+<span class="n">vec3</span><span class="w"> </span><span class="nf">focalPoint</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">-2.0</span><span class="p">);</span>
+<span class="n">mat4x4</span><span class="w"> </span><span class="n">T2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transpose</span><span class="p">(</span><span class="n">mat4x4</span><span class="p">(</span>
+<span class="w">    </span><span class="mf">1.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">focalPoint</span><span class="p">.</span><span class="n">x</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">focalPoint</span><span class="p">.</span><span class="n">y</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="n">focalPoint</span><span class="p">.</span><span class="n">z</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w">     </span><span class="mf">1.0</span>
+<span class="p">));</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Rotate</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">view</span><span class="w"> </span><span class="c1">point</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">angle2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">PI</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">4.0</span><span class="p">;</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">c2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">angle2</span><span class="p">);</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">angle2</span><span class="p">);</span>
+<span class="n">mat4x4</span><span class="w"> </span><span class="n">R2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transpose</span><span class="p">(</span><span class="n">mat4x4</span><span class="p">(</span>
+<span class="w">    </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w">  </span><span class="n">c2</span><span class="p">,</span><span class="w">  </span><span class="n">s2</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">s2</span><span class="p">,</span><span class="w">  </span><span class="n">c2</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span>
+<span class="p">));</span>
+
+<span class="n">uniforms</span><span class="p">.</span><span class="n">viewMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">R2</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>And finally the projection:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span><span class="w"> </span><span class="n">ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">640.0f</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">480.0f</span><span class="p">;</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">focalLength</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">near</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.01f</span><span class="p">;</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">far</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">100.0f</span><span class="p">;</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">divider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">focalLength</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">far</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">near</span><span class="p">));</span>
+<span class="n">uniforms</span><span class="p">.</span><span class="n">projectionMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">transpose</span><span class="p">(</span><span class="n">mat4x4</span><span class="p">(</span>
+<span class="w">    </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">ratio</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">far</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">divider</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">far</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">near</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">divider</span><span class="p">,</span>
+<span class="w">    </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">focalLength</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="p">));</span>
+</pre></div>
+</div>
+<p>The vertex shader simply becomes:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">vs_main</span><span class="p">(</span><span class="k">in</span>:<span class="w"> </span><span class="nc">VertexInput</span><span class="p">)</span><span class="w"> </span>-&gt;<span class="w"> </span><span class="nc">VertexOutput</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">var</span><span class="w"> </span><span class="n">out</span>:<span class="w"> </span><span class="nc">VertexOutput</span><span class="p">;</span>
+<span class="w">    </span><span class="n">out</span><span class="p">.</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uMyUniforms</span><span class="p">.</span><span class="n">projectionMatrix</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">uMyUniforms</span><span class="p">.</span><span class="n">viewMatrix</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">uMyUniforms</span><span class="p">.</span><span class="n">modelMatrix</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">out</span><span class="p">.</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">in</span><span class="p">.</span><span class="n">color</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">out</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>I am not putting the image again, you should still obtain the same result. Only this time it is <strong>much less energy consuming</strong> since matrices are computed only once, instead of once per vertex and per frame (which can easily count in millions or more in a practical scenario).</p>
+</section>
+<section id="extensions">
+<h4>Extensions<a class="headerlink" href="projection-matrices.html#extensions" title="Permalink to this heading">#</a></h4>
+<p>The construction of <strong>atomic matrices</strong> like translations, rotations, scaling or perspective is something that is very common. Yet it is not part of the built-in functions of WGSL because, as we just saw, we are not supposed to do it in the shader code.</p>
+<p>Since GLM intends to reproduce the types of the shader languages, it does not include those neither. At least not in the <code class="docutils literal notranslate"><span class="pre">glm/glm.hpp</span></code>. But it does in its <strong>extensions</strong>, which we can include like this:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;glm/ext.hpp&gt;</span>
+</pre></div>
+</div>
+<p>The construction of the model and view matrices becomes as simple as this:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">S</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">scale</span><span class="p">(</span><span class="n">mat4x4</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="n">vec3</span><span class="p">(</span><span class="mf">0.3f</span><span class="p">));</span>
+<span class="n">T1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="n">mat4x4</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="n">vec3</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span>
+<span class="n">R1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">rotate</span><span class="p">(</span><span class="n">mat4x4</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="n">angle1</span><span class="p">,</span><span class="w"> </span><span class="n">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">));</span>
+<span class="n">uniforms</span><span class="p">.</span><span class="n">modelMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">T1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">S</span><span class="p">;</span>
+
+<span class="n">R2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">rotate</span><span class="p">(</span><span class="n">mat4x4</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="n">angle2</span><span class="p">,</span><span class="w"> </span><span class="n">vec3</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span>
+<span class="n">T2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="n">mat4x4</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="n">focalPoint</span><span class="p">);</span>
+<span class="n">uniforms</span><span class="p">.</span><span class="n">viewMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">R2</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Note that transformation functions provided by GLM all take an input matrix to transform, in order to spare us a matrix multiplication. Here we always use the <strong>identity</strong> matrix <code class="docutils literal notranslate"><span class="pre">mat4x4(1.0)</span></code> to build atomic transforms, but the model matrix above could have also been built this way:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">mat4x4</span><span class="w"> </span><span class="nf">M</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span>
+<span class="n">M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">rotate</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">angle1</span><span class="p">,</span><span class="w"> </span><span class="n">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">));</span>
+<span class="n">M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">vec3</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">));</span>
+<span class="n">M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">scale</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">vec3</span><span class="p">(</span><span class="mf">0.3f</span><span class="p">));</span>
+<span class="n">uniforms</span><span class="p">.</span><span class="n">modelMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">M</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>I personally find it harder to read though, because we must apply the operations in reverse.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">rotate</span></code> function enables one to turn around any axis (the second argument) instead of being limited to the X, Y and Z axes like we did when manually building rotation matrices.</p>
+</div>
+<p>GLM extensions also provide a procedure for building <strong>projection matrices</strong>, and in particular a perspective projection:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span><span class="w"> </span><span class="n">near</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.001f</span><span class="p">;</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">far</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">100.0f</span><span class="p">;</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">640.0f</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">480.0f</span><span class="p">;</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">fov</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">???</span><span class="p">;</span>
+<span class="n">uniforms</span><span class="p">.</span><span class="n">projectionMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">perspective</span><span class="p">(</span><span class="n">fov</span><span class="p">,</span><span class="w"> </span><span class="n">ratio</span><span class="p">,</span><span class="w"> </span><span class="n">near</span><span class="p">,</span><span class="w"> </span><span class="n">far</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>It has almost the same parameters as we used, except that instead of a <strong>focal length</strong>, it uses a <strong>field of view</strong> argument, a.k.a. <strong>fov</strong>.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>There are actually two <em>hidden</em> settings that the <code class="docutils literal notranslate"><span class="pre">perspective</span></code> function depends on and which we <strong>must take care of</strong>. Both of these settings are enabled globally by defining preprocessor variables before including GLM:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#define</span><span class="w"> </span><span class="cp">GLM_FORCE_DEPTH_ZERO_TO_ONE</span>
+<span class="cp">#define</span><span class="w"> </span><span class="cp">GLM_FORCE_LEFT_HANDED</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;glm/ext.hpp&gt;</span>
+</pre></div>
+</div>
+<p>The first one is <code class="docutils literal notranslate"><span class="pre">GLM_FORCE_DEPTH_ZERO_TO_ONE</span></code>, which tells GLM that the clip volume’s Z range is <span class="math notranslate nohighlight">\((0,1)\)</span>. By default, it assumes that it is <span class="math notranslate nohighlight">\((-1,1)\)</span> because this is the convention that was used by OpenGL, which is different from WebGPU.</p>
+<p>The second one is the <code class="docutils literal notranslate"><span class="pre">GLM_FORCE_LEFT_HANDED</span></code> to mean that our view space uses a <strong>left-handed coordinate system</strong>. This is the choice that we have implicitly adopted so far because the clip space is left-handed. Switching to a right-handed system is possible, in which case be aware that the camera looks in the direction -Z of the view space instead of +Z.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You may also define these settings globally in your <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> with <code class="docutils literal notranslate"><span class="pre">target_compile_definition</span></code> in order to ensure that they are consistent across all of your files.</p>
+</div>
+<p>Back to the field of view: it is directly related to the focal length:</p>
+<img alt="../../_images/fov-light.svg" class="only-light align-center" src="../../_images/fov-light.svg" /><img alt="../../_images/fov-dark.svg" class="only-dark align-center" src="../../_images/fov-dark.svg" /><p>We can see from this figure that <span class="math notranslate nohighlight">\(\tan\frac{\alpha}{2} = \frac{1}{l}\)</span>, which gives us the following <strong>conversion rules</strong> between focal length and field of view:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+l &amp; = \frac{1}{\tan(\alpha/2)} = \cot\frac{\alpha}{2} \\
+\alpha &amp; = 2 \arctan\frac{1}{l}
+\end{align}
+\end{split}\]</div>
+</div>
+<p>Most probably you will use either fov or focal length and stick to it so there will be no need for conversion! We can still check that our formula gives again the same result:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span><span class="w"> </span><span class="n">fov</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">atan</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">focalLength</span><span class="p">);</span>
+<span class="n">uniforms</span><span class="p">.</span><span class="n">projectionMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">perspective</span><span class="p">(</span><span class="n">fov</span><span class="p">,</span><span class="w"> </span><span class="n">ratio</span><span class="p">,</span><span class="w"> </span><span class="n">near</span><span class="p">,</span><span class="w"> </span><span class="n">far</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>The field of view expected by <code class="docutils literal notranslate"><span class="pre">glm::perspective</span></code> must be expressed in <strong>radians</strong>. If you want to set it to <span class="math notranslate nohighlight">\(45\deg\)</span> (which is a common value), you must set <code class="docutils literal notranslate"><span class="pre">fov</span> <span class="pre">=</span> <span class="pre">45</span> <span class="pre">*</span> <span class="pre">PI</span> <span class="pre">/</span> <span class="pre">180</span></code>.</p>
+</div>
+<figure class="align-center" id="id4">
+<img alt="../../_images/focal0.5.PNG" class="with-shadow" src="../../_images/focal0.5.PNG" />
+<figcaption>
+<p><span class="caption-text">Still looking the same… but we make our code base so much more robust!</span><a class="headerlink" href="projection-matrices.html#id4" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<blockquote>
+<div><p>😟 Hey it’s no longer turning around for me…</p>
+</div></blockquote>
+<p>You need to update the model matrix in the main loop!</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Update</span><span class="w"> </span><span class="c1">view</span><span class="w"> </span><span class="c1">matrix</span>
+<span class="n">angle1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uniforms</span><span class="p">.</span><span class="n">time</span><span class="p">;</span>
+<span class="n">R1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">rotate</span><span class="p">(</span><span class="n">mat4x4</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="n">angle1</span><span class="p">,</span><span class="w"> </span><span class="n">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">));</span>
+<span class="n">uniforms</span><span class="p">.</span><span class="n">modelMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">T1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">S</span><span class="p">;</span>
+<span class="n">queue</span><span class="p">.</span><span class="n">writeBuffer</span><span class="p">(</span><span class="n">uniformBuffer</span><span class="p">,</span><span class="w"> </span><span class="n">offsetof</span><span class="p">(</span><span class="n">MyUniforms</span><span class="p">,</span><span class="w"> </span><span class="n">modelMatrix</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">uniforms</span><span class="p">.</span><span class="n">modelMatrix</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">MyUniforms</span><span class="o">::</span><span class="n">modelMatrix</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Update</span><span class="w"> </span><span class="c1">view</span><span class="w"> </span><span class="c1">matrix</span>
+<span class="n">angle1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uniforms</span><span class="p">.</span><span class="n">time</span><span class="p">;</span>
+<span class="n">R1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">rotate</span><span class="p">(</span><span class="n">mat4x4</span><span class="p">(</span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="n">angle1</span><span class="p">,</span><span class="w"> </span><span class="n">vec3</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">));</span>
+<span class="n">uniforms</span><span class="p">.</span><span class="n">modelMatrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">T1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">S</span><span class="p">;</span>
+<span class="n">wgpuQueueWriteBuffer</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">uniformBuffer</span><span class="p">,</span><span class="w"> </span><span class="n">offsetof</span><span class="p">(</span><span class="n">MyUniforms</span><span class="p">,</span><span class="w"> </span><span class="n">modelMatrix</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">uniforms</span><span class="p">.</span><span class="n">modelMatrix</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">MyUniforms</span><span class="o">::</span><span class="n">modelMatrix</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+</div>
+<!--
+```{caution}
+For some reason the developers of the WebGPU standard [deemed the assignments to *swizzles* as "unnecessary"](https://github.com/gpuweb/gpuweb/issues/737), so we cannot compactly write `position.yz = ...`, we need to use this temporary `tmp` variable. I personally find this **very annoying**, and quite limiting for productivity, I hope they might change that eventually...
+```
+-->
+</section>
+</section>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="projection-matrices.html#conclusion" title="Permalink to this heading">#</a></h2>
+<p>In this quite mathematical chapter, we have seen fundamental points:</p>
+<ul class="simple">
+<li><p><strong>Projections</strong> (either orthographic or perspective) can be <strong>encoded as matrices</strong> thanks to the coordinate normalization performed by the fixed pipeline (the division by <span class="math notranslate nohighlight">\(w\)</span>).</p></li>
+<li><p>A <strong>perspective</strong> projection is parameterized either by a <strong>focal length</strong> or a <strong>field of view</strong>.</p></li>
+<li><p>Transform matrices (mode, view, projection) should be computed once and stored in a <strong>uniform buffer</strong> to avoid unnecessary costly computation.</p></li>
+<li><p>The GLM library provides us with all we need to easily compute these matrices on the CPU side.</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>The GLM library is focused on vector and matrices up to the 4th dimension. For linear algebra of higher dimensions, I usually turn to the <a class="reference external" href="https://eigen.tuxfamily.org">Eigen</a> library instead, but we won’t need it here.</p>
+</div>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step055"><code class="docutils literal notranslate"><span class="pre">step055</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step055-vanilla"><code class="docutils literal notranslate"><span class="pre">step055-vanilla</span></code></a></p>
+</div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="basic-shading.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Basic shading</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="transformation-matrices.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Transformation matrices</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022-2023, Élie Michel and contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/eliemichel/LearnWebGPU" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      <div class="toc-sticky toc-scroll">
+	<div class="toc-title-container">
+		<span class="toc-title">
+			On this page
+		</span>
+	</div>
+	<div class="toc-tree-container">
+		<div class="toc-tree">
+			<ul>
+<li><a class="reference internal" href="projection-matrices.html#">Projection matrices</a><ul>
+<li><a class="reference internal" href="projection-matrices.html#orthographic-projection">Orthographic projection</a></li>
+<li><a class="reference internal" href="projection-matrices.html#perspective-projection">Perspective projection</a><ul>
+<li><a class="reference internal" href="projection-matrices.html#focal-point">Focal point</a></li>
+<li><a class="reference internal" href="projection-matrices.html#focal-length">Focal length</a></li>
+<li><a class="reference internal" href="projection-matrices.html#perspective-matrix">Perspective matrix</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="projection-matrices.html#matrix-uniforms">Matrix Uniforms</a><ul>
+<li><a class="reference internal" href="projection-matrices.html#coordinate-systems">Coordinate systems</a></li>
+<li><a class="reference internal" href="projection-matrices.html#precomputing">Precomputing</a></li>
+<li><a class="reference internal" href="projection-matrices.html#glm">GLM</a><ul>
+<li><a class="reference internal" href="projection-matrices.html#integration">Integration</a></li>
+<li><a class="reference internal" href="projection-matrices.html#basic-usage">Basic usage</a></li>
+<li><a class="reference internal" href="projection-matrices.html#extensions">Extensions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="projection-matrices.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+		</div>
+	</div>
+	
+</div>
+    </aside>
+  </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/sphinx_literate.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

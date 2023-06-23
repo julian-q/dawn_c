@@ -1,0 +1,739 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content="Hello WebGPU" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://eliemichel.github.io/getting-started/hello-webgpu.html" />
+<meta property="og:site_name" content="Learn WebGPU for C++" />
+<meta property="og:description" content="Resulting code: step005 For your C++ code, WebGPU is nothing more than a single header file listing all the available procedures and data structures: webgpu.h. When building the program though, you..." />
+<meta property="og:image" content="https://eliemichel.github.io/images/webgpu-responsive.svg" />
+<meta property="og:image:alt" content="Learn WebGPU for C++" />
+<meta name="description" content="Resulting code: step005 For your C++ code, WebGPU is nothing more than a single header file listing all the available procedures and data structures: webgpu.h. When building the program though, you..." />
+    <link rel="icon" type="image/svg+xml" href="../_static/favicon/favicon.svg">
+    <link rel="icon" sizes="16x16" href="../_static/favicon/favicon-16x16.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="../_static/favicon/favicon-32x32.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://eliemichel.github.io/LearnWebGPU/_static/favicon/apple-touch-icon-180x180.png" type="image/png"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="The Adapter" href="the-adapter.html" /><link rel="prev" title="Opening a window" href="opening-a-window.html" />
+
+    <!-- Generated with Sphinx 5.3.0 and Furo 2023.03.27 -->
+        <title>Hello WebGPU - Learn WebGPU for C++ documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_literate.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  --color-brand-primary: #ac2800;
+  --color-brand-content: #007cac;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     <em>Important</em> This documentation is a work in progress! <a href="../appendices/feedback-needed.html">Feedback needed!</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Learn WebGPU for C++  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/webgpu-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/webgpu-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Getting Started</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="project-setup.html">Project setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="opening-a-window.html">Opening a window</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="hello-webgpu.html#">Hello WebGPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="the-adapter.html">The Adapter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="the-device.html">The Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="the-command-queue.html">The Command Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="first-color.html">First Color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpp-idioms.html">C++ wrapper</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../basic-3d-rendering/index.html">Basic 3D Rendering</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../basic-3d-rendering/hello-triangle.html">Hello Triangle</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/input-geometry/index.html">Input Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/playing-with-buffers.html">Playing with buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/a-first-vertex-attribute.html">A first Vertex Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/multiple-attributes.html">Multiple Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/index-buffer.html">Index Buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/shader-uniforms/index.html">Shader Uniforms</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/shader-uniforms/a-first-uniform.html">A first uniform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/shader-uniforms/multiple-uniforms.html">More uniforms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/shader-uniforms/dynamic-uniforms.html">Dynamic uniforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/index.html">3D Meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/a-simple-example.html">A simple example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/depth-buffer.html">Depth buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/transformation-matrices.html">Transformation matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/projection-matrices.html">Projection matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/basic-shading.html">Basic shading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/texturing/index.html">Texturing</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/texturing/a-first-texture.html">A first texture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/texturing/texture-mapping.html">Texture mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/texturing/sampler.html">Sampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/texturing/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/some-interaction/index.html">Some interaction</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/some-interaction/refactoring.html">Refactoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/some-interaction/resizing-window.html">Resizing the window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/some-interaction/camera-control.html">Camera control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/some-interaction/simple-gui.html">Simple GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/index.html">Lighting and Material</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/recap.html">Recap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/specular.html">Specularity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/normal-mapping.html">Normal mapping (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/ibl.html">Image-Based Lighting (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/cubemap.html">Cube Maps (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/pbr.html">Physically-Based Materials (🚧WIP)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../basic-compute/index.html">Basic Compute</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../basic-compute/compute-pipeline.html">Compute Pipeline</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-compute/image-processing/index.html">Image Processing</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/image-processing/mipmap-generation.html">Mipmap Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/image-processing/convolution-filters.html">Convolution Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/image-processing/cubemap-conversion.html">Cubemap Conversion (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/image-processing/cubemap-prefiltering.html">Cubemap Prefiltering (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-compute/procedural-geometry/index.html">Procedural Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/procedural-geometry/deformation.html">Deformation (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../basic-compute/neural-networks.html">Neural Networks (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../advanced-techniques/index.html">Advanced Techniques</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/raii.html">RAII</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/hdr-textures.html">High Dynamic Range Textures (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/deferred-shading.html">Deferred Shading (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/benchmarking.html">Benchmarking (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/render-bundles.html">Render Bundles (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/multi-sampling.html">Multi-Sampling (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/scene-tree.html">Scene tree (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/screen-capture.html">Screen capture (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/shadow-maps.html">Shadow maps (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/tesselation.html">Tesselation (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/raytracing.html">Raytracing (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../appendices/index.html">Appendices</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/teaching-native-graphics-in-2023.html">Teaching native graphics in 2023</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/feedback-needed.html">Feedback needed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/debugging.html">Debugging (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/building-for-the-web.html">Building for the Web (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/memory-model.html">Memory Model (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/custom-extensions.html">Custom Extensions (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/references.html">References (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/tmp.html">Temporary page</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="hello-webgpu.html#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/eliemichel/LearnWebGPU/edit/main/./getting-started/hello-webgpu.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="hello-webgpu">
+<h1>Hello WebGPU<a class="headerlink" href="hello-webgpu.html#hello-webgpu" title="Permalink to this heading">#</a></h1>
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step005"><code class="docutils literal notranslate"><span class="pre">step005</span></code></a></p>
+<p>For your C++ code, WebGPU is nothing more than a single header file listing all the available procedures and data structures: <a class="reference external" href="https://github.com/webgpu-native/webgpu-headers/blob/main/webgpu.h"><code class="docutils literal notranslate"><span class="pre">webgpu.h</span></code></a>. When building the program though, your compiler must know in the end (at the final <em>linking</em> step) where to find the actual implementation of these functions.</p>
+<figure class="align-center" id="id1">
+<img alt="../_images/rhi-vs-opengl.png" src="../_images/rhi-vs-opengl.png" />
+<figcaption>
+<p><span class="caption-text">A <em>Render Hardware Interface</em> (RHI) like WebGPU is not directly provided by the drivers: we need to link to a library that implements the API on top of the low-level one that the system supports.</span><a class="headerlink" href="hello-webgpu.html#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="installing-webgpu">
+<h2>Installing WebGPU<a class="headerlink" href="hello-webgpu.html#installing-webgpu" title="Permalink to this heading">#</a></h2>
+<p>There exists mostly two implementations of the WebGPU native header:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/gfx-rs/wgpu-native">wgpu-native</a>, exposing a native interface to the <a class="reference external" href="https://github.com/gfx-rs/wgpu"><code class="docutils literal notranslate"><span class="pre">wgpu</span></code></a> Rust library developed for Firefox.</p></li>
+<li><p>Google’s <a class="reference external" href="https://dawn.googlesource.com/dawn">Dawn</a>, developed for Chrome.</p></li>
+</ul>
+<figure class="align-center" id="id2">
+<img alt="../_images/different-backend.png" src="../_images/different-backend.png" />
+<figcaption>
+<p><span class="caption-text">There are (at least) two implementations of WebGPU, developed for the two main web engines.</span><a class="headerlink" href="hello-webgpu.html#id2" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>These two implementations still have <strong>some discrepancies</strong>, but they will disappear as the WebGPU specification gets stable. I try to write this guide such that it <strong>works for both</strong> of them.</p>
+<p>To make the integration of either of these in a CMake project as easy as with GLFW and without too many extra dependencies, I share a <a class="reference external" href="https://github.com/eliemichel/WebGPU-distribution">WebGPU-distribution</a> repository that lets you chose one of the following options:</p>
+<section id="option-a-the-lightness-of-wgpu-native">
+<h3>Option A: The lightness of wgpu-native<a class="headerlink" href="hello-webgpu.html#option-a-the-lightness-of-wgpu-native" title="Permalink to this heading">#</a></h3>
+<p>Since <code class="docutils literal notranslate"><span class="pre">wgpu-native</span></code> is written in rust, we cannot easily build it from scratch so the distribution includes pre-compiled libraries:</p>
+<ul class="simple">
+<li><p><a class="reference download internal" download="" href="../_downloads/688213060139b26a0a1021bac6b82a17/wgpu-native-for-linux.zip"><span class="xref download myst">wgpu-native for Linux</span></a></p></li>
+<li><p><a class="reference download internal" download="" href="../_downloads/b79f9df1412da1bb23c96ce15b9b8fe1/wgpu-native-for-windows.zip"><span class="xref download myst">wgpu-native for Windows</span></a></p></li>
+<li><p><a class="reference download internal" download="" href="../_downloads/a892611ebd1e8da2308449bb3c5a7fa2/wgpu-native-for-macos.zip"><span class="xref download myst">wgpu-native for MacOS</span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/eliemichel/WebGPU-distribution/archive/refs/heads/wgpu.zip">wgpu-native for any platform</a> (a bit heavier as it’s a merge of all the above basically)</p></li>
+</ul>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><strong>WIP:</strong> Use the “any platform” link rather than the platform-specific ones, I haven’t automated their generation yet so they are usually behind the main one.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The pre-compiled binaries are provided by the <code class="docutils literal notranslate"><span class="pre">wgpu-native</span></code> project itself so you can likely trust them. The only thing my distribution adds is a <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> that makes it easy to integrate.</p>
+</div>
+<p><strong>Pros</strong></p>
+<ul class="simple">
+<li><p>This is the most lightweight to build with.</p></li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul class="simple">
+<li><p>You do not build from source.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wgpu-native</span></code> does not give as informative debug information as Dawn.</p></li>
+</ul>
+</section>
+<section id="option-b-the-comfort-of-dawn">
+<h3>Option B: The comfort of Dawn<a class="headerlink" href="hello-webgpu.html#option-b-the-comfort-of-dawn" title="Permalink to this heading">#</a></h3>
+<p>Dawn gives much better error messages, and since it is written in C++ we can build it from source and thus inspect more deeply the stack trace in case of crash:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/eliemichel/WebGPU-distribution/archive/refs/heads/dawn.zip">Dawn for any platform</a></p></li>
+</ul>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><strong>WIP:</strong> The first steps of this guide were more intensively tested with <code class="docutils literal notranslate"><span class="pre">wgpu-native</span></code>. Some later parts were tested with both and I tried to includes notes about the differences but for now I recommend using <code class="docutils literal notranslate"><span class="pre">wgpu-native</span></code> at least at the beginning.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Dawn-based distribution I provide here fetches the source code of Dawn from its original repository, but builds it without the need for extra dependencies (I include a script that replaces them basically) and by pre-setting some options to avoid building parts that we do not use.</p>
+</div>
+<p><strong>Pros</strong></p>
+<ul class="simple">
+<li><p>Dawn is much more comfortable to develop with, because it gives more detailed error messages</p></li>
+<li><p>It is in general ahead of <code class="docutils literal notranslate"><span class="pre">wgpu-native</span></code> regarding the progress of implementation (but <code class="docutils literal notranslate"><span class="pre">wgpu-native</span></code> will catch up eventually).</p></li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul class="simple">
+<li><p>Although I reduced the need for extra dependencies, you still need to <a class="reference external" href="https://www.python.org/">install Python</a> and <a class="reference external" href="https://git-scm.com/download">git</a>.</p></li>
+<li><p>The distribution fetches Dawn’s source code and its dependencies so the first time you build you need an <strong>Internet connection</strong>.</p></li>
+<li><p>The initial build takes significantly longer, and occupies more disk space overall.</p></li>
+</ul>
+</section>
+<section id="integration">
+<h3>Integration<a class="headerlink" href="hello-webgpu.html#integration" title="Permalink to this heading">#</a></h3>
+<p>Whichever distribution you choose, the integration is the same:</p>
+<ol class="arabic simple">
+<li><p>Download the zip of your choice.</p></li>
+<li><p>Unzip it at the root of the project, there should be a <code class="docutils literal notranslate"><span class="pre">webgpu/</span></code> directory containing a <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> file and some other (.dll or .so).</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">add_subdirectory(webgpu)</span></code> in your <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>.</p></li>
+</ol>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-0">
+<div class="highlight-CMake notranslate"><div class="highlight"><pre><span></span><span class="c">#</span><span class="w"> </span><span class="c">Include</span><span class="w"> </span><span class="c">webgpu</span><span class="w"> </span><span class="c">directory,</span><span class="w"> </span><span class="c">to</span><span class="w"> </span><span class="c">define</span><span class="w"> </span><span class="c">the</span><span class="w"> </span><span class="c">&#39;webgpu&#39;</span><span class="w"> </span><span class="c">target</span>
+<span class="nb">add_subdirectory</span><span class="p">(</span><span class="s">webgpu</span><span class="p">)</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Dependency subdirectories&quot;, &quot;permalink&quot;: &quot;#lit-0&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [{&quot;name&quot;: &quot;Dependency subdirectories&quot;, &quot;url&quot;: &quot;opening-a-window.html#lit-0&quot;, &quot;details&quot;: null}], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: []}"></lit-block-info></div>
+<ol class="arabic simple" start="4">
+<li><p>Add the <code class="docutils literal notranslate"><span class="pre">webgpu</span></code> target as a dependency of our app, after GLFW in the <code class="docutils literal notranslate"><span class="pre">target_link_libraries</span></code> command.</p></li>
+</ol>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-1">
+<div class="highlight-CMake notranslate"><div class="highlight"><pre><span></span><span class="c">#</span><span class="w"> </span><span class="c">Add</span><span class="w"> </span><span class="c">the</span><span class="w"> </span><span class="c">&#39;webgpu&#39;</span><span class="w"> </span><span class="c">target</span><span class="w"> </span><span class="c">as</span><span class="w"> </span><span class="c">a</span><span class="w"> </span><span class="c">dependency</span><span class="w"> </span><span class="c">of</span><span class="w"> </span><span class="c">our</span><span class="w"> </span><span class="c">App</span>
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">App</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">glfw</span><span class="w"> </span><span class="s">webgpu</span><span class="p">)</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Link libraries&quot;, &quot;permalink&quot;: &quot;#lit-1&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [{&quot;name&quot;: &quot;Link libraries&quot;, &quot;url&quot;: &quot;#lit-2&quot;, &quot;details&quot;: null}], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [{&quot;name&quot;: &quot;Link libraries&quot;, &quot;url&quot;: &quot;opening-a-window.html#lit-1&quot;, &quot;details&quot;: null}], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: []}"></lit-block-info></div>
+<p>One additional step when using pre-compiled binaries: call the function <code class="docutils literal notranslate"><span class="pre">target_copy_webgpu_binaries(App)</span></code> at the end of <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>, this makes sure that the .dll/.so file that your binary depends on at runtime is copied next to it. Whenever you distribute your application, make sure to also distribute this dynamic library file as well.</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-2">
+<div class="highlight-CMake notranslate"><div class="highlight"><pre><span></span><span class="c">#</span><span class="w"> </span><span class="c">The</span><span class="w"> </span><span class="c">application&#39;s</span><span class="w"> </span><span class="c">binary</span><span class="w"> </span><span class="c">must</span><span class="w"> </span><span class="c">find</span><span class="w"> </span><span class="c">wgpu.dll</span><span class="w"> </span><span class="c">or</span><span class="w"> </span><span class="c">libwgpu.so</span><span class="w"> </span><span class="c">at</span><span class="w"> </span><span class="c">runtime,</span>
+<span class="c">#</span><span class="w"> </span><span class="c">so</span><span class="w"> </span><span class="c">we</span><span class="w"> </span><span class="c">automatically</span><span class="w"> </span><span class="c">copy</span><span class="w"> </span><span class="c">it</span><span class="w"> </span><span class="c">(it&#39;s</span><span class="w"> </span><span class="c">called</span><span class="w"> </span><span class="c">WGPU_RUNTIME_LIB</span><span class="w"> </span><span class="c">in</span><span class="w"> </span><span class="c">general)</span>
+<span class="c">#</span><span class="w"> </span><span class="c">next</span><span class="w"> </span><span class="c">to</span><span class="w"> </span><span class="c">the</span><span class="w"> </span><span class="c">binary.</span>
+<span class="nb">target_copy_webgpu_binaries</span><span class="p">(</span><span class="s">App</span><span class="p">)</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Link libraries&quot;, &quot;permalink&quot;: &quot;#lit-2&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [{&quot;name&quot;: &quot;Link libraries&quot;, &quot;url&quot;: &quot;#lit-1&quot;, &quot;details&quot;: null}], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: []}"></lit-block-info></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the case of Dawn, there is no precompiled binaries to copy but I define the <code class="docutils literal notranslate"><span class="pre">target_copy_webgpu_binaries</span></code> function anyway (it does nothing) so that you can really use the same CMakeLists with both distributions.</p>
+</div>
+</section>
+<section id="option-c-the-flexibility-of-both">
+<h3>Option C: The flexibility of both<a class="headerlink" href="hello-webgpu.html#option-c-the-flexibility-of-both" title="Permalink to this heading">#</a></h3>
+<p>Bonus option that I use in the accompanying code that enables to decide on one distribution or the other upon calling <code class="docutils literal notranslate"><span class="pre">cmake</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span> <span class="o">-</span><span class="n">B</span> <span class="n">build</span> <span class="o">-</span><span class="n">DWEBGPU_BACKEND</span><span class="o">=</span><span class="n">WGPU</span>
+<span class="c1"># or</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">B</span> <span class="n">build</span> <span class="o">-</span><span class="n">DWEBGPU_BACKEND</span><span class="o">=</span><span class="n">DAWN</span>
+</pre></div>
+</div>
+<p>This is given by the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch of my distribution repository:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/eliemichel/WebGPU-distribution/archive/refs/heads/main.zip">WebGPU any distribution</a></p></li>
+</ul>
+<p><strong>Pros</strong></p>
+<ul class="simple">
+<li><p>You can have two <code class="docutils literal notranslate"><span class="pre">build</span></code> at the same time, one that uses Dawn and one that uses <code class="docutils literal notranslate"><span class="pre">wgpu-native</span></code></p></li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul class="simple">
+<li><p>This is a “meta-distribution” that fetches the one you want at configuration time (i.e., when calling <code class="docutils literal notranslate"><span class="pre">cmake</span></code> the first time) so you need an <strong>Internet connection</strong> and <strong>git</strong> at that time.</p></li>
+</ul>
+<p>And of course depending on your choice the pros and cons of <em>Option A</em> and <em>Option B</em> apply.</p>
+</section>
+</section>
+<section id="testing-the-installation">
+<h2>Testing the installation<a class="headerlink" href="hello-webgpu.html#testing-the-installation" title="Permalink to this heading">#</a></h2>
+<p>To test the implementation, we simply create the WebGPU <strong>instance</strong>, i.e., the equivalent of the <code class="docutils literal notranslate"><span class="pre">navigator.gpu</span></code> we could get in JavaScript. We then check it and destroy it.</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-3">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;webgpu/webgpu.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="n"><lit-ref name="Fix a wgpu-native/Dawn mismatch" href="#lit-6" lexer="C++" hidden-link="false">{{<a href="hello-webgpu.html#lit-6">Fix a wgpu-native/Dawn mismatch</a>}}</lit-ref></span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">**</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n"><lit-ref name="Create WebGPU instance" href="#lit-4" lexer="C++" hidden-link="false">{{<a href="hello-webgpu.html#lit-4">Create WebGPU instance</a>}}</lit-ref></span>
+
+<span class="w">    </span><span class="n"><lit-ref name="Check WebGPU instance" href="#lit-5" lexer="C++" hidden-link="false">{{<a href="hello-webgpu.html#lit-5">Check WebGPU instance</a>}}</lit-ref></span>
+
+<span class="w">    </span><span class="n"><lit-ref name="Destroy WebGPU instance" href="#lit-7" lexer="C++" hidden-link="false">{{<a href="hello-webgpu.html#lit-7">Destroy WebGPU instance</a>}}</lit-ref></span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;file: main.cpp&quot;, &quot;permalink&quot;: &quot;#lit-3&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: []}"></lit-block-info></div>
+<section id="descriptors-and-creation">
+<h3>Descriptors and Creation<a class="headerlink" href="hello-webgpu.html#descriptors-and-creation" title="Permalink to this heading">#</a></h3>
+<p>The instance is created using the <code class="docutils literal notranslate"><span class="pre">wgpuCreateInstance</span></code> function. Like all WebGPU functions meant to <strong>create</strong> an entity, it takes as argument a <strong>descriptor</strong>, which we can use to specify options regarding how to set up this object.</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-4">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">1.</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">create</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">descriptor</span>
+<span class="n">WGPUInstanceDescriptor</span><span class="w"> </span><span class="n">desc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<span class="n">desc</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">2.</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">create</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">instance</span><span class="w"> </span><span class="c1">using</span><span class="w"> </span><span class="c1">this</span><span class="w"> </span><span class="c1">descriptor</span>
+<span class="n">WGPUInstance</span><span class="w"> </span><span class="n">instance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuCreateInstance</span><span class="p">(</span><span class="o">&amp;</span><span class="n">desc</span><span class="p">);</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Create WebGPU instance&quot;, &quot;permalink&quot;: &quot;#lit-4&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;file: main.cpp&quot;, &quot;url&quot;: &quot;#lit-3&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The descriptor is a kind of way to pack many function arguments together, because some descriptors really have a lot of fields. It can also be used to write utility functions that take care of populating the arguments, to ease the program’s architecture.</p>
+</div>
+<p>We meet another WebGPU idiom in the <code class="docutils literal notranslate"><span class="pre">WGPUInstanceDescriptor</span></code> structure: the first field of a descriptor is always a pointer called <code class="docutils literal notranslate"><span class="pre">nextInChain</span></code>. This is a generic way for the API to enable custom extensions to be added in the future, or to return multiple entries of data. In a lot of cases, we set it to <code class="docutils literal notranslate"><span class="pre">nullptr</span></code>.</p>
+</section>
+<section id="check">
+<h3>Check<a class="headerlink" href="hello-webgpu.html#check" title="Permalink to this heading">#</a></h3>
+<p>A WebGPU entity created with a <code class="docutils literal notranslate"><span class="pre">wgpuCreateSomething</span></code> function is technically <strong>just a pointer</strong>. It is a blind handle that identifies the actual object, which lives on the backend side and to which we never need direct access.</p>
+<p>To check that an object is valid, we can just compare it with <code class="docutils literal notranslate"><span class="pre">nullptr</span></code>, or use the boolean operator:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-5">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">3.</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">can</span><span class="w"> </span><span class="c1">check</span><span class="w"> </span><span class="c1">whether</span><span class="w"> </span><span class="c1">there</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">actually</span><span class="w"> </span><span class="c1">an</span><span class="w"> </span><span class="c1">instance</span><span class="w"> </span><span class="c1">created</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">instance</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Could</span><span class="w"> </span><span class="s">not</span><span class="w"> </span><span class="s">initialize</span><span class="w"> </span><span class="s">WebGPU!&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">4.</span><span class="w"> </span><span class="c1">Display</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">object</span><span class="w"> </span><span class="c1">(WGPUInstance</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">simple</span><span class="w"> </span><span class="c1">pointer,</span><span class="w"> </span><span class="c1">it</span><span class="w"> </span><span class="c1">may</span><span class="w"> </span><span class="c1">be</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">copied</span><span class="w"> </span><span class="c1">around</span><span class="w"> </span><span class="c1">without</span><span class="w"> </span><span class="c1">worrying</span><span class="w"> </span><span class="c1">about</span><span class="w"> </span><span class="c1">its</span><span class="w"> </span><span class="c1">size).</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;WGPU</span><span class="w"> </span><span class="s">instance:</span><span class="w"> </span><span class="s">&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">instance</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Check WebGPU instance&quot;, &quot;permalink&quot;: &quot;#lit-5&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;file: main.cpp&quot;, &quot;url&quot;: &quot;#lit-3&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>This should display something like <code class="docutils literal notranslate"><span class="pre">WGPU</span> <span class="pre">instance:</span> <span class="pre">000001C0D2637720</span></code> at startup.</p>
+</section>
+<section id="destruction-and-lifetime-management">
+<h3>Destruction and lifetime management<a class="headerlink" href="hello-webgpu.html#destruction-and-lifetime-management" title="Permalink to this heading">#</a></h3>
+<p>The destruction of entities is a part of the API on which <code class="docutils literal notranslate"><span class="pre">wgpu-native</span></code> and Dawn <a class="reference external" href="https://github.com/webgpu-native/webgpu-headers/issues/9">do not agree yet</a>. The key difference is that Dawn provides a reference counting mechanism but <code class="docutils literal notranslate"><span class="pre">wgpu-native</span></code> does not:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">A.</span><span class="w"> </span><span class="c1">With</span><span class="w"> </span><span class="c1">wgpu-native</span>
+
+<span class="n">WGPUSomething</span><span class="w"> </span><span class="n">sth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuCreateSomething</span><span class="p">(</span><span class="cm">/*</span><span class="w"> </span><span class="cm">descriptor</span><span class="w"> </span><span class="cm">*/</span><span class="p">);</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">This</span><span class="w"> </span><span class="c1">means</span><span class="w"> </span><span class="c1">&quot;the</span><span class="w"> </span><span class="c1">object</span><span class="w"> </span><span class="c1">sth</span><span class="w"> </span><span class="c1">will</span><span class="w"> </span><span class="c1">never</span><span class="w"> </span><span class="c1">be</span><span class="w"> </span><span class="c1">used</span><span class="w"> </span><span class="c1">ever</span><span class="w"> </span><span class="c1">again&quot;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">destroys</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">object</span><span class="w"> </span><span class="c1">right</span><span class="w"> </span><span class="c1">away.</span>
+<span class="n">wgpuSomethingDrop</span><span class="p">(</span><span class="n">sth</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">B.</span><span class="w"> </span><span class="c1">With</span><span class="w"> </span><span class="c1">Dawn</span>
+
+<span class="n">WGPUSomething</span><span class="w"> </span><span class="n">sth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuCreateSomething</span><span class="p">(</span><span class="cm">/*</span><span class="w"> </span><span class="cm">descriptor</span><span class="w"> </span><span class="cm">*/</span><span class="p">);</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">This</span><span class="w"> </span><span class="c1">means</span><span class="w"> </span><span class="c1">&quot;increase</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">ref</span><span class="w"> </span><span class="c1">counter</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">object</span><span class="w"> </span><span class="c1">sth</span><span class="w"> </span><span class="c1">by</span><span class="w"> </span><span class="c1">1&quot;</span>
+<span class="n">wgpuSomethingReference</span><span class="p">(</span><span class="n">sth</span><span class="p">);</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">Now</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">reference</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">2</span><span class="w"> </span><span class="c1">(it</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">set</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">1</span><span class="w"> </span><span class="c1">at</span><span class="w"> </span><span class="c1">creation)</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">This</span><span class="w"> </span><span class="c1">means</span><span class="w"> </span><span class="c1">&quot;decrease</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">ref</span><span class="w"> </span><span class="c1">counter</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">object</span><span class="w"> </span><span class="c1">sth</span><span class="w"> </span><span class="c1">by</span><span class="w"> </span><span class="c1">1</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">if</span><span class="w"> </span><span class="c1">it</span><span class="w"> </span><span class="c1">gets</span><span class="w"> </span><span class="c1">down</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">0</span><span class="w"> </span><span class="c1">then</span><span class="w"> </span><span class="c1">destroy</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">object&quot;</span>
+<span class="n">wgpuSomethingRelease</span><span class="p">(</span><span class="n">sth</span><span class="p">);</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">Now</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">reference</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">back</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">1,</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">object</span><span class="w"> </span><span class="c1">can</span><span class="w"> </span><span class="c1">still</span><span class="w"> </span><span class="c1">be</span><span class="w"> </span><span class="c1">used</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Release</span><span class="w"> </span><span class="c1">again</span>
+<span class="n">wgpuSomethingRelease</span><span class="p">(</span><span class="n">sth</span><span class="p">);</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">Now</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">reference</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">down</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">0,</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">object</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">destroyed</span><span class="w"> </span><span class="c1">and</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">should</span><span class="w"> </span><span class="c1">no</span><span class="w"> </span><span class="c1">longer</span><span class="w"> </span><span class="c1">be</span><span class="w"> </span><span class="c1">used!</span>
+</pre></div>
+</div>
+<p>In practice <strong>as long as we never use</strong> <code class="docutils literal notranslate"><span class="pre">wgpuSomethingReference</span></code>, the behavior of wgpu-native’s <strong>Drop</strong> and Dawn’s <strong>Release</strong> is the same so we set up an alias:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-6">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifdef</span><span class="w"> </span><span class="cp">WEBGPU_BACKEND_WGPU</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">wgpu-native&#39;s</span><span class="w"> </span><span class="c1">non-standard</span><span class="w"> </span><span class="c1">parts</span><span class="w"> </span><span class="c1">are</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">different</span><span class="w"> </span><span class="c1">header</span><span class="w"> </span><span class="c1">file:</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;webgpu/wgpu.h&gt;</span>
+<span class="cp">#define</span><span class="w"> </span><span class="cp">wgpuInstanceRelease</span><span class="w"> </span><span class="cp">wgpuInstanceDrop</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Fix a wgpu-native/Dawn mismatch&quot;, &quot;permalink&quot;: &quot;#lit-6&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;file: main.cpp&quot;, &quot;url&quot;: &quot;#lit-3&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>And we can simply call the Dawn-style <em>Release</em> procedure:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-7">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">5.</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">clean</span><span class="w"> </span><span class="c1">up</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">WebGPU</span><span class="w"> </span><span class="c1">instance</span>
+<span class="n">wgpuInstanceRelease</span><span class="p">(</span><span class="n">instance</span><span class="p">);</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Destroy WebGPU instance&quot;, &quot;permalink&quot;: &quot;#lit-7&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;file: main.cpp&quot;, &quot;url&quot;: &quot;#lit-3&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In order to handle the slight differences between implementations, the distributions I provide also define the following preprocessor variables:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">If</span><span class="w"> </span><span class="c1">using</span><span class="w"> </span><span class="c1">Dawn</span>
+<span class="cp">#define</span><span class="w"> </span><span class="cp">WEBGPU_BACKEND_DAWN</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">If</span><span class="w"> </span><span class="c1">using</span><span class="w"> </span><span class="c1">wgpu-native</span>
+<span class="cp">#define</span><span class="w"> </span><span class="cp">WEBGPU_BACKEND_WGPU</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">If</span><span class="w"> </span><span class="c1">using</span><span class="w"> </span><span class="c1">emscripten</span>
+<span class="cp">#define</span><span class="w"> </span><span class="cp">WEBGPU_BACKEND_EMSCRIPTEN</span>
+</pre></div>
+</div>
+<p>The case of emscripten only occurs when trying to compile our code as a WebAssembly module, which is covered in the <a class="reference internal" href="../appendices/building-for-the-web.html"><span class="std std-doc">Building for the Web</span></a> appendix.</p>
+</div>
+</section>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="hello-webgpu.html#conclusion" title="Permalink to this heading">#</a></h2>
+<p>In this chapter we set up WebGPU and learnt that there are <strong>multiple backends</strong> available. We also saw the basic idioms of <strong>object creation and destruction</strong> that will be used all the time in WebGPU API!</p>
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step005"><code class="docutils literal notranslate"><span class="pre">step005</span></code></a></p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="the-adapter.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">The Adapter</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="opening-a-window.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Opening a window</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022-2023, Élie Michel and contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/eliemichel/LearnWebGPU" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      <div class="toc-sticky toc-scroll">
+	<div class="toc-title-container">
+		<span class="toc-title">
+			On this page
+		</span>
+	</div>
+	<div class="toc-tree-container">
+		<div class="toc-tree">
+			<ul>
+<li><a class="reference internal" href="hello-webgpu.html#">Hello WebGPU</a><ul>
+<li><a class="reference internal" href="hello-webgpu.html#installing-webgpu">Installing WebGPU</a><ul>
+<li><a class="reference internal" href="hello-webgpu.html#option-a-the-lightness-of-wgpu-native">Option A: The lightness of wgpu-native</a></li>
+<li><a class="reference internal" href="hello-webgpu.html#option-b-the-comfort-of-dawn">Option B: The comfort of Dawn</a></li>
+<li><a class="reference internal" href="hello-webgpu.html#integration">Integration</a></li>
+<li><a class="reference internal" href="hello-webgpu.html#option-c-the-flexibility-of-both">Option C: The flexibility of both</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="hello-webgpu.html#testing-the-installation">Testing the installation</a><ul>
+<li><a class="reference internal" href="hello-webgpu.html#descriptors-and-creation">Descriptors and Creation</a></li>
+<li><a class="reference internal" href="hello-webgpu.html#check">Check</a></li>
+<li><a class="reference internal" href="hello-webgpu.html#destruction-and-lifetime-management">Destruction and lifetime management</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="hello-webgpu.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+		</div>
+	</div>
+	
+	<div class="toc-title-container">
+		<span class="toc-title">
+			Literate options
+		</span>
+	</div>
+	<div class="toc-tree-container">
+		<div class="toc-tree">
+			
+<ul>
+	<li>
+		<label for="lit-opts-show-block-name">
+			<input id="lit-opts-show-block-name" type="checkbox" checked />
+			Show block name
+		</label>
+	</li>
+	<li>
+		<label for="lit-opts-show-reference-details">
+			<input id="lit-opts-show-reference-details" type="checkbox" checked />
+			Show reference details
+		</label>
+	</li>
+	<li>
+		<label for="lit-opts-show-reference-links">
+			<input id="lit-opts-show-reference-links" type="checkbox" checked />
+			Highlight links
+		</label>
+	</li>
+	<li>
+		<label for="lit-opts-show-hidden-links">
+			<input id="lit-opts-show-hidden-links" type="checkbox" checked />
+			Show hidden links
+		</label>
+	</li>
+	<li>
+		<label for="lit-opts-show-hidden-blocks">
+			<input id="lit-opts-show-hidden-blocks" type="checkbox" checked />
+			Show hidden blocks
+		</label>
+	</li>
+</ul>
+
+		</div>
+	</div>
+	
+</div>
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/tabs.js"></script>
+    <script src="../_static/sphinx_literate.js"></script>
+    </body>
+</html>

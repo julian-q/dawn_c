@@ -1,0 +1,896 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content="Compute Pipeline" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://eliemichel.github.io/basic-compute/compute-pipeline.html" />
+<meta property="og:site_name" content="Learn WebGPU for C++" />
+<meta property="og:description" content="Resulting code: step201 Rendering 3D data is the original use of GPUs, but it is far from being the only one nowadays. And even for 3D application, we sometimes use the GPU for non-rendering things..." />
+<meta property="og:image" content="https://eliemichel.github.io/images/webgpu-responsive.svg" />
+<meta property="og:image:alt" content="Learn WebGPU for C++" />
+<meta name="description" content="Resulting code: step201 Rendering 3D data is the original use of GPUs, but it is far from being the only one nowadays. And even for 3D application, we sometimes use the GPU for non-rendering things..." />
+    <link rel="icon" type="image/svg+xml" href="../_static/favicon/favicon.svg">
+    <link rel="icon" sizes="16x16" href="../_static/favicon/favicon-16x16.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="../_static/favicon/favicon-32x32.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://eliemichel.github.io/LearnWebGPU/_static/favicon/apple-touch-icon-180x180.png" type="image/png"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Image Processing" href="image-processing/index.html" /><link rel="prev" title="Basic Compute" href="index.html" />
+
+    <!-- Generated with Sphinx 5.3.0 and Furo 2023.03.27 -->
+        <title>Compute Pipeline - Learn WebGPU for C++ documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_literate.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  --color-brand-primary: #ac2800;
+  --color-brand-content: #007cac;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     <em>Important</em> This documentation is a work in progress! <a href="../appendices/feedback-needed.html">Feedback needed!</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Learn WebGPU for C++  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/webgpu-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/webgpu-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../getting-started/index.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/project-setup.html">Project setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/opening-a-window.html">Opening a window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/hello-webgpu.html">Hello WebGPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/the-adapter.html">The Adapter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/the-device.html">The Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/the-command-queue.html">The Command Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/first-color.html">First Color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/cpp-idioms.html">C++ wrapper</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../basic-3d-rendering/index.html">Basic 3D Rendering</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../basic-3d-rendering/hello-triangle.html">Hello Triangle</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/input-geometry/index.html">Input Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/playing-with-buffers.html">Playing with buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/a-first-vertex-attribute.html">A first Vertex Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/multiple-attributes.html">Multiple Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/index-buffer.html">Index Buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/shader-uniforms/index.html">Shader Uniforms</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/shader-uniforms/a-first-uniform.html">A first uniform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/shader-uniforms/multiple-uniforms.html">More uniforms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/shader-uniforms/dynamic-uniforms.html">Dynamic uniforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/index.html">3D Meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/a-simple-example.html">A simple example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/depth-buffer.html">Depth buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/transformation-matrices.html">Transformation matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/projection-matrices.html">Projection matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/basic-shading.html">Basic shading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/texturing/index.html">Texturing</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/texturing/a-first-texture.html">A first texture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/texturing/texture-mapping.html">Texture mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/texturing/sampler.html">Sampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/texturing/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/some-interaction/index.html">Some interaction</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/some-interaction/refactoring.html">Refactoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/some-interaction/resizing-window.html">Resizing the window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/some-interaction/camera-control.html">Camera control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/some-interaction/simple-gui.html">Simple GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/index.html">Lighting and Material</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/recap.html">Recap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/specular.html">Specularity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/normal-mapping.html">Normal mapping (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/ibl.html">Image-Based Lighting (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/cubemap.html">Cube Maps (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/pbr.html">Physically-Based Materials (🚧WIP)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Basic Compute</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="compute-pipeline.html#">Compute Pipeline</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="image-processing/index.html">Image Processing</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="image-processing/mipmap-generation.html">Mipmap Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="image-processing/convolution-filters.html">Convolution Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="image-processing/cubemap-conversion.html">Cubemap Conversion (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="image-processing/cubemap-prefiltering.html">Cubemap Prefiltering (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="procedural-geometry/index.html">Procedural Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="procedural-geometry/deformation.html">Deformation (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="neural-networks.html">Neural Networks (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../advanced-techniques/index.html">Advanced Techniques</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/raii.html">RAII</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/hdr-textures.html">High Dynamic Range Textures (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/deferred-shading.html">Deferred Shading (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/benchmarking.html">Benchmarking (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/render-bundles.html">Render Bundles (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/multi-sampling.html">Multi-Sampling (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/scene-tree.html">Scene tree (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/screen-capture.html">Screen capture (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/shadow-maps.html">Shadow maps (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/tesselation.html">Tesselation (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/raytracing.html">Raytracing (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../appendices/index.html">Appendices</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/teaching-native-graphics-in-2023.html">Teaching native graphics in 2023</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/feedback-needed.html">Feedback needed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/debugging.html">Debugging (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/building-for-the-web.html">Building for the Web (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/memory-model.html">Memory Model (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/custom-extensions.html">Custom Extensions (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/references.html">References (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/tmp.html">Temporary page</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="compute-pipeline.html#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/eliemichel/LearnWebGPU/edit/main/./basic-compute/compute-pipeline.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="compute-pipeline">
+<h1>Compute Pipeline<a class="headerlink" href="compute-pipeline.html#compute-pipeline" title="Permalink to this heading">#</a></h1>
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step201"><code class="docutils literal notranslate"><span class="pre">step201</span></code></a></p>
+<p>Rendering 3D data is the original use of GPUs, but it is far from being the only one nowadays. And even for 3D application, we sometimes use the GPU for non-rendering things, such as simulation, image processing, etc.</p>
+<p>When using the GPU for <strong>general purpose</strong> computation (GPGPU), we usually <strong>do not need to call the 3D-specific fixed parts</strong> of the render pipeline, like the rasterization.</p>
+<p>This chapter introduces the skeleton for running <strong>compute shaders</strong>, which are shaders run outside of the fixed-function pipeline.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We do not expect you to have read the whole 3D rendering part of the guide, but at least up to the end of the <a class="reference internal" href="../basic-3d-rendering/shader-uniforms/index.html"><span class="std std-doc">Shader Uniforms</span></a> part.</p>
+</div>
+<section id="set-up">
+<h2>Set-up<a class="headerlink" href="compute-pipeline.html#set-up" title="Permalink to this heading">#</a></h2>
+<section id="a-simple-example">
+<h3>A simple example<a class="headerlink" href="compute-pipeline.html#a-simple-example" title="Permalink to this heading">#</a></h3>
+<p>Let us start with a very <strong>simple problem</strong>: we have a GPU-side buffer and want to evaluate a simple function <code class="docutils literal notranslate"><span class="pre">f</span></code> for each element of this buffer:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">WGSL</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">x</span>:<span class="w"> </span><span class="kt">f32</span><span class="p">)</span><span class="w"> </span>-&gt;<span class="w"> </span><span class="kt">f32</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>A <strong>naive solution</strong> would be to copy this buffer back to the CPU, evaluate the function here, and upload the result to the GPU again. But this is <strong>very inefficient</strong> for two reasons:</p>
+<ul class="simple">
+<li><p>The CPU-GPU <strong>copies</strong> are expansive, especially for large buffers.</p></li>
+<li><p>Since <code class="docutils literal notranslate"><span class="pre">f</span></code> is applied independently to each values, the problem is very <strong>parallel</strong>, and the GPU is much better than the CPU at this type of <em>Single Instruction Multiple Data</em> (SIMD) parallelism.</p></li>
+</ul>
+<p>So we set up a compute shader that evaluates <code class="docutils literal notranslate"><span class="pre">f</span></code> directly on the GPU, and save the result in a second buffer.</p>
+</section>
+<section id="architecture">
+<h3>Architecture<a class="headerlink" href="compute-pipeline.html#architecture" title="Permalink to this heading">#</a></h3>
+<p>For the sake of the examples throughout this chapter, we create a <code class="docutils literal notranslate"><span class="pre">onCompute</span></code> function that we call once after <code class="docutils literal notranslate"><span class="pre">onInit</span></code>. You may also remove the main loop is <code class="docutils literal notranslate"><span class="pre">main.cpp</span></code> because we won’t need the interactive part.</p>
+<p>We reuse the same outline as when submitting our render pass on <code class="docutils literal notranslate"><span class="pre">onFrame</span></code>:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">Application::onCompute</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Initialize</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">command</span><span class="w"> </span><span class="c1">encoder</span>
+<span class="w">    </span><span class="n">Queue</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_device</span><span class="p">.</span><span class="n">getQueue</span><span class="p">();</span>
+<span class="w">    </span><span class="n">CommandEncoderDescriptor</span><span class="w"> </span><span class="n">encoderDesc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Default</span><span class="p">;</span>
+<span class="w">    </span><span class="n">CommandEncoder</span><span class="w"> </span><span class="n">encoder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_device</span><span class="p">.</span><span class="n">createCommandEncoder</span><span class="p">(</span><span class="n">encoderDesc</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">use</span><span class="w"> </span><span class="c1">compute</span><span class="w"> </span><span class="c1">pass</span><span class="w"> </span><span class="c1">here!</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Encode</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">submit</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">GPU</span><span class="w"> </span><span class="c1">commands</span>
+<span class="w">    </span><span class="n">CommandBuffer</span><span class="w"> </span><span class="n">commands</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">encoder</span><span class="p">.</span><span class="n">finish</span><span class="p">(</span><span class="n">CommandBufferDescriptor</span><span class="p">{});</span>
+<span class="w">    </span><span class="n">queue</span><span class="p">.</span><span class="n">submit</span><span class="p">(</span><span class="n">commands</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Clean</span><span class="w"> </span><span class="c1">up</span>
+<span class="cp">#if</span><span class="w"> </span><span class="cp">!defined(WEBGPU_BACKEND_WGPU)</span>
+<span class="w">    </span><span class="n">wgpuCommandBufferRelease</span><span class="p">(</span><span class="n">commands</span><span class="p">);</span>
+<span class="w">    </span><span class="n">wgpuCommandEncoderRelease</span><span class="p">(</span><span class="n">encoder</span><span class="p">);</span>
+<span class="w">    </span><span class="n">wgpuQueueRelease</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span>
+<span class="cp">#endif</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In the initialization method, we mostly keep the initialization of the device and create (private) methods to organize the different steps:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span><span class="w"> </span><span class="nf">Application::onInit</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">initDevice</span><span class="p">())</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="n">initBindGroupLayout</span><span class="p">();</span>
+<span class="w">    </span><span class="n">initComputePipeline</span><span class="p">();</span>
+<span class="w">    </span><span class="n">initBuffers</span><span class="p">();</span>
+<span class="w">    </span><span class="n">initBindGroup</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Each <code class="docutils literal notranslate"><span class="pre">initSomething</span></code> step comes with a <code class="docutils literal notranslate"><span class="pre">terminateSomething</span></code> that is called at the end in reverse order:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">Application::onFinish</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">terminateBindGroup</span><span class="p">();</span>
+<span class="w">    </span><span class="n">terminateBuffers</span><span class="p">();</span>
+<span class="w">    </span><span class="n">terminateComputePipeline</span><span class="p">();</span>
+<span class="w">    </span><span class="n">terminateBindGroupLayout</span><span class="p">();</span>
+<span class="w">    </span><span class="n">terminateDevice</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="compute-pass">
+<h2>Compute Pass<a class="headerlink" href="compute-pipeline.html#compute-pass" title="Permalink to this heading">#</a></h2>
+<p>Remember how we drew <a class="reference internal" href="../getting-started/first-color.html"><span class="std std-doc">our first color</span></a>? We submitted to the command queue a particular render-specific sequence of instructions called a <code class="docutils literal notranslate"><span class="pre">RenderPass</span></code>. The approach to run compute-only shaders is similar, and uses a <code class="docutils literal notranslate"><span class="pre">ComputePass</span></code> instead.</p>
+<p>The creation of the compute pass is <strong>much simpler</strong> than the one of the render pass, because since we do <strong>not use any fixed-function stage</strong>, there is almost nothing to configure! The only option if the timestamp writes that will be described in the benchmarking chapter.</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">compute</span><span class="w"> </span><span class="c1">pass</span>
+<span class="n">ComputePassDescriptor</span><span class="w"> </span><span class="n">computePassDesc</span><span class="p">;</span>
+<span class="n">computePassDesc</span><span class="p">.</span><span class="n">timestampWriteCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">computePassDesc</span><span class="p">.</span><span class="n">timestampWrites</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="n">ComputePassEncoder</span><span class="w"> </span><span class="n">computePass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">encoder</span><span class="p">.</span><span class="n">beginComputePass</span><span class="p">(</span><span class="n">computePassDesc</span><span class="p">);</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Use</span><span class="w"> </span><span class="c1">compute</span><span class="w"> </span><span class="c1">pass</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Finalize</span><span class="w"> </span><span class="c1">compute</span><span class="w"> </span><span class="c1">pass</span>
+<span class="n">computePass</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Clean</span><span class="w"> </span><span class="c1">up</span>
+<span class="cp">#if</span><span class="w"> </span><span class="cp">!defined(WEBGPU_BACKEND_WGPU)</span>
+<span class="w">    </span><span class="n">wgpuComputePassEncoderRelease</span><span class="p">(</span><span class="n">computePass</span><span class="p">);</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h2>Compute pipeline<a class="headerlink" href="compute-pipeline.html#id1" title="Permalink to this heading">#</a></h2>
+<p>Once created, the use of the compute pass looks a lot like the use of the render pass. The main difference is that <code class="docutils literal notranslate"><span class="pre">draw</span></code> is replaced by <code class="docutils literal notranslate"><span class="pre">dispatchWorkgroups</span></code>, which calls our compute shader, and there is no such thing as a vertex buffer.</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Use</span><span class="w"> </span><span class="c1">compute</span><span class="w"> </span><span class="c1">pass</span>
+<span class="n">computePass</span><span class="p">.</span><span class="n">setPipeline</span><span class="p">(</span><span class="n">computePipeline</span><span class="p">);</span>
+<span class="n">computePass</span><span class="p">.</span><span class="n">setBindGroup</span><span class="p">(</span><span class="cm">/*</span><span class="w"> </span><span class="cm">...</span><span class="w"> </span><span class="cm">*/</span><span class="p">);</span>
+<span class="n">computePass</span><span class="p">.</span><span class="n">dispatchWorkgroups</span><span class="p">(</span><span class="cm">/*</span><span class="w"> </span><span class="cm">...</span><span class="w"> </span><span class="cm">*/</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The compute pipeline first defines the shader to be used:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">initComputePipeline():</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Load</span><span class="w"> </span><span class="c1">compute</span><span class="w"> </span><span class="c1">shader</span>
+<span class="n">ShaderModule</span><span class="w"> </span><span class="n">computeShaderModule</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ResourceManager</span><span class="o">::</span><span class="n">loadShaderModule</span><span class="p">(</span><span class="n">RESOURCE_DIR</span><span class="w"> </span><span class="s">&quot;/compute-shader.wsl&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_device</span><span class="p">);</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">compute</span><span class="w"> </span><span class="c1">pipeline</span>
+<span class="n">ComputePipelineDescriptor</span><span class="w"> </span><span class="n">computePipelineDesc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Default</span><span class="p">;</span>
+<span class="n">computePipelineDesc</span><span class="p">.</span><span class="n">compute</span><span class="p">.</span><span class="n">entryPoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;computeStuff&quot;</span><span class="p">;</span>
+<span class="n">computePipelineDesc</span><span class="p">.</span><span class="n">compute</span><span class="p">.</span><span class="k">module</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">computeShaderModule</span><span class="p">;</span>
+<span class="n">ComputePipeline</span><span class="w"> </span><span class="n">computePipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_device</span><span class="p">.</span><span class="n">createComputePipeline</span><span class="p">(</span><span class="n">computePipelineDesc</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The file <code class="docutils literal notranslate"><span class="pre">compute-shader.wsl</span></code> defines a function named like the entry point <code class="docutils literal notranslate"><span class="pre">computeStuff</span></code> and signal that it is a <code class="docutils literal notranslate"><span class="pre">&#64;compute</span></code>. It must also indicate a <strong>workgroup size</strong>, more on this soon!</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="o">@</span><span class="n">compute</span><span class="w"> </span><span class="o">@</span><span class="n">workgroup_size</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">computeStuff</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Compute</span><span class="w"> </span><span class="c1">stuff</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We can totally use the same shader module and file as for the other shaders, I just avoid mixing unrelated parts of code.</p>
+</div>
+<p>At this point, it is possible to invoke our shader as long as we have no bind group:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Use</span><span class="w"> </span><span class="c1">compute</span><span class="w"> </span><span class="c1">pass</span>
+<span class="n">computePass</span><span class="p">.</span><span class="n">setPipeline</span><span class="p">(</span><span class="n">computePipeline</span><span class="p">);</span>
+<span class="c1">//computePass.setBindGroup(/*</span><span class="w"> </span><span class="c1">...</span><span class="w"> </span><span class="c1">*/);</span>
+<span class="n">computePass</span><span class="p">.</span><span class="n">dispatchWorkgroups</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Yey! Except… it does virtually nothing, because without accessing any resource, the compute shader cannot communicate any output.</p>
+</section>
+<section id="resources">
+<h2>Resources<a class="headerlink" href="compute-pipeline.html#resources" title="Permalink to this heading">#</a></h2>
+<p>For our shader to actually communicate with an input and output buffer, we need to setup a <strong>pipeline layout</strong> that tells how the shader resources should be bound, and a <strong>bind group</strong> that actually connects the resources for a given shader invocation.</p>
+<section id="pipeline-layout">
+<h3>Pipeline layout<a class="headerlink" href="compute-pipeline.html#pipeline-layout" title="Permalink to this heading">#</a></h3>
+<p>We add in the compute shader the two buffer bindings as variables defined in the <code class="docutils literal notranslate"><span class="pre">storage</span></code>address space. It is important to specify the <strong>access mode</strong>, which is <code class="docutils literal notranslate"><span class="pre">read</span></code> for the input and <code class="docutils literal notranslate"><span class="pre">read_write</span></code> for the output (there is no “write only” mode):</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="o">@</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">@</span><span class="n">binding</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">var</span><span class="o">&lt;</span><span class="n">storage</span><span class="p">,</span><span class="n">read</span><span class="o">&gt;</span><span class="w"> </span><span class="n">inputBuffer</span>:<span class="w"> </span><span class="nc">array</span><span class="o">&lt;</span><span class="kt">f32</span><span class="p">,</span><span class="mi">64</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="o">@</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">@</span><span class="n">binding</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">var</span><span class="o">&lt;</span><span class="n">storage</span><span class="p">,</span><span class="n">read_write</span><span class="o">&gt;</span><span class="w"> </span><span class="n">outputBuffer</span>:<span class="w"> </span><span class="nc">array</span><span class="o">&lt;</span><span class="kt">f32</span><span class="p">,</span><span class="mi">64</span><span class="o">&gt;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <a class="reference external" href="https://gpuweb.github.io/gpuweb/wgsl/#array-types"><code class="docutils literal notranslate"><span class="pre">array</span></code></a> type of WGSL is very similar to the <a class="reference external" href="https://en.cppreference.com/w/cpp/container/array"><code class="docutils literal notranslate"><span class="pre">std::array</span></code></a> type of C++.</p>
+</div>
+<p>And we create on the C++ side a <strong>bind group layout</strong> that matches these bindings:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">Application::initBindGroupLayout</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">bind</span><span class="w"> </span><span class="c1">group</span><span class="w"> </span><span class="c1">layout</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">BindGroupLayoutEntry</span><span class="o">&gt;</span><span class="w"> </span><span class="n">bindings</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">Default</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Input</span><span class="w"> </span><span class="c1">buffer</span>
+<span class="w">    </span><span class="n">bindings</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindings</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">buffer</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BufferBindingType</span><span class="o">::</span><span class="n">ReadOnlyStorage</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindings</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">visibility</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ShaderStage</span><span class="o">::</span><span class="n">Compute</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Output</span><span class="w"> </span><span class="c1">buffer</span>
+<span class="w">    </span><span class="n">bindings</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindings</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">buffer</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BufferBindingType</span><span class="o">::</span><span class="n">Storage</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindings</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">visibility</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ShaderStage</span><span class="o">::</span><span class="n">Compute</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">BindGroupLayoutDescriptor</span><span class="w"> </span><span class="n">bindGroupLayoutDesc</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindGroupLayoutDesc</span><span class="p">.</span><span class="n">entryCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">bindings</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+<span class="w">    </span><span class="n">bindGroupLayoutDesc</span><span class="p">.</span><span class="n">entries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bindings</span><span class="p">.</span><span class="n">data</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_bindGroupLayout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_device</span><span class="p">.</span><span class="n">createBindGroupLayout</span><span class="p">(</span><span class="n">bindGroupLayoutDesc</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In <code class="docutils literal notranslate"><span class="pre">initComputePipeline()</span></code> we simply assign this to the compute pipeline through the <strong>pipeline layout</strong>:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">compute</span><span class="w"> </span><span class="c1">pipeline</span><span class="w"> </span><span class="c1">layout</span>
+<span class="n">PipelineLayoutDescriptor</span><span class="w"> </span><span class="n">pipelineLayoutDesc</span><span class="p">;</span>
+<span class="n">pipelineLayoutDesc</span><span class="p">.</span><span class="n">bindGroupLayoutCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">pipelineLayoutDesc</span><span class="p">.</span><span class="n">bindGroupLayouts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">WGPUBindGroupLayout</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">m_bindGroupLayout</span><span class="p">;</span>
+<span class="n">m_pipelineLayout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_device</span><span class="p">.</span><span class="n">createPipelineLayout</span><span class="p">(</span><span class="n">pipelineLayoutDesc</span><span class="p">);</span>
+<span class="n">computePipelineDesc</span><span class="p">.</span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_pipelineLayout</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The objects <code class="docutils literal notranslate"><span class="pre">m_bindGroupLayout</span></code> and <code class="docutils literal notranslate"><span class="pre">m_pipelineLayout</span></code> are attributes of the <code class="docutils literal notranslate"><span class="pre">Application</span></code> class (hence the <code class="docutils literal notranslate"><span class="pre">m_</span></code> prefix) so that they can be used in different methods. Do not forget to destroy them in the terminate functions by the way.</p>
+</div>
+</section>
+<section id="buffers">
+<h3>Buffers<a class="headerlink" href="compute-pipeline.html#buffers" title="Permalink to this heading">#</a></h3>
+<p>Before binding the buffers, we must of course create them (in <code class="docutils literal notranslate"><span class="pre">initBuffers</span></code>). An important point is to mark their usage with the <code class="docutils literal notranslate"><span class="pre">Storage</span></code> flag, so that we can read/write them from shaders:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">save</span><span class="w"> </span><span class="c1">this</span><span class="w"> </span><span class="c1">size</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">an</span><span class="w"> </span><span class="c1">attribute,</span><span class="w"> </span><span class="c1">it</span><span class="w"> </span><span class="c1">will</span><span class="w"> </span><span class="c1">be</span><span class="w"> </span><span class="c1">useful</span><span class="w"> </span><span class="c1">later</span><span class="w"> </span><span class="c1">on</span>
+<span class="n">m_bufferSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">64</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">input</span><span class="w"> </span><span class="c1">buffers</span>
+<span class="n">BufferDescriptor</span><span class="w"> </span><span class="n">bufferDesc</span><span class="p">;</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">mappedAtCreation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_bufferSize</span><span class="p">;</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">usage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">Storage</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">CopyDst</span><span class="p">;</span>
+<span class="n">Buffer</span><span class="w"> </span><span class="n">inputBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_device</span><span class="p">.</span><span class="n">createBuffer</span><span class="p">(</span><span class="n">bufferDesc</span><span class="p">);</span>
+
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">output</span><span class="w"> </span><span class="c1">buffer:</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">only</span><span class="w"> </span><span class="c1">difference</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">usage</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">usage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">Storage</span><span class="p">;</span>
+<span class="n">Buffer</span><span class="w"> </span><span class="n">outputBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_device</span><span class="p">.</span><span class="n">createBuffer</span><span class="p">(</span><span class="n">bufferDesc</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Buffers that have the <code class="docutils literal notranslate"><span class="pre">Storage</span></code> usage are confronted to specific device limits:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">bind</span><span class="w"> </span><span class="c1">an</span><span class="w"> </span><span class="c1">input,</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">an</span><span class="w"> </span><span class="c1">output</span><span class="w"> </span><span class="c1">buffers:</span>
+<span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxStorageBuffersPerShaderStage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Each</span><span class="w"> </span><span class="c1">buffer</span><span class="w"> </span><span class="c1">has</span><span class="w"> </span><span class="c1">(at</span><span class="w"> </span><span class="c1">most)</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">size</span><span class="w"> </span><span class="c1">m_bufferSize</span><span class="w"> </span><span class="c1">(which</span><span class="w"> </span><span class="c1">definition</span><span class="w"> </span><span class="c1">should</span><span class="w"> </span><span class="c1">be</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">moved</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">constructor</span><span class="w"> </span><span class="c1">so</span><span class="w"> </span><span class="c1">that</span><span class="w"> </span><span class="c1">it</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">known</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">initDevice):</span>
+<span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxStorageBufferBindingSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_bufferSize</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>We can already fill in the input buffer with some values:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Fill</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">input</span><span class="w"> </span><span class="c1">buffer</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">input</span><span class="p">(</span><span class="n">m_bufferSize</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">queue</span><span class="p">.</span><span class="n">writeBuffer</span><span class="p">(</span><span class="n">inputBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">m_bufferSize</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="bind-group">
+<h3>Bind Group<a class="headerlink" href="compute-pipeline.html#bind-group" title="Permalink to this heading">#</a></h3>
+<p>Remember: the bind group <strong>layout</strong> was telling <em>how</em> to bind resources to the shader. Once we effectively have created these resources (the buffers), we can define a <strong>bind group</strong> to tell <em>what</em> to bind:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">Application::initBindGroup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">compute</span><span class="w"> </span><span class="c1">bind</span><span class="w"> </span><span class="c1">group</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">BindGroupEntry</span><span class="o">&gt;</span><span class="w"> </span><span class="n">entries</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">Default</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Input</span><span class="w"> </span><span class="c1">buffer</span>
+<span class="w">    </span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_inputBuffer</span><span class="p">;</span>
+<span class="w">    </span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_bufferSize</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Output</span><span class="w"> </span><span class="c1">buffer</span>
+<span class="w">    </span><span class="n">entries</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">entries</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_outputBuffer</span><span class="p">;</span>
+<span class="w">    </span><span class="n">entries</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">entries</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_bufferSize</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">BindGroupDescriptor</span><span class="w"> </span><span class="n">bindGroupDesc</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindGroupDesc</span><span class="p">.</span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_bindGroupLayout</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindGroupDesc</span><span class="p">.</span><span class="n">entryCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">entries</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+<span class="w">    </span><span class="n">bindGroupDesc</span><span class="p">.</span><span class="n">entries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">WGPUBindGroupEntry</span><span class="o">*</span><span class="p">)</span><span class="n">entries</span><span class="p">.</span><span class="n">data</span><span class="p">();</span>
+<span class="w">    </span><span class="n">m_bindGroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_device</span><span class="p">.</span><span class="n">createBindGroup</span><span class="p">(</span><span class="n">bindGroupDesc</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Once the bind group is created, it can be bound to the pipeline in <code class="docutils literal notranslate"><span class="pre">onCompute()</span></code>:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">computePass</span><span class="p">.</span><span class="n">setPipeline</span><span class="p">(</span><span class="n">computePipeline</span><span class="p">);</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">Set</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">bind</span><span class="w"> </span><span class="c1">group:</span>
+<span class="n">computePass</span><span class="p">.</span><span class="n">setBindGroup</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">bindGroup</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">);</span>
+<span class="n">computePass</span><span class="p">.</span><span class="n">dispatchWorkgroups</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="invocation">
+<h2>Invocation<a class="headerlink" href="compute-pipeline.html#invocation" title="Permalink to this heading">#</a></h2>
+<section id="concurrent-calls">
+<h3>Concurrent calls<a class="headerlink" href="compute-pipeline.html#concurrent-calls" title="Permalink to this heading">#</a></h3>
+<p>Now that the the <code class="docutils literal notranslate"><span class="pre">dispatchWorkgroups</span></code> call actually does something, let us explain a little more what it does.</p>
+<p>A compute shader (and more generally a GPU) is <strong>good at doing the same thing multiple times in parallel</strong>, so built in this <em>dispatch</em> operation is the possibility to call the shader’s entry point multiple times.</p>
+<p>Instead of providing a single number of concurrent calls, we express this number as a <strong>grid</strong> (a.k.a. <strong>dispatch</strong>) of <span class="math notranslate nohighlight">\(x \times y \times z\)</span> <strong>workgroups</strong>:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">computePass</span><span class="p">.</span><span class="n">dispatchWorkgroups</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Beware that this launches <span class="math notranslate nohighlight">\(x \times y \times z\)</span> <strong>workgroups</strong>, i.e., groups of calls. Each workgroup is itself a little block of <span class="math notranslate nohighlight">\(w \times h \times d\)</span> <strong>threads</strong>, each of which runs the entry point. The workgroup size is set by the shader’s entry point:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="o">@</span><span class="n">compute</span>
+<span class="o">@</span><span class="n">workgroup_size</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">)</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">computeStuff</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The workgroup sizes must be constant expressions.</p>
+</div>
+</section>
+<section id="workgroup-size-vs-count">
+<h3>Workgroup size vs count<a class="headerlink" href="compute-pipeline.html#workgroup-size-vs-count" title="Permalink to this heading">#</a></h3>
+<blockquote>
+<div><p>😟 Okey, that makes a lot of variables just to set a number of jobs that is just the product of them in the end, doesn’t it?</p>
+</div></blockquote>
+<p>The thing is: <strong>all combinations are not equivalent</strong>, even if they multiply to the same number of threads.</p>
+<p>The jobs are <strong>not really all launched at once</strong>: under the hood a scheduler organizes the execution of individual workgroups. What we can now is that the jobs from the <strong>same workgroup</strong> are launched together, but two <strong>different workgroup</strong> might get executed at significantly different times.</p>
+<p>The appropriate size for a workgroup <strong>depends a lot on the task</strong> that threads run. Here are some rules of thumb about the <strong>workgroup size versus workgroup count</strong>:</p>
+<ul class="simple">
+<li><p>The number <span class="math notranslate nohighlight">\(w \times h \times d\)</span> of threads per workgroup should be a multiple of 32, because within a workgroup threads are launched by <strong>warps</strong> of (usually a multiple of) 32 threads.</p></li>
+<li><p>The total resource usage of a workgroup should be kept to a <strong>minimum</strong>, so that the scheduler has more freedom in organizing things.</p></li>
+<li><p>When threads <strong>share memory</strong> with each others, it is cheaper if they are in the same workgroup (and even cheaper if they are in the same warp).</p></li>
+<li><p>Group threads that are likely to have the <strong>same branching path</strong>. Threads from the same warp share the same instruction pointer, so threads are idling when one of their neighbors follows a different branch of an <code class="docutils literal notranslate"><span class="pre">if</span></code> or loop condition.</p></li>
+<li><p>Try to have workgroup sizes be powers of two.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These rules are somehow contradictory. Only a benchmark on your specific use case can tell you what the best trade-off is.</p>
+</div>
+</section>
+<section id="workgroup-dimensions">
+<h3>Workgroup dimensions<a class="headerlink" href="compute-pipeline.html#workgroup-dimensions" title="Permalink to this heading">#</a></h3>
+<blockquote>
+<div><p>😟 Ok I see better now, but what about the different axes <span class="math notranslate nohighlight">\(w\)</span>, <span class="math notranslate nohighlight">\(h\)</span> and <span class="math notranslate nohighlight">\(d\)</span>? Is a workgroup size of <span class="math notranslate nohighlight">\(2 \times 2 \times 4\)</span> different from <span class="math notranslate nohighlight">\(16 \times 1 \times 1\)</span>?</p>
+</div></blockquote>
+<p>It is different indeed, because this size <strong>give hints to the hardware</strong> about the potential <strong>consistency of memory access</strong> across threads.</p>
+<p>Both the CPU and the GPU try in general to guess patterns in the way consecutive and/or concurrent operations use memory, in order for instance to <a class="reference external" href="https://en.wikipedia.org/wiki/Cache_prefetching">prefetch</a> memory in caches or to group (a.k.a. “coalesce”) concurrent read/writes into a single memory access.</p>
+<p>Since a very common task of the GPU is to process <strong>data organized as a 2D or 3D grid</strong>, a graphics API provides grid-based data storage (<strong>textures</strong>) and grid-based concurrency model. When neighbor threads access neighbor pixels/voxels in a similar way, the hardware can better anticipate what is happening.</p>
+<p>So the main rule of thumb here is that although the <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(z\)</span> axes are at first glance abstract values that are “just” multiplied together, you should really use them as the <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(z\)</span> axes of your data grid.</p>
+</section>
+<section id="example">
+<h3>Example<a class="headerlink" href="compute-pipeline.html#example" title="Permalink to this heading">#</a></h3>
+<p>In our simple example, we process data laid out in 1D buffers, so our dispatch is also a one dimensional series of workgroups: <span class="math notranslate nohighlight">\((x, y, z) = (x, 1, 1)\)</span> and <span class="math notranslate nohighlight">\((w, h, d) = (w, 1, 1)\)</span>.</p>
+<p>The workgroup size <span class="math notranslate nohighlight">\(w\)</span> should be at least 32, and there is no apparent reason for it to be more than that. So in the end, we dispatch workgroups of <code class="docutils literal notranslate"><span class="pre">32</span> <span class="pre">*</span> <span class="pre">1</span> <span class="pre">*</span> <span class="pre">1</span></code> threads:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="o">@</span><span class="n">compute</span><span class="w"> </span><span class="o">@</span><span class="n">workgroup_size</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">or</span><span class="w"> </span><span class="c1">just</span><span class="w"> </span><span class="c1">@workgroup_size(32)</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">computeStuff</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>And we infer the number of workgroups from the expected invocation calls:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">invocationCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_bufferSize</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+<span class="kt">uint32_t</span><span class="w"> </span><span class="n">workgroupSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">32</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">This</span><span class="w"> </span><span class="c1">ceils</span><span class="w"> </span><span class="c1">invocationCount</span><span class="w"> </span><span class="c1">/</span><span class="w"> </span><span class="c1">workgroupSize</span>
+<span class="kt">uint32_t</span><span class="w"> </span><span class="n">workgroupCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">invocationCount</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">workgroupSize</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">workgroupSize</span><span class="p">;</span>
+<span class="n">computePass</span><span class="p">.</span><span class="n">dispatchWorkgroups</span><span class="p">(</span><span class="n">workgroupCount</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Be careful about ceiling the <code class="docutils literal notranslate"><span class="pre">invocationCount</span> <span class="pre">/</span> <span class="pre">workgroupSize</span></code> division instead of flooring it, otherwise when <code class="docutils literal notranslate"><span class="pre">workgroupSize</span></code> does not exactly divide <code class="docutils literal notranslate"><span class="pre">invocationCount</span></code> the last threads will be missing.</p>
+</div>
+<p>All we need now is to now in which thread of which workgroup we are, to figure out which index of the buffer we need to process. This is given by <a class="reference external" href="https://gpuweb.github.io/gpuweb/wgsl/#built-in-values-global_invocation_id">built-in shader inputs</a>, and in particular the <strong>invocation id</strong> provided as the <code class="docutils literal notranslate"><span class="pre">global_invocation_id</span></code> built-in:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="o">@</span><span class="n">compute</span><span class="w"> </span><span class="o">@</span><span class="n">workgroup_size</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">computeStuff</span><span class="p">(</span><span class="o">@</span><span class="n">builtin</span><span class="p">(</span><span class="n">global_invocation_id</span><span class="p">)</span><span class="w"> </span><span class="n">id</span>:<span class="w"> </span><span class="nc">vec3</span><span class="o">&lt;</span><span class="kt">u32</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Apply</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">function</span><span class="w"> </span><span class="c1">f</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">buffer</span><span class="w"> </span><span class="c1">element</span><span class="w"> </span><span class="c1">at</span><span class="w"> </span><span class="c1">index</span><span class="w"> </span><span class="c1">id.x:</span>
+<span class="w">    </span><span class="n">outputBuffer</span><span class="p">[</span><span class="n">id</span><span class="p">.</span><span class="n">x</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">inputBuffer</span><span class="p">[</span><span class="n">id</span><span class="p">.</span><span class="n">x</span><span class="p">]);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="device-limits">
+<h3>Device limits<a class="headerlink" href="compute-pipeline.html#device-limits" title="Permalink to this heading">#</a></h3>
+<p>There are a bunch of device limits associated to the choice of workgroup size/count:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">maximum</span><span class="w"> </span><span class="c1">value</span><span class="w"> </span><span class="c1">for</span><span class="w"> </span><span class="c1">respectively</span><span class="w"> </span><span class="c1">w,</span><span class="w"> </span><span class="c1">h</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">d</span>
+<span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxComputeWorkgroupSizeX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">32</span><span class="p">;</span>
+<span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxComputeWorkgroupSizeY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxComputeWorkgroupSizeZ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">maximum</span><span class="w"> </span><span class="c1">value</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">product</span><span class="w"> </span><span class="c1">w</span><span class="w"> </span><span class="c1">*</span><span class="w"> </span><span class="c1">h</span><span class="w"> </span><span class="c1">*</span><span class="w"> </span><span class="c1">d</span>
+<span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxComputeInvocationsPerWorkgroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">32</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">And</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">maximum</span><span class="w"> </span><span class="c1">value</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">max(x,</span><span class="w"> </span><span class="c1">y,</span><span class="w"> </span><span class="c1">z)</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">(It</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">2</span><span class="w"> </span><span class="c1">because</span><span class="w"> </span><span class="c1">workgroupCount</span><span class="w"> </span><span class="c1">=</span><span class="w"> </span><span class="c1">64</span><span class="w"> </span><span class="c1">/</span><span class="w"> </span><span class="c1">32</span><span class="w"> </span><span class="c1">=</span><span class="w"> </span><span class="c1">2)</span>
+<span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxComputeWorkgroupsPerDimension</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="read-back">
+<h2>Read-back<a class="headerlink" href="compute-pipeline.html#read-back" title="Permalink to this heading">#</a></h2>
+<p>After dispatching all parallel compute threads, the output buffer is populated with the result. So naturally now we want to <strong>read this output buffer</strong> back.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>One of the point of computing things on the GPU is to avoid CPU-GPU copies, because maybe the output buffer is only used in a subsequent operation on the GPU. But in our example case we still want to check that the computation went well.</p>
+</div>
+<section id="map-buffer">
+<h3>Map Buffer<a class="headerlink" href="compute-pipeline.html#map-buffer" title="Permalink to this heading">#</a></h3>
+<p>We have seen already how to use the Buffer’s <code class="docutils literal notranslate"><span class="pre">mapAsync</span></code> method to read a buffer back, but this won’t work directly:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">DON&#39;T</span>
+<span class="n">m_outputBuffer</span><span class="p">.</span><span class="n">mapAsync</span><span class="p">(</span><span class="n">MapMode</span><span class="o">::</span><span class="n">Read</span><span class="p">,</span><span class="w"> </span><span class="cm">/*</span><span class="w"> </span><span class="cm">...</span><span class="w"> </span><span class="cm">*/</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Why not? This requires the output buffer to be created with the <code class="docutils literal notranslate"><span class="pre">MapRead</span></code> usage flag. But unfortunately <strong>this flag is incompatible</strong> with <code class="docutils literal notranslate"><span class="pre">Storage</span></code>, that is needed for the shader to be allowed to write in the output.</p>
+<p>The solution is to <strong>create a 3rd buffer</strong>, responsible for the transport back on CPU. In the <code class="docutils literal notranslate"><span class="pre">initBuffers()</span></code> method we create this new “map buffer” and add the <code class="docutils literal notranslate"><span class="pre">CopySrc</span></code> usage to the output:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Add</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">CopySrc</span><span class="w"> </span><span class="c1">usage</span><span class="w"> </span><span class="c1">here,</span><span class="w"> </span><span class="c1">so</span><span class="w"> </span><span class="c1">that</span><span class="w"> </span><span class="c1">we</span><span class="w"> </span><span class="c1">can</span><span class="w"> </span><span class="c1">copy</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">map</span><span class="w"> </span><span class="c1">buffer</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">usage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">Storage</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">CopySrc</span><span class="p">;</span>
+<span class="n">m_outputBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_device</span><span class="p">.</span><span class="n">createBuffer</span><span class="p">(</span><span class="n">bufferDesc</span><span class="p">);</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">an</span><span class="w"> </span><span class="c1">intermediary</span><span class="w"> </span><span class="c1">buffer</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">which</span><span class="w"> </span><span class="c1">we</span><span class="w"> </span><span class="c1">copy</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">output</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">that</span><span class="w"> </span><span class="c1">can</span><span class="w"> </span><span class="c1">be</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">used</span><span class="w"> </span><span class="c1">for</span><span class="w"> </span><span class="c1">reading</span><span class="w"> </span><span class="c1">into</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">CPU</span><span class="w"> </span><span class="c1">memory.</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">usage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">CopyDst</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">MapRead</span><span class="p">;</span>
+<span class="n">m_mapBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_device</span><span class="p">.</span><span class="n">createBuffer</span><span class="p">(</span><span class="n">bufferDesc</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>After the <code class="docutils literal notranslate"><span class="pre">computePass.end()</span></code>, and before <code class="docutils literal notranslate"><span class="pre">encoder.finish(...)</span></code>, we add a copy command:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Copy</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">memory</span><span class="w"> </span><span class="c1">from</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">output</span><span class="w"> </span><span class="c1">buffer</span><span class="w"> </span><span class="c1">that</span><span class="w"> </span><span class="c1">lies</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">storage</span><span class="w"> </span><span class="c1">part</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">the</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">memory</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">map</span><span class="w"> </span><span class="c1">buffer,</span><span class="w"> </span><span class="c1">which</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">&quot;mappable&quot;</span><span class="w"> </span><span class="c1">part</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">memory.</span>
+<span class="n">encoder</span><span class="p">.</span><span class="n">copyBufferToBuffer</span><span class="p">(</span><span class="n">m_outputBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">m_mapBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">bufferDesc</span><span class="p">.</span><span class="n">size</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="callback">
+<h3>Callback<a class="headerlink" href="compute-pipeline.html#callback" title="Permalink to this heading">#</a></h3>
+<p>We are now ready to read from the map buffer on the CPU, through a callback provided to <code class="docutils literal notranslate"><span class="pre">mapAsync</span></code>:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Print</span><span class="w"> </span><span class="c1">output</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">done</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_mapBuffer</span><span class="p">.</span><span class="n">mapAsync</span><span class="p">(</span><span class="n">MapMode</span><span class="o">::</span><span class="n">Read</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">m_bufferSize</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">BufferMapAsyncStatus</span><span class="w"> </span><span class="n">status</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">BufferMapAsyncStatus</span><span class="o">::</span><span class="n">Success</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">*</span><span class="p">)</span><span class="n">m_mapBuffer</span><span class="p">.</span><span class="n">getConstMappedRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">m_bufferSize</span><span class="p">);</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;input</span><span class="w"> </span><span class="s">&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">input</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="w"> </span><span class="s">became</span><span class="w"> </span><span class="s">&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">m_mapBuffer</span><span class="p">.</span><span class="n">unmap</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">done</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>Do not forget to call <code class="docutils literal notranslate"><span class="pre">Instance::processEvents</span></code> in the loop that waits that the map is done afterwards:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">done</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Checks</span><span class="w"> </span><span class="c1">for</span><span class="w"> </span><span class="c1">ongoing</span><span class="w"> </span><span class="c1">asynchronous</span><span class="w"> </span><span class="c1">operations</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">call</span><span class="w"> </span><span class="c1">their</span><span class="w"> </span><span class="c1">callbacks</span><span class="w"> </span><span class="c1">if</span><span class="w"> </span><span class="c1">needed</span>
+<span class="w">    </span><span class="n">m_instance</span><span class="p">.</span><span class="n">processEvents</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>As of April 23, 2023, <code class="docutils literal notranslate"><span class="pre">wgpu-native</span></code> does not implement <code class="docutils literal notranslate"><span class="pre">processEvent</span></code> yet, but its behavior can be mimicked by submitting an empty queue:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifdef</span><span class="w"> </span><span class="cp">WEBGPU_BACKEND_WGPU</span>
+<span class="w">        </span><span class="n">queue</span><span class="p">.</span><span class="n">submit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">);</span>
+<span class="cp">#else</span>
+<span class="w">        </span><span class="n">m_instance</span><span class="p">.</span><span class="n">processEvents</span><span class="p">();</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</div>
+<p>And you should finally see something like this in the output console:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">input</span> <span class="mi">0</span> <span class="n">became</span> <span class="mi">1</span>
+<span class="nb">input</span> <span class="mf">0.1</span> <span class="n">became</span> <span class="mf">1.2</span>
+<span class="nb">input</span> <span class="mf">0.2</span> <span class="n">became</span> <span class="mf">1.4</span>
+<span class="nb">input</span> <span class="mf">0.3</span> <span class="n">became</span> <span class="mf">1.6</span>
+<span class="nb">input</span> <span class="mf">0.4</span> <span class="n">became</span> <span class="mf">1.8</span>
+<span class="p">[</span><span class="o">...</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="compute-pipeline.html#conclusion" title="Permalink to this heading">#</a></h2>
+<p>Some parts of this chapters were reminders of what has been done with the render pass, the <strong>most important news</strong> here is the dispatch/workgroup/thread hierarchy. Make sure to come back to the list of rules regularly to check that the choice of workgroup size is relevant (and benchmark whenever possible).</p>
+<p>We are now ready to focus on the content of the compute shader itself, and the different ways it can manipulate resources and memory!</p>
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step201"><code class="docutils literal notranslate"><span class="pre">step201</span></code></a></p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="image-processing/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Image Processing</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Basic Compute</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022-2023, Élie Michel and contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/eliemichel/LearnWebGPU" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      <div class="toc-sticky toc-scroll">
+	<div class="toc-title-container">
+		<span class="toc-title">
+			On this page
+		</span>
+	</div>
+	<div class="toc-tree-container">
+		<div class="toc-tree">
+			<ul>
+<li><a class="reference internal" href="compute-pipeline.html#">Compute Pipeline</a><ul>
+<li><a class="reference internal" href="compute-pipeline.html#set-up">Set-up</a><ul>
+<li><a class="reference internal" href="compute-pipeline.html#a-simple-example">A simple example</a></li>
+<li><a class="reference internal" href="compute-pipeline.html#architecture">Architecture</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="compute-pipeline.html#compute-pass">Compute Pass</a></li>
+<li><a class="reference internal" href="compute-pipeline.html#id1">Compute pipeline</a></li>
+<li><a class="reference internal" href="compute-pipeline.html#resources">Resources</a><ul>
+<li><a class="reference internal" href="compute-pipeline.html#pipeline-layout">Pipeline layout</a></li>
+<li><a class="reference internal" href="compute-pipeline.html#buffers">Buffers</a></li>
+<li><a class="reference internal" href="compute-pipeline.html#bind-group">Bind Group</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="compute-pipeline.html#invocation">Invocation</a><ul>
+<li><a class="reference internal" href="compute-pipeline.html#concurrent-calls">Concurrent calls</a></li>
+<li><a class="reference internal" href="compute-pipeline.html#workgroup-size-vs-count">Workgroup size vs count</a></li>
+<li><a class="reference internal" href="compute-pipeline.html#workgroup-dimensions">Workgroup dimensions</a></li>
+<li><a class="reference internal" href="compute-pipeline.html#example">Example</a></li>
+<li><a class="reference internal" href="compute-pipeline.html#device-limits">Device limits</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="compute-pipeline.html#read-back">Read-back</a><ul>
+<li><a class="reference internal" href="compute-pipeline.html#map-buffer">Map Buffer</a></li>
+<li><a class="reference internal" href="compute-pipeline.html#callback">Callback</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="compute-pipeline.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+		</div>
+	</div>
+	
+</div>
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/tabs.js"></script>
+    <script src="../_static/sphinx_literate.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

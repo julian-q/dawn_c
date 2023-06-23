@@ -1,0 +1,941 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content="Recap" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://eliemichel.github.io/basic-3d-rendering/lighting-and-material/recap.html" />
+<meta property="og:site_name" content="Learn WebGPU for C++" />
+<meta property="og:description" content="With webgpu.hpp Resulting code: step100 Vanilla webgpu.h Resulting code: step100-vanilla In this first part, we connect the dots that we already have, so that we can focus in the next chapters on t..." />
+<meta property="og:image" content="https://eliemichel.github.io/images/webgpu-responsive.svg" />
+<meta property="og:image:alt" content="Learn WebGPU for C++" />
+<meta name="description" content="With webgpu.hpp Resulting code: step100 Vanilla webgpu.h Resulting code: step100-vanilla In this first part, we connect the dots that we already have, so that we can focus in the next chapters on t..." />
+    <link rel="icon" type="image/svg+xml" href="../../_static/favicon/favicon.svg">
+    <link rel="icon" sizes="16x16" href="../../_static/favicon/favicon-16x16.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="../../_static/favicon/favicon-32x32.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://eliemichel.github.io/LearnWebGPU/_static/favicon/apple-touch-icon-180x180.png" type="image/png"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Specularity" href="specular.html" /><link rel="prev" title="Lighting and Material" href="index.html" />
+
+    <!-- Generated with Sphinx 5.3.0 and Furo 2023.03.27 -->
+        <title>Recap - Learn WebGPU for C++ documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx_literate.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  --color-brand-primary: #ac2800;
+  --color-brand-content: #007cac;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     <em>Important</em> This documentation is a work in progress! <a href="../../appendices/feedback-needed.html">Feedback needed!</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Learn WebGPU for C++  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/webgpu-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/webgpu-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../getting-started/index.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/project-setup.html">Project setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/opening-a-window.html">Opening a window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/hello-webgpu.html">Hello WebGPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-adapter.html">The Adapter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-device.html">The Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-command-queue.html">The Command Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/first-color.html">First Color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/cpp-idioms.html">C++ wrapper</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">Basic 3D Rendering</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../hello-triangle.html">Hello Triangle</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../input-geometry/index.html">Input Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/playing-with-buffers.html">Playing with buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/a-first-vertex-attribute.html">A first Vertex Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/multiple-attributes.html">Multiple Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/index-buffer.html">Index Buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../shader-uniforms/index.html">Shader Uniforms</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/a-first-uniform.html">A first uniform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/multiple-uniforms.html">More uniforms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/dynamic-uniforms.html">Dynamic uniforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../3d-meshes/index.html">3D Meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/a-simple-example.html">A simple example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/depth-buffer.html">Depth buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/transformation-matrices.html">Transformation matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/projection-matrices.html">Projection matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/basic-shading.html">Basic shading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../texturing/index.html">Texturing</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/a-first-texture.html">A first texture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/texture-mapping.html">Texture mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/sampler.html">Sampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../some-interaction/index.html">Some interaction</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/refactoring.html">Refactoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/resizing-window.html">Resizing the window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/camera-control.html">Camera control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/simple-gui.html">Simple GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">Lighting and Material</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="recap.html#">Recap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="specular.html">Specularity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="normal-mapping.html">Normal mapping (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ibl.html">Image-Based Lighting (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cubemap.html">Cube Maps (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pbr.html">Physically-Based Materials (🚧WIP)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../basic-compute/index.html">Basic Compute</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../basic-compute/compute-pipeline.html">Compute Pipeline</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-compute/image-processing/index.html">Image Processing</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/mipmap-generation.html">Mipmap Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/convolution-filters.html">Convolution Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/cubemap-conversion.html">Cubemap Conversion (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/cubemap-prefiltering.html">Cubemap Prefiltering (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-compute/procedural-geometry/index.html">Procedural Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/procedural-geometry/deformation.html">Deformation (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../basic-compute/neural-networks.html">Neural Networks (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../advanced-techniques/index.html">Advanced Techniques</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/raii.html">RAII</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/hdr-textures.html">High Dynamic Range Textures (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/deferred-shading.html">Deferred Shading (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/benchmarking.html">Benchmarking (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/render-bundles.html">Render Bundles (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/multi-sampling.html">Multi-Sampling (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/scene-tree.html">Scene tree (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/screen-capture.html">Screen capture (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/shadow-maps.html">Shadow maps (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/tesselation.html">Tesselation (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/raytracing.html">Raytracing (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../appendices/index.html">Appendices</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/teaching-native-graphics-in-2023.html">Teaching native graphics in 2023</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/feedback-needed.html">Feedback needed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/debugging.html">Debugging (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/building-for-the-web.html">Building for the Web (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/memory-model.html">Memory Model (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/custom-extensions.html">Custom Extensions (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/references.html">References (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/tmp.html">Temporary page</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="recap.html#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/eliemichel/LearnWebGPU/edit/main/./basic-3d-rendering/lighting-and-material/recap.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="recap">
+<h1>Recap<a class="headerlink" href="recap.html#recap" title="Permalink to this heading">#</a></h1>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step100"><code class="docutils literal notranslate"><span class="pre">step100</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step100-vanilla"><code class="docutils literal notranslate"><span class="pre">step100-vanilla</span></code></a></p>
+</div>
+</div>
+<p>In this first part, we connect the dots that we already have, so that we can focus in the next chapters on the material and lighting models.</p>
+<section id="basic-shading">
+<h2>Basic shading<a class="headerlink" href="recap.html#basic-shading" title="Permalink to this heading">#</a></h2>
+<p>Let’s recap what we have seen in the <a class="reference internal" href="../3d-meshes/basic-shading.html"><span class="std std-doc">Basic shading</span></a> chapter.</p>
+<ul class="simple">
+<li><p>The shaded look of a surface element depends on its <strong>normal</strong>.</p></li>
+<li><p>This look also depends on <strong>light sources</strong>, and in particular on their direction.</p></li>
+<li><p>The most basic shading we tested with is <code class="docutils literal notranslate"><span class="pre">shading</span> <span class="pre">=</span> <span class="pre">max(0.0,</span> <span class="pre">dot(lightDirection,</span> <span class="pre">normal))</span></code>. This is a (lambertian) <strong>diffuse</strong> shading.</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For more details about the rational behind this simple diffuse model, you can consult this nice introduction on Scratchpixel: <a class="reference external" href="https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/diffuse-lambertian-shading.html">Diffuse and Lambertian Shading</a>.</p>
+</div>
+<p>We can plug this with the texture sampling, by using the texture as the base color before applying the shading:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="o">@</span><span class="n">fragment</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">fs_main</span><span class="p">(</span><span class="k">in</span>:<span class="w"> </span><span class="nc">VertexOutput</span><span class="p">)</span><span class="w"> </span>-&gt;<span class="w"> </span><span class="o">@</span><span class="n">location</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Compute</span><span class="w"> </span><span class="c1">shading</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">normal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">normalize</span><span class="p">(</span><span class="k">in</span><span class="p">.</span><span class="n">normal</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">lightDirection1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec3</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">lightDirection2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec3</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">lightColor1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec3</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0.6</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">lightColor2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec3</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">shading1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">dot</span><span class="p">(</span><span class="n">lightDirection1</span><span class="p">,</span><span class="w"> </span><span class="n">normal</span><span class="p">));</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">shading2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">dot</span><span class="p">(</span><span class="n">lightDirection2</span><span class="p">,</span><span class="w"> </span><span class="n">normal</span><span class="p">));</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">shading</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shading1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">lightColor1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">shading2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">lightColor2</span><span class="p">;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Sample</span><span class="w"> </span><span class="c1">texture</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">baseColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">textureSample</span><span class="p">(</span><span class="n">baseColorTexture</span><span class="p">,</span><span class="w"> </span><span class="n">textureSampler</span><span class="p">,</span><span class="w"> </span><span class="k">in</span><span class="p">.</span><span class="n">uv</span><span class="p">).</span><span class="n">rgb</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Combine</span><span class="w"> </span><span class="c1">texture</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">lighting</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">baseColor</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">shading</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Gamma-correction</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">corrected_color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pow</span><span class="p">(</span><span class="n">color</span><span class="p">,</span><span class="w"> </span><span class="n">vec3</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">2.2</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">corrected_color</span><span class="p">,</span><span class="w"> </span><span class="n">uMyUniforms</span><span class="p">.</span><span class="n">color</span><span class="p">.</span><span class="n">a</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id1">
+<img alt="../../_images/lit-boat.png" class="with-shadow" src="../../_images/lit-boat.png" />
+<figcaption>
+<p><span class="caption-text">The boat model with some basic lighting.</span><a class="headerlink" href="recap.html#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="interaction">
+<h2>Interaction<a class="headerlink" href="recap.html#interaction" title="Permalink to this heading">#</a></h2>
+<p>To facilitate the further testing of lighting and materials, let’s make the light sources dynamic and connect them to our GUI.</p>
+<section id="lighting-uniforms">
+<h3>Lighting uniforms<a class="headerlink" href="recap.html#lighting-uniforms" title="Permalink to this heading">#</a></h3>
+<p>We are going to create 2 private methods to contain all the light-related code. We also create a new independent uniform buffer:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">class</span><span class="w"> </span><span class="c1">Application:</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Private</span><span class="w"> </span><span class="c1">methods</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">initLighting</span><span class="p">();</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">updateLighting</span><span class="p">();</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Private</span><span class="w"> </span><span class="c1">attributes</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">LightingUniforms</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">glm</span><span class="o">::</span><span class="n">vec4</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">directions</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">glm</span><span class="o">::</span><span class="n">vec4</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">colors</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="k">static_assert</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">LightingUniforms</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="n">wgpu</span><span class="o">::</span><span class="n">Buffer</span><span class="w"> </span><span class="n">m_lightingUniformBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="n">LightingUniforms</span><span class="w"> </span><span class="n">m_lightingUniforms</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">class</span><span class="w"> </span><span class="c1">Application:</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Private</span><span class="w"> </span><span class="c1">methods</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">initLighting</span><span class="p">();</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">updateLighting</span><span class="p">();</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Private</span><span class="w"> </span><span class="c1">attributes</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">LightingUniforms</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">glm</span><span class="o">::</span><span class="n">vec4</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">directions</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">glm</span><span class="o">::</span><span class="n">vec4</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">colors</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="k">static_assert</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">LightingUniforms</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="n">WGPUBuffer</span><span class="w"> </span><span class="n">m_lightingUniformBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="n">LightingUniforms</span><span class="w"> </span><span class="n">m_lightingUniforms</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">initLighting()</span></code> method must be called <strong>after</strong> all the basic WebGPU objects have been initialized (e.g., the device) <strong>but before</strong> finalizing the bind group and its layout.</p>
+<p>Since this init needs to modify the <code class="docutils literal notranslate"><span class="pre">bindingLayoutEntries</span></code> and <code class="docutils literal notranslate"><span class="pre">bindings</span></code> vectors, we make them attributes instead of variables local to <code class="docutils literal notranslate"><span class="pre">onInit()</span></code>.</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Private</span><span class="w"> </span><span class="c1">attributes</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">wgpu</span><span class="o">::</span><span class="n">BindGroupLayoutEntry</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_bindingLayoutEntries</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">wgpu</span><span class="o">::</span><span class="n">BindGroupEntry</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_bindings</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Private</span><span class="w"> </span><span class="c1">attributes</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">WGPUBindGroupLayoutEntry</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_bindingLayoutEntries</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">WGPUBindGroupEntry</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_bindings</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Overall the order in <code class="docutils literal notranslate"><span class="pre">onInit()</span></code> should look like:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span><span class="w"> </span><span class="nf">Application::onInit</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">Init</span><span class="w"> </span><span class="c1">window,</span><span class="w"> </span><span class="c1">device,</span><span class="w"> </span><span class="c1">swap</span><span class="w"> </span><span class="c1">chain</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">Init</span><span class="w"> </span><span class="c1">resources</span><span class="w"> </span><span class="c1">(shader,</span><span class="w"> </span><span class="c1">geometry,</span><span class="w"> </span><span class="c1">texture,</span><span class="w"> </span><span class="c1">sampler,</span><span class="w"> </span><span class="c1">depth</span><span class="w"> </span><span class="c1">buffer)</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">Init</span><span class="w"> </span><span class="c1">binding</span><span class="w"> </span><span class="c1">entries</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">their</span><span class="w"> </span><span class="c1">layout</span>
+<span class="w">    </span><span class="n">initLighting</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">render</span><span class="w"> </span><span class="c1">pipeline</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">bind</span><span class="w"> </span><span class="c1">group</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">Init</span><span class="w"> </span><span class="c1">GUI</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Note how I turned the direction and color to <code class="docutils literal notranslate"><span class="pre">vec4</span></code> instead of <code class="docutils literal notranslate"><span class="pre">vec3</span></code>. This is because of <a class="reference external" href="https://www.w3.org/TR/WGSL/#alignment-and-size">alignment rules</a>: a <code class="docutils literal notranslate"><span class="pre">vec3</span></code> is aligned as if it was a <code class="docutils literal notranslate"><span class="pre">vec4</span></code>.</p>
+</div>
+<p>We can now reproduces the initialization of <code class="docutils literal notranslate"><span class="pre">MyUniform</span></code> to prepare our new <code class="docutils literal notranslate"><span class="pre">LightingUniforms</span></code> buffer:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--3-input--1" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">Application::initLighting</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Queue</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_device</span><span class="p">.</span><span class="n">getQueue</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">uniform</span><span class="w"> </span><span class="c1">buffer</span>
+<span class="w">    </span><span class="n">BufferDescriptor</span><span class="w"> </span><span class="n">bufferDesc</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bufferDesc</span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">LightingUniforms</span><span class="p">);</span>
+<span class="w">    </span><span class="n">bufferDesc</span><span class="p">.</span><span class="n">usage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">CopyDst</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">Uniform</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bufferDesc</span><span class="p">.</span><span class="n">mappedAtCreation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_lightingUniformBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_device</span><span class="p">.</span><span class="n">createBuffer</span><span class="p">(</span><span class="n">bufferDesc</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Upload</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">initial</span><span class="w"> </span><span class="c1">value</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">uniforms</span>
+<span class="w">    </span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">directions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">vec4</span><span class="p">{</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">},</span>
+<span class="w">        </span><span class="n">vec4</span><span class="p">{</span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">colors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">vec4</span><span class="p">{</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">},</span>
+<span class="w">        </span><span class="n">vec4</span><span class="p">{</span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="n">queue</span><span class="p">.</span><span class="n">writeBuffer</span><span class="p">(</span><span class="n">m_lightingUniformBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_lightingUniforms</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">LightingUniforms</span><span class="p">));</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Setup</span><span class="w"> </span><span class="c1">binding</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">bindingIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">m_bindingLayoutEntries</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+<span class="w">    </span><span class="n">BindGroupLayoutEntry</span><span class="w"> </span><span class="n">bindingLayout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Default</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bindingIndex</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">visibility</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ShaderStage</span><span class="o">::</span><span class="n">Fragment</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">buffer</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BufferBindingType</span><span class="o">::</span><span class="n">Uniform</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">buffer</span><span class="p">.</span><span class="n">minBindingSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">LightingUniforms</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_bindingLayoutEntries</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">bindingLayout</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">BindGroupEntry</span><span class="w"> </span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Default</span><span class="p">;</span>
+<span class="w">    </span><span class="n">binding</span><span class="p">.</span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bindingIndex</span><span class="p">;</span>
+<span class="w">    </span><span class="n">binding</span><span class="p">.</span><span class="n">buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_lightingUniformBuffer</span><span class="p">;</span>
+<span class="w">    </span><span class="n">binding</span><span class="p">.</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">binding</span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">LightingUniforms</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_bindings</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">binding</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--3-input--2" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">Application::initLighting</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">WGPUQueue</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuDeviceGetQueue</span><span class="p">(</span><span class="n">m_device</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">uniform</span><span class="w"> </span><span class="c1">buffer</span>
+<span class="w">    </span><span class="n">WGPUBufferDescriptor</span><span class="w"> </span><span class="n">bufferDesc</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bufferDesc</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bufferDesc</span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">LightingUniforms</span><span class="p">);</span>
+<span class="w">    </span><span class="n">bufferDesc</span><span class="p">.</span><span class="n">usage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUBufferUsage_CopyDst</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">WGPUBufferUsage_Uniform</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bufferDesc</span><span class="p">.</span><span class="n">mappedAtCreation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_lightingUniformBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuDeviceCreateBuffer</span><span class="p">(</span><span class="n">m_device</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">bufferDesc</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Upload</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">initial</span><span class="w"> </span><span class="c1">value</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">uniforms</span>
+<span class="w">    </span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">directions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">vec4</span><span class="p">{</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">},</span>
+<span class="w">        </span><span class="n">vec4</span><span class="p">{</span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">colors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">vec4</span><span class="p">{</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">},</span>
+<span class="w">        </span><span class="n">vec4</span><span class="p">{</span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="n">wgpuQueueWriteBuffer</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">m_lightingUniformBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_lightingUniforms</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">LightingUniforms</span><span class="p">));</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Setup</span><span class="w"> </span><span class="c1">binding</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">bindingIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">m_bindingLayoutEntries</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+<span class="w">    </span><span class="n">WGPUBindGroupLayoutEntry</span><span class="w"> </span><span class="n">bindingLayout</span><span class="p">;</span>
+<span class="w">    </span><span class="n">setDefaults</span><span class="p">(</span><span class="n">bindingLayout</span><span class="p">);</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bindingIndex</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">visibility</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUShaderStage_Fragment</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">buffer</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUBufferBindingType_Uniform</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">buffer</span><span class="p">.</span><span class="n">minBindingSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">LightingUniforms</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_bindingLayoutEntries</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">bindingLayout</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">WGPUBindGroupEntry</span><span class="w"> </span><span class="n">binding</span><span class="p">;</span>
+<span class="w">    </span><span class="n">setDefaults</span><span class="p">(</span><span class="n">binding</span><span class="p">);</span>
+<span class="w">    </span><span class="n">binding</span><span class="p">.</span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bindingIndex</span><span class="p">;</span>
+<span class="w">    </span><span class="n">binding</span><span class="p">.</span><span class="n">buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_lightingUniformBuffer</span><span class="p">;</span>
+<span class="w">    </span><span class="n">binding</span><span class="p">.</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">binding</span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">LightingUniforms</span><span class="p">);</span>
+<span class="w">    </span><span class="n">m_bindings</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">binding</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Since we are adding a new uniform buffer, don’t forget to update the required limits:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxUniformBuffersPerShaderStage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<p>On the shader side, we reorganize to use this new uniform buffer and make the code more flexible to the introduction of more light sources:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="sd">/**</span>
+<span class="w"> </span><span class="sd">*</span><span class="w"> </span><span class="sd">A</span><span class="w"> </span><span class="sd">structure</span><span class="w"> </span><span class="sd">holding</span><span class="w"> </span><span class="sd">the</span><span class="w"> </span><span class="sd">lighting</span><span class="w"> </span><span class="sd">settings</span>
+<span class="w"> </span><span class="sd">*/</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">LightingUniforms</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">directions</span>:<span class="w"> </span><span class="nc">array</span><span class="o">&lt;</span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">colors</span>:<span class="w"> </span><span class="nc">array</span><span class="o">&lt;</span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="o">@</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">@</span><span class="n">binding</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="n">var</span><span class="o">&lt;</span><span class="n">uniform</span><span class="o">&gt;</span><span class="w"> </span><span class="n">uLighting</span>:<span class="w"> </span><span class="nc">LightingUniforms</span><span class="p">;</span>
+
+<span class="o">@</span><span class="n">fragment</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">fs_main</span><span class="p">(</span><span class="k">in</span>:<span class="w"> </span><span class="nc">VertexOutput</span><span class="p">)</span><span class="w"> </span>-&gt;<span class="w"> </span><span class="o">@</span><span class="n">location</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Compute</span><span class="w"> </span><span class="c1">shading</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">normal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">normalize</span><span class="p">(</span><span class="k">in</span><span class="p">.</span><span class="n">normal</span><span class="p">);</span>
+<span class="w">    </span><span class="n">var</span><span class="w"> </span><span class="n">shading</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec3</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">var</span><span class="w"> </span><span class="n">i</span>:<span class="w"> </span><span class="kt">i32</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">normalize</span><span class="p">(</span><span class="n">uLighting</span><span class="p">.</span><span class="n">directions</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">xyz</span><span class="p">);</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uLighting</span><span class="p">.</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">rgb</span><span class="p">;</span>
+<span class="w">        </span><span class="n">shading</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">dot</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span><span class="w"> </span><span class="n">normal</span><span class="p">))</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">color</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Sample</span><span class="w"> </span><span class="c1">texture</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">baseColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">textureSample</span><span class="p">(</span><span class="n">baseColorTexture</span><span class="p">,</span><span class="w"> </span><span class="n">textureSampler</span><span class="p">,</span><span class="w"> </span><span class="k">in</span><span class="p">.</span><span class="n">uv</span><span class="p">).</span><span class="n">rgb</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Combine</span><span class="w"> </span><span class="c1">texture</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">lighting</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">baseColor</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">shading</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Gamma-correction</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">corrected_color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pow</span><span class="p">(</span><span class="n">color</span><span class="p">,</span><span class="w"> </span><span class="n">vec3</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">2.2</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">corrected_color</span><span class="p">,</span><span class="w"> </span><span class="n">uMyUniforms</span><span class="p">.</span><span class="n">color</span><span class="p">.</span><span class="n">a</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Finally, let’s connect the GUI by replacing the “Hello, world” panel in <code class="docutils literal notranslate"><span class="pre">updateGui()</span></code>:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">Application::updateGui:</span>
+<span class="n">ImGui</span><span class="o">::</span><span class="n">Begin</span><span class="p">(</span><span class="s">&quot;Lighting&quot;</span><span class="p">);</span>
+<span class="n">ImGui</span><span class="o">::</span><span class="n">ColorEdit3</span><span class="p">(</span><span class="s">&quot;Color</span><span class="w"> </span><span class="s">#0&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">colors</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span>
+<span class="n">ImGui</span><span class="o">::</span><span class="n">DragFloat3</span><span class="p">(</span><span class="s">&quot;Direction</span><span class="w"> </span><span class="s">#0&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">directions</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span>
+<span class="n">ImGui</span><span class="o">::</span><span class="n">ColorEdit3</span><span class="p">(</span><span class="s">&quot;Color</span><span class="w"> </span><span class="s">#1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">colors</span><span class="p">[</span><span class="mi">1</span><span class="p">]));</span>
+<span class="n">ImGui</span><span class="o">::</span><span class="n">DragFloat3</span><span class="p">(</span><span class="s">&quot;Direction</span><span class="w"> </span><span class="s">#1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">directions</span><span class="p">[</span><span class="mi">1</span><span class="p">]));</span>
+<span class="n">ImGui</span><span class="o">::</span><span class="n">End</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">glm::value_ptr</span></code> function returns a pointer to where the glm object’s raw data is stored, which is what ImGui needs to operate. In practice for vectors it is equivalent to using the address of the vector object itself.</p>
+</div>
+<p>And at each frame we copy the values that the GUI manipulates to the GPU-side buffer.</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--4-input--1" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">Application::updateLighting</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Queue</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_device</span><span class="p">.</span><span class="n">getQueue</span><span class="p">();</span>
+<span class="w">    </span><span class="n">queue</span><span class="p">.</span><span class="n">writeBuffer</span><span class="p">(</span><span class="n">m_lightingUniformBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_lightingUniforms</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">LightingUniforms</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--4-input--2" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">Application::updateLighting</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">WGPUQueue</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuDeviceGetQueue</span><span class="p">(</span><span class="n">m_device</span><span class="p">);</span>
+<span class="w">    </span><span class="n">wgpuQueueWriteBuffer</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">m_lightingUniformBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_lightingUniforms</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">LightingUniforms</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<figure class="align-center" id="id2">
+<img alt="../../_images/light-color-ui.png" class="with-shadow" src="../../_images/light-color-ui.png" />
+<figcaption>
+<p><span class="caption-text">The UI is connected to the lighting uniforms.</span><a class="headerlink" href="recap.html#id2" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="multiple-textures">
+<h3>Multiple textures<a class="headerlink" href="recap.html#multiple-textures" title="Permalink to this heading">#</a></h3>
+<p>We are soon going to use more than one texture. Since we are doing a bit of a refactoring in this chapter, let us also make our code flexible to the addition of new textures.</p>
+<p>We move the texture loading and associated binding in a dedicated method:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--5-input--1" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span><span class="w"> </span><span class="nf">Application::initTexture</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="w"> </span><span class="o">&amp;</span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">texture</span>
+<span class="w">    </span><span class="n">TextureView</span><span class="w"> </span><span class="n">textureView</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Texture</span><span class="w"> </span><span class="n">texture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ResourceManager</span><span class="o">::</span><span class="n">loadTexture</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">m_device</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">textureView</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">texture</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Could</span><span class="w"> </span><span class="s">not</span><span class="w"> </span><span class="s">load</span><span class="w"> </span><span class="s">texture!&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">m_textures</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">texture</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Setup</span><span class="w"> </span><span class="c1">binding</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">bindingIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">m_bindingLayoutEntries</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+<span class="w">    </span><span class="n">BindGroupLayoutEntry</span><span class="w"> </span><span class="n">bindingLayout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Default</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bindingIndex</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">visibility</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ShaderStage</span><span class="o">::</span><span class="n">Fragment</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">texture</span><span class="p">.</span><span class="n">sampleType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TextureSampleType</span><span class="o">::</span><span class="n">Float</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">texture</span><span class="p">.</span><span class="n">viewDimension</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TextureViewDimension</span><span class="o">::</span><span class="n">_2D</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_bindingLayoutEntries</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">bindingLayout</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">BindGroupEntry</span><span class="w"> </span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Default</span><span class="p">;</span>
+<span class="w">    </span><span class="n">binding</span><span class="p">.</span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bindingIndex</span><span class="p">;</span>
+<span class="w">    </span><span class="n">binding</span><span class="p">.</span><span class="n">textureView</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">textureView</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_bindings</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">binding</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--5-input--2" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span><span class="w"> </span><span class="nf">Application::initTexture</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="w"> </span><span class="o">&amp;</span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">texture</span>
+<span class="w">    </span><span class="n">WGPUTextureView</span><span class="w"> </span><span class="n">textureView</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">WGPUTexture</span><span class="w"> </span><span class="n">texture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ResourceManager</span><span class="o">::</span><span class="n">loadTexture</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">m_device</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">textureView</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">texture</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Could</span><span class="w"> </span><span class="s">not</span><span class="w"> </span><span class="s">load</span><span class="w"> </span><span class="s">texture!&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">m_textures</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">texture</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Setup</span><span class="w"> </span><span class="c1">binding</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">bindingIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">m_bindingLayoutEntries</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+<span class="w">    </span><span class="n">WGPUBindGroupLayoutEntry</span><span class="w"> </span><span class="n">bindingLayout</span><span class="p">;</span>
+<span class="w">    </span><span class="n">setDefaults</span><span class="p">(</span><span class="n">bindingLayout</span><span class="p">);</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bindingIndex</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">visibility</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUShaderStage_Fragment</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">texture</span><span class="p">.</span><span class="n">sampleType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUTextureSampleType_Float</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">texture</span><span class="p">.</span><span class="n">viewDimension</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUTextureViewDimension_2D</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_bindingLayoutEntries</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">bindingLayout</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">WGPUBindGroupEntry</span><span class="w"> </span><span class="n">binding</span><span class="p">;</span>
+<span class="w">    </span><span class="n">setDefaults</span><span class="p">(</span><span class="n">binding</span><span class="p">)</span>
+<span class="w">    </span><span class="n">binding</span><span class="p">.</span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bindingIndex</span><span class="p">;</span>
+<span class="w">    </span><span class="n">binding</span><span class="p">.</span><span class="n">textureView</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">textureView</span><span class="p">;</span>
+<span class="w">    </span><span class="n">m_bindings</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">binding</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The init simply becomes, just before <code class="docutils literal notranslate"><span class="pre">initLighting()</span></code>:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">onInit()</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">initTexture</span><span class="p">(</span><span class="n">RESOURCE_DIR</span><span class="w"> </span><span class="s">&quot;/fourareen2K_albedo.jpg&quot;</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Note that this also assumes that the <code class="docutils literal notranslate"><span class="pre">m_texture</span></code> attribute is replaced by a vector:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--6-input--1" name="tab-set--6" type="radio"><label class="tab-label" for="tab-set--6-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">Application</span><span class="w"> </span><span class="c1">class:</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">wgpu</span><span class="o">::</span><span class="n">Texture</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_textures</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">Application.cpp</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">Application::onFinish</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">texture</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_textures</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">texture</span><span class="p">.</span><span class="n">destroy</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--6-input--2" name="tab-set--6" type="radio"><label class="tab-label" for="tab-set--6-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">Application</span><span class="w"> </span><span class="c1">class:</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">WGPUTexture</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_textures</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">Application.cpp</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">Application::onFinish</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">texture</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_textures</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">wgpuTextureDestroy</span><span class="p">(</span><span class="n">texture</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And I swapped the binding of the sampler and the texture, so that textures can be consecutive (not that it is a technical requirements, but it was easier to organize this way).</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="o">@</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">@</span><span class="n">binding</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">var</span><span class="w"> </span><span class="n">textureSampler</span>:<span class="w"> </span><span class="nc">sampler</span><span class="p">;</span>
+<span class="c1">//</span><span class="w">                 </span><span class="c1">^</span><span class="w"> </span><span class="c1">Was</span><span class="w"> </span><span class="c1">2</span>
+<span class="o">@</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">@</span><span class="n">binding</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="n">var</span><span class="w"> </span><span class="n">baseColorTexture</span>:<span class="w"> </span><span class="nc">texture_2d</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="c1">//</span><span class="w">                 </span><span class="c1">^</span><span class="w"> </span><span class="c1">Was</span><span class="w"> </span><span class="c1">1</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="complement">
+<h2>Complement<a class="headerlink" href="recap.html#complement" title="Permalink to this heading">#</a></h2>
+<section id="custom-gui-input">
+<h3>Custom GUI input<a class="headerlink" href="recap.html#custom-gui-input" title="Permalink to this heading">#</a></h3>
+<p>This <code class="docutils literal notranslate"><span class="pre">ImGui::DragFloat3</span></code> input is not ideal for a direction. It is not so intuitive, and does not ensure that the direction vector always has a length of 1. We can easily create our own input <code class="docutils literal notranslate"><span class="pre">ImGui::DragDirection</span></code> to expose the direction as 2 polar angles:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;glm/gtx/polar_coordinates.hpp&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">ImGui</span><span class="w"> </span><span class="p">{</span>
+<span class="kt">bool</span><span class="w"> </span><span class="nf">DragDirection</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">label</span><span class="p">,</span><span class="w"> </span><span class="n">vec4</span><span class="o">&amp;</span><span class="w"> </span><span class="n">direction</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">vec2</span><span class="w"> </span><span class="n">angles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">degrees</span><span class="p">(</span><span class="n">glm</span><span class="o">::</span><span class="n">polar</span><span class="p">(</span><span class="n">vec3</span><span class="p">(</span><span class="n">direction</span><span class="p">)));</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImGui</span><span class="o">::</span><span class="n">DragFloat2</span><span class="p">(</span><span class="n">label</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">angles</span><span class="p">));</span>
+<span class="w">    </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec4</span><span class="p">(</span><span class="n">glm</span><span class="o">::</span><span class="n">euclidean</span><span class="p">(</span><span class="n">glm</span><span class="o">::</span><span class="n">radians</span><span class="p">(</span><span class="n">angles</span><span class="p">)),</span><span class="w"> </span><span class="n">direction</span><span class="p">.</span><span class="n">w</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">changed</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">namespace</span><span class="w"> </span><span class="c1">ImGui</span>
+</pre></div>
+</div>
+<p>It can be used as follows:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImGui</span><span class="o">::</span><span class="n">DragDirection</span><span class="p">(</span><span class="s">&quot;Direction</span><span class="w"> </span><span class="s">#0&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">directions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">changed</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="slight-optimization">
+<h3>Slight optimization<a class="headerlink" href="recap.html#slight-optimization" title="Permalink to this heading">#</a></h3>
+<p>Instead of uploading the lighting uniform buffer at each frame even when nothing changes, we can get from ImGui the information of whether the fields changed:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--7-input--1" name="tab-set--7" type="radio"><label class="tab-label" for="tab-set--7-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">class</span><span class="w"> </span><span class="c1">Application</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">m_lightingUniformsChanged</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">Application.cpp</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">Application::updateLighting</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_lightingUniformsChanged</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Queue</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_device</span><span class="p">.</span><span class="n">getQueue</span><span class="p">();</span>
+<span class="w">        </span><span class="n">queue</span><span class="p">.</span><span class="n">writeBuffer</span><span class="p">(</span><span class="n">m_lightingUniformBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_lightingUniforms</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">LightingUniforms</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">Application::updateGui:</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="n">ImGui</span><span class="o">::</span><span class="n">Begin</span><span class="p">(</span><span class="s">&quot;Lighting&quot;</span><span class="p">);</span>
+<span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImGui</span><span class="o">::</span><span class="n">ColorEdit3</span><span class="p">(</span><span class="s">&quot;Color</span><span class="w"> </span><span class="s">#0&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">colors</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">changed</span><span class="p">;</span>
+<span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImGui</span><span class="o">::</span><span class="n">DragFloat3</span><span class="p">(</span><span class="s">&quot;Direction</span><span class="w"> </span><span class="s">#0&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">directions</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">changed</span><span class="p">;</span>
+<span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImGui</span><span class="o">::</span><span class="n">ColorEdit3</span><span class="p">(</span><span class="s">&quot;Color</span><span class="w"> </span><span class="s">#1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">colors</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">changed</span><span class="p">;</span>
+<span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImGui</span><span class="o">::</span><span class="n">DragFloat3</span><span class="p">(</span><span class="s">&quot;Direction</span><span class="w"> </span><span class="s">#1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">directions</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">changed</span><span class="p">;</span>
+<span class="n">ImGui</span><span class="o">::</span><span class="n">End</span><span class="p">();</span>
+<span class="n">m_lightingUniformsChanged</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">changed</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--7-input--2" name="tab-set--7" type="radio"><label class="tab-label" for="tab-set--7-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">class</span><span class="w"> </span><span class="c1">Application</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">m_lightingUniformsChanged</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">Application.cpp</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">Application::updateLighting</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_lightingUniformsChanged</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">WGPUQueue</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuDeviceGetQueue</span><span class="p">(</span><span class="n">m_device</span><span class="p">);</span>
+<span class="w">        </span><span class="n">wgpuQueueWriteBuffer</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">m_lightingUniformBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_lightingUniforms</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">LightingUniforms</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">Application::updateGui:</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="n">ImGui</span><span class="o">::</span><span class="n">Begin</span><span class="p">(</span><span class="s">&quot;Lighting&quot;</span><span class="p">);</span>
+<span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImGui</span><span class="o">::</span><span class="n">ColorEdit3</span><span class="p">(</span><span class="s">&quot;Color</span><span class="w"> </span><span class="s">#0&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">colors</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">changed</span><span class="p">;</span>
+<span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImGui</span><span class="o">::</span><span class="n">DragFloat3</span><span class="p">(</span><span class="s">&quot;Direction</span><span class="w"> </span><span class="s">#0&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">directions</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">changed</span><span class="p">;</span>
+<span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImGui</span><span class="o">::</span><span class="n">ColorEdit3</span><span class="p">(</span><span class="s">&quot;Color</span><span class="w"> </span><span class="s">#1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">colors</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">changed</span><span class="p">;</span>
+<span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImGui</span><span class="o">::</span><span class="n">DragFloat3</span><span class="p">(</span><span class="s">&quot;Direction</span><span class="w"> </span><span class="s">#1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">m_lightingUniforms</span><span class="p">.</span><span class="n">directions</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">changed</span><span class="p">;</span>
+<span class="n">ImGui</span><span class="o">::</span><span class="n">End</span><span class="p">();</span>
+<span class="n">m_lightingUniformsChanged</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">changed</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="recap.html#conclusion" title="Permalink to this heading">#</a></h2>
+<p>In this chapter we have:</p>
+<ul class="simple">
+<li><p>Connected diffuse shading with textures,</p></li>
+<li><p>Connected lighting with GUI.</p></li>
+<li><p>Created a custom GUI.</p></li>
+<li><p>Refactored a bit the code to make room for more textures.</p></li>
+</ul>
+<p>Okey, this was again a bit about organizing things… but we can now dive into material models for real!</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--8-input--1" name="tab-set--8" type="radio"><label class="tab-label" for="tab-set--8-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step100"><code class="docutils literal notranslate"><span class="pre">step100</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--8-input--2" name="tab-set--8" type="radio"><label class="tab-label" for="tab-set--8-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step100-vanilla"><code class="docutils literal notranslate"><span class="pre">step100-vanilla</span></code></a></p>
+</div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="specular.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Specularity</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Lighting and Material</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022-2023, Élie Michel and contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/eliemichel/LearnWebGPU" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      <div class="toc-sticky toc-scroll">
+	<div class="toc-title-container">
+		<span class="toc-title">
+			On this page
+		</span>
+	</div>
+	<div class="toc-tree-container">
+		<div class="toc-tree">
+			<ul>
+<li><a class="reference internal" href="recap.html#">Recap</a><ul>
+<li><a class="reference internal" href="recap.html#basic-shading">Basic shading</a></li>
+<li><a class="reference internal" href="recap.html#interaction">Interaction</a><ul>
+<li><a class="reference internal" href="recap.html#lighting-uniforms">Lighting uniforms</a></li>
+<li><a class="reference internal" href="recap.html#multiple-textures">Multiple textures</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="recap.html#complement">Complement</a><ul>
+<li><a class="reference internal" href="recap.html#custom-gui-input">Custom GUI input</a></li>
+<li><a class="reference internal" href="recap.html#slight-optimization">Slight optimization</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="recap.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+		</div>
+	</div>
+	
+</div>
+    </aside>
+  </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/sphinx_literate.js"></script>
+    </body>
+</html>

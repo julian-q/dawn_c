@@ -1,0 +1,818 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content="A first uniform" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://eliemichel.github.io/basic-3d-rendering/shader-uniforms/a-first-uniform.html" />
+<meta property="og:site_name" content="Learn WebGPU for C++" />
+<meta property="og:description" content="With webgpu.hpp Resulting code: step039 Vanilla webgpu.h Resulting code: step039-vanilla Introduction: Motivation: If we look at our current shader, we see some hard-coded constants: This is not ve..." />
+<meta property="og:image" content="https://eliemichel.github.io/images/webgpu-responsive.svg" />
+<meta property="og:image:alt" content="Learn WebGPU for C++" />
+<meta name="description" content="With webgpu.hpp Resulting code: step039 Vanilla webgpu.h Resulting code: step039-vanilla Introduction: Motivation: If we look at our current shader, we see some hard-coded constants: This is not ve..." />
+    <link rel="icon" type="image/svg+xml" href="../../_static/favicon/favicon.svg">
+    <link rel="icon" sizes="16x16" href="../../_static/favicon/favicon-16x16.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="../../_static/favicon/favicon-32x32.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://eliemichel.github.io/LearnWebGPU/_static/favicon/apple-touch-icon-180x180.png" type="image/png"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="More uniforms" href="multiple-uniforms.html" /><link rel="prev" title="Shader Uniforms" href="index.html" />
+
+    <!-- Generated with Sphinx 5.3.0 and Furo 2023.03.27 -->
+        <title>A first uniform - Learn WebGPU for C++ documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx_literate.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  --color-brand-primary: #ac2800;
+  --color-brand-content: #007cac;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     <em>Important</em> This documentation is a work in progress! <a href="../../appendices/feedback-needed.html">Feedback needed!</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Learn WebGPU for C++  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/webgpu-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/webgpu-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../getting-started/index.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/project-setup.html">Project setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/opening-a-window.html">Opening a window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/hello-webgpu.html">Hello WebGPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-adapter.html">The Adapter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-device.html">The Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-command-queue.html">The Command Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/first-color.html">First Color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/cpp-idioms.html">C++ wrapper</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">Basic 3D Rendering</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../hello-triangle.html">Hello Triangle</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../input-geometry/index.html">Input Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/playing-with-buffers.html">Playing with buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/a-first-vertex-attribute.html">A first Vertex Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/multiple-attributes.html">Multiple Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/index-buffer.html">Index Buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">Shader Uniforms</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="a-first-uniform.html#">A first uniform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiple-uniforms.html">More uniforms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dynamic-uniforms.html">Dynamic uniforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../3d-meshes/index.html">3D Meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/a-simple-example.html">A simple example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/depth-buffer.html">Depth buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/transformation-matrices.html">Transformation matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/projection-matrices.html">Projection matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/basic-shading.html">Basic shading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../texturing/index.html">Texturing</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/a-first-texture.html">A first texture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/texture-mapping.html">Texture mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/sampler.html">Sampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../some-interaction/index.html">Some interaction</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/refactoring.html">Refactoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/resizing-window.html">Resizing the window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/camera-control.html">Camera control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/simple-gui.html">Simple GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../lighting-and-material/index.html">Lighting and Material</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/recap.html">Recap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/specular.html">Specularity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/normal-mapping.html">Normal mapping (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/ibl.html">Image-Based Lighting (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/cubemap.html">Cube Maps (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/pbr.html">Physically-Based Materials (🚧WIP)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../basic-compute/index.html">Basic Compute</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../basic-compute/compute-pipeline.html">Compute Pipeline</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-compute/image-processing/index.html">Image Processing</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/mipmap-generation.html">Mipmap Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/convolution-filters.html">Convolution Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/cubemap-conversion.html">Cubemap Conversion (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/cubemap-prefiltering.html">Cubemap Prefiltering (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-compute/procedural-geometry/index.html">Procedural Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/procedural-geometry/deformation.html">Deformation (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../basic-compute/neural-networks.html">Neural Networks (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../advanced-techniques/index.html">Advanced Techniques</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/raii.html">RAII</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/hdr-textures.html">High Dynamic Range Textures (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/deferred-shading.html">Deferred Shading (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/benchmarking.html">Benchmarking (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/render-bundles.html">Render Bundles (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/multi-sampling.html">Multi-Sampling (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/scene-tree.html">Scene tree (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/screen-capture.html">Screen capture (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/shadow-maps.html">Shadow maps (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/tesselation.html">Tesselation (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/raytracing.html">Raytracing (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../appendices/index.html">Appendices</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/teaching-native-graphics-in-2023.html">Teaching native graphics in 2023</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/feedback-needed.html">Feedback needed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/debugging.html">Debugging (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/building-for-the-web.html">Building for the Web (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/memory-model.html">Memory Model (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/custom-extensions.html">Custom Extensions (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/references.html">References (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/tmp.html">Temporary page</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="a-first-uniform.html#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/eliemichel/LearnWebGPU/edit/main/./basic-3d-rendering/shader-uniforms/a-first-uniform.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="a-first-uniform">
+<h1>A first uniform<a class="headerlink" href="a-first-uniform.html#a-first-uniform" title="Permalink to this heading">#</a></h1>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step039"><code class="docutils literal notranslate"><span class="pre">step039</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step039-vanilla"><code class="docutils literal notranslate"><span class="pre">step039-vanilla</span></code></a></p>
+</div>
+</div>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="a-first-uniform.html#introduction" title="Permalink to this heading">#</a></h2>
+<section id="motivation">
+<h3>Motivation<a class="headerlink" href="a-first-uniform.html#motivation" title="Permalink to this heading">#</a></h3>
+<p>If we look at our current shader, we see some hard-coded constants:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">640.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">480.0</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec2f</span><span class="p">(</span><span class="o">-</span><span class="mf">0.6875</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">0.463</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This is not very satisfying, what happens when we want to move the object during the execution of the application? Or change the ratio because the user resized the window?</p>
+<blockquote>
+<div><p>☝️ We could dynamically change the shader code and rebuild a new shader module!</p>
+</div></blockquote>
+<p>It would work, but <strong>building a shader module takes time</strong>. A lot of time if we compare it to the budget for rendering a single frame (typically a 60th of a second). Imagine we want to <strong>animate</strong> our scene and thus change the <code class="docutils literal notranslate"><span class="pre">offset</span></code> at each frame!</p>
+<p>This is why a proper solution is to use a <strong>uniform variable</strong>.</p>
+</section>
+<section id="definition">
+<h3>Definition<a class="headerlink" href="a-first-uniform.html#definition" title="Permalink to this heading">#</a></h3>
+<p>A uniform is a global variable in a shader whose value is loaded from a GPU buffer. We say that it is <strong>bound</strong> to the buffer.</p>
+<p>Its value is <strong>uniform</strong> across the different vertices and fragment of <strong>a given call</strong> to <code class="docutils literal notranslate"><span class="pre">draw</span></code>, but it change from one call to another one by <strong>updating</strong> the value of the buffer it is <em>bound</em> to.</p>
+<p>To use a uniform, we need to:</p>
+<ol class="arabic simple">
+<li><p>Declare the uniform in the <em>shader</em>.</p></li>
+<li><p>Create the <em>buffer</em> it is bound to.</p></li>
+<li><p>Configure the properties of the <em>binding</em> (a.k.a. the binding’s <em>layout</em>).</p></li>
+<li><p>Create a <em>bind group</em>.</p></li>
+</ol>
+</section>
+<section id="device-limits">
+<h3>Device limits<a class="headerlink" href="a-first-uniform.html#device-limits" title="Permalink to this heading">#</a></h3>
+<p>In this chapter, we will require the following limits to be set up for our device:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">use</span><span class="w"> </span><span class="c1">at</span><span class="w"> </span><span class="c1">most</span><span class="w"> </span><span class="c1">1</span><span class="w"> </span><span class="c1">bind</span><span class="w"> </span><span class="c1">group</span><span class="w"> </span><span class="c1">for</span><span class="w"> </span><span class="c1">now</span>
+<span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxBindGroups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">use</span><span class="w"> </span><span class="c1">at</span><span class="w"> </span><span class="c1">most</span><span class="w"> </span><span class="c1">1</span><span class="w"> </span><span class="c1">uniform</span><span class="w"> </span><span class="c1">buffer</span><span class="w"> </span><span class="c1">per</span><span class="w"> </span><span class="c1">stage</span>
+<span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxUniformBuffersPerShaderStage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">Uniform</span><span class="w"> </span><span class="c1">structs</span><span class="w"> </span><span class="c1">have</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">size</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">maximum</span><span class="w"> </span><span class="c1">16</span><span class="w"> </span><span class="c1">float</span><span class="w"> </span><span class="c1">(more</span><span class="w"> </span><span class="c1">than</span><span class="w"> </span><span class="c1">what</span><span class="w"> </span><span class="c1">we</span><span class="w"> </span><span class="c1">need)</span>
+<span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxUniformBufferBindingSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="shader-side">
+<h2>Shader side<a class="headerlink" href="a-first-uniform.html#shader-side" title="Permalink to this heading">#</a></h2>
+<p>In order to animate our scene, we create a uniform called <code class="docutils literal notranslate"><span class="pre">uTime</span></code> that we update at each frame with the current time, expressed in second (as provided by <code class="docutils literal notranslate"><span class="pre">glfwGetTime()</span></code>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>I usually prefix uniform variables with a ‘u’ so that it is easy to figure out when reading a long shader when a variable is a uniform rather than a local variable.</p>
+</div>
+<p>As I said, a uniform is a global variable, so we can declare it in the first line of our shader. A simple variable declaration in WGSL looks as follows:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Simple</span><span class="w"> </span><span class="c1">variable</span><span class="w"> </span><span class="c1">declaration</span>
+<span class="n">var</span><span class="w"> </span><span class="n">uTime</span>:<span class="w"> </span><span class="kt">f32</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">var</span></code> keyword can be labeled with an <strong>address space</strong>, which controls how the variable is stored in the GPU (see <a class="reference internal" href="../../appendices/memory-model.html"><span class="std std-doc">Memory Model</span></a>). Here we state that the variable is stored in the <em>uniform</em> address space:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Variable</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">*uniform*</span><span class="w"> </span><span class="c1">address</span><span class="w"> </span><span class="c1">space</span>
+<span class="n">var</span><span class="o">&lt;</span><span class="n">uniform</span><span class="o">&gt;</span><span class="w"> </span><span class="n">uTime</span>:<span class="w"> </span><span class="kt">f32</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Now we need to tell to which <strong>buffer</strong> the uniform is <strong>bound</strong>. This is done by specifying a <strong>binding index</strong> with the <code class="docutils literal notranslate"><span class="pre">&#64;binding(...)</span></code> WGSL attribute.</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Specify</span><span class="w"> </span><span class="c1">which</span><span class="w"> </span><span class="c1">binding</span><span class="w"> </span><span class="c1">index</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">uniform</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">attached</span><span class="w"> </span><span class="c1">to</span>
+<span class="o">@</span><span class="n">binding</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">var</span><span class="o">&lt;</span><span class="n">uniform</span><span class="o">&gt;</span><span class="w"> </span><span class="n">uTime</span>:<span class="w"> </span><span class="kt">f32</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>We will then define in the C++ code which buffer is attached to the binding #0. And actually, bindings are organized in <strong>bind groups</strong>, so the binding of a uniform is specified by also providing an <code class="docutils literal notranslate"><span class="pre">&#64;group(...)</span></code> attribute:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">memory</span><span class="w"> </span><span class="c1">location</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">uniform</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">given</span><span class="w"> </span><span class="c1">by</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">pair</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">*bind</span><span class="w"> </span><span class="c1">group*</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">*binding*</span>
+<span class="o">@</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">@</span><span class="n">binding</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">var</span><span class="o">&lt;</span><span class="n">uniform</span><span class="o">&gt;</span><span class="w"> </span><span class="n">uTime</span>:<span class="w"> </span><span class="kt">f32</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>We are now done with the declaration of the uniform variable, we can use it like any other variable in our shader:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="o">@</span><span class="n">vertex</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">vs_main</span><span class="p">(</span><span class="k">in</span>:<span class="w"> </span><span class="nc">VertexInput</span><span class="p">)</span><span class="w"> </span>-&gt;<span class="w"> </span><span class="nc">VertexOutput</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">move</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">scene</span><span class="w"> </span><span class="c1">depending</span><span class="w"> </span><span class="c1">on</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">time</span>
+<span class="w">    </span><span class="n">var</span><span class="w"> </span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec2f</span><span class="p">(</span><span class="o">-</span><span class="mf">0.6875</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">0.463</span><span class="p">);</span>
+<span class="w">    </span><span class="n">offset</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mf">0.3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">vec2f</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">uTime</span><span class="p">),</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">uTime</span><span class="p">));</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>If you are not familiar with the <a class="reference external" href="https://en.wikipedia.org/wiki/Trigonometric_functions">trigonometric functions</a> like <code class="docutils literal notranslate"><span class="pre">cos</span></code> and <code class="docutils literal notranslate"><span class="pre">sin</span></code>, be aware that the position <span class="math notranslate nohighlight">\((\cos(a), \sin(a))\)</span> is the point on the circle of radius <span class="math notranslate nohighlight">\(1\)</span> at angle <span class="math notranslate nohighlight">\(a\)</span> (expressed in radians). Thus, this formula makes the triangle move along a circle over time. It is multiplied by <span class="math notranslate nohighlight">\(0.3\)</span> in order to decrease the radius of this circle.</p>
+</div>
+</section>
+<section id="uniform-buffer">
+<h2>Uniform buffer<a class="headerlink" href="a-first-uniform.html#uniform-buffer" title="Permalink to this heading">#</a></h2>
+<p>The uniform buffer is created like any other buffer, except we must specify <code class="docutils literal notranslate"><span class="pre">BufferUsage::Uniform</span></code> in its <code class="docutils literal notranslate"><span class="pre">usage</span></code> field. We only need it to contain 1 float for now.</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">uniform</span><span class="w"> </span><span class="c1">buffer</span>
+<span class="n">BufferDescriptor</span><span class="w"> </span><span class="n">bufferDesc</span><span class="p">{};</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">buffer</span><span class="w"> </span><span class="c1">will</span><span class="w"> </span><span class="c1">only</span><span class="w"> </span><span class="c1">contain</span><span class="w"> </span><span class="c1">1</span><span class="w"> </span><span class="c1">float</span><span class="w"> </span><span class="c1">with</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">value</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">uTime</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Make</span><span class="w"> </span><span class="c1">sure</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">flag</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">buffer</span><span class="w"> </span><span class="c1">as</span><span class="w"> </span><span class="c1">BufferUsage::Uniform</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">usage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">CopyDst</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">Uniform</span><span class="p">;</span>
+
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">mappedAtCreation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="n">Buffer</span><span class="w"> </span><span class="n">uniformBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">device</span><span class="p">.</span><span class="n">createBuffer</span><span class="p">(</span><span class="n">bufferDesc</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">uniform</span><span class="w"> </span><span class="c1">buffer</span>
+<span class="n">WGPUBufferDescriptor</span><span class="w"> </span><span class="n">bufferDesc</span><span class="p">{};</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">buffer</span><span class="w"> </span><span class="c1">will</span><span class="w"> </span><span class="c1">only</span><span class="w"> </span><span class="c1">contain</span><span class="w"> </span><span class="c1">1</span><span class="w"> </span><span class="c1">float</span><span class="w"> </span><span class="c1">with</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">value</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">uTime</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Make</span><span class="w"> </span><span class="c1">sure</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">flag</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">buffer</span><span class="w"> </span><span class="c1">as</span><span class="w"> </span><span class="c1">BufferUsage::Uniform</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">usage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUBufferUsage_CopyDst</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">WGPUBufferUsage_Uniform</span><span class="p">;</span>
+
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">mappedAtCreation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="n">WGPUBuffer</span><span class="w"> </span><span class="n">uniformBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuDeviceCreateBuffer</span><span class="p">(</span><span class="n">device</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">bufferDesc</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then use <code class="docutils literal notranslate"><span class="pre">Queue::writeBuffer</span></code> to upload a value:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span><span class="w"> </span><span class="n">currentTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+<span class="n">queue</span><span class="p">.</span><span class="n">writeBuffer</span><span class="p">(</span><span class="n">uniformBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">currentTime</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span><span class="w"> </span><span class="n">currentTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+<span class="n">wgpuQueueWriteBuffer</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">uniformBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">currentTime</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="binding-configuration">
+<h2>Binding configuration<a class="headerlink" href="a-first-uniform.html#binding-configuration" title="Permalink to this heading">#</a></h2>
+<p>There are two steps in the actual connection of the buffer to the uniform. One is to <strong>declare in the pipeline</strong> that we want a binding, and how exactly. This is the binding layout. And the second one is to create the bind group and enable it (see next section).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This follows the same spirit than the distinction between the <em>vertex buffer</em> and the <em>vertex buffer layout</em>.</p>
+</div>
+<section id="pipeline-layout">
+<h3>Pipeline layout<a class="headerlink" href="a-first-uniform.html#pipeline-layout" title="Permalink to this heading">#</a></h3>
+<p>The binding layout is specified through the <code class="docutils literal notranslate"><span class="pre">PipelineLayout</span></code> part of the pipeline descriptor. The pipeline layout describes how all the <strong>resources</strong> used by the render pipeline must be bound. A resource is either a texture or a buffer, and its layout specifies to which index it is bound to and properties like whether it is accessed as read-only or write-only, etc.</p>
+<p>A pipeline layout contains multiple <strong>bind groups</strong>, and a bind group contains multiple <strong>bindings</strong>:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--3-input--1" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">Define</span><span class="w"> </span><span class="c1">bindingLayout</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">bind</span><span class="w"> </span><span class="c1">group</span><span class="w"> </span><span class="c1">layout</span>
+<span class="n">BindGroupLayoutDescriptor</span><span class="w"> </span><span class="n">bindGroupLayoutDesc</span><span class="p">{};</span>
+<span class="n">bindGroupLayoutDesc</span><span class="p">.</span><span class="n">entryCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">bindGroupLayoutDesc</span><span class="p">.</span><span class="n">entries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">bindingLayout</span><span class="p">;</span>
+<span class="n">BindGroupLayout</span><span class="w"> </span><span class="n">bindGroupLayout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">device</span><span class="p">.</span><span class="n">createBindGroupLayout</span><span class="p">(</span><span class="n">bindGroupLayoutDesc</span><span class="p">);</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">pipeline</span><span class="w"> </span><span class="c1">layout</span>
+<span class="n">PipelineLayoutDescriptor</span><span class="w"> </span><span class="n">layoutDesc</span><span class="p">{};</span>
+<span class="n">layoutDesc</span><span class="p">.</span><span class="n">bindGroupLayoutCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">layoutDesc</span><span class="p">.</span><span class="n">bindGroupLayouts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">WGPUBindGroupLayout</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">bindGroupLayout</span><span class="p">;</span>
+<span class="n">PipelineLayout</span><span class="w"> </span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">device</span><span class="p">.</span><span class="n">createPipelineLayout</span><span class="p">(</span><span class="n">layoutDesc</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--3-input--2" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">Define</span><span class="w"> </span><span class="c1">bindingLayout</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">bind</span><span class="w"> </span><span class="c1">group</span><span class="w"> </span><span class="c1">layout</span>
+<span class="n">WGPUBindGroupLayoutDescriptor</span><span class="w"> </span><span class="n">bindGroupLayoutDesc</span><span class="p">{};</span>
+<span class="n">bindGroupLayoutDesc</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="n">bindGroupLayoutDesc</span><span class="p">.</span><span class="n">entryCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">bindGroupLayoutDesc</span><span class="p">.</span><span class="n">entries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">bindingLayout</span><span class="p">;</span>
+<span class="n">WGPUBindGroupLayout</span><span class="w"> </span><span class="n">bindGroupLayout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuDeviceCreateBindGroupLayout</span><span class="p">(</span><span class="n">device</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">bindGroupLayoutDesc</span><span class="p">);</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">pipeline</span><span class="w"> </span><span class="c1">layout</span>
+<span class="n">WGPUPipelineLayoutDescriptor</span><span class="w"> </span><span class="n">layoutDesc</span><span class="p">{};</span>
+<span class="n">layoutDesc</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="n">layoutDesc</span><span class="p">.</span><span class="n">bindGroupLayoutCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">layoutDesc</span><span class="p">.</span><span class="n">bindGroupLayouts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">bindGroupLayout</span><span class="p">;</span>
+<span class="n">WGPUPipelineLayout</span><span class="w"> </span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuDeviceCreatePipelineLayout</span><span class="p">(</span><span class="n">device</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">layoutDesc</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="binding-layout">
+<h3>Binding layout<a class="headerlink" href="a-first-uniform.html#binding-layout" title="Permalink to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">BindGroupLayoutEntry</span></code> could have been called <code class="docutils literal notranslate"><span class="pre">BindingLayout</span></code> imho. The first setting is the binding index, as used in the shader’s <code class="docutils literal notranslate"><span class="pre">&#64;binding</span></code> attribute. Then the <code class="docutils literal notranslate"><span class="pre">visibility</span></code> field tells which stage requires access to this resource, so that it is not needlessly provided to all stages.</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--4-input--1" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">binding</span><span class="w"> </span><span class="c1">layout</span><span class="w"> </span><span class="c1">(don&#39;t</span><span class="w"> </span><span class="c1">forget</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">=</span><span class="w"> </span><span class="c1">Default)</span>
+<span class="n">BindGroupLayoutEntry</span><span class="w"> </span><span class="n">bindingLayout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Default</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">binding</span><span class="w"> </span><span class="c1">index</span><span class="w"> </span><span class="c1">as</span><span class="w"> </span><span class="c1">used</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">@binding</span><span class="w"> </span><span class="c1">attribute</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">shader</span>
+<span class="n">bindingLayout</span><span class="p">.</span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">stage</span><span class="w"> </span><span class="c1">that</span><span class="w"> </span><span class="c1">needs</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">access</span><span class="w"> </span><span class="c1">this</span><span class="w"> </span><span class="c1">resource</span>
+<span class="n">bindingLayout</span><span class="p">.</span><span class="n">visibility</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ShaderStage</span><span class="o">::</span><span class="n">Vertex</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--4-input--2" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">If</span><span class="w"> </span><span class="c1">you</span><span class="w"> </span><span class="c1">do</span><span class="w"> </span><span class="c1">not</span><span class="w"> </span><span class="c1">use</span><span class="w"> </span><span class="c1">webgpu.hpp,</span><span class="w"> </span><span class="c1">I</span><span class="w"> </span><span class="c1">suggest</span><span class="w"> </span><span class="c1">you</span><span class="w"> </span><span class="c1">create</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">function</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">init</span><span class="w"> </span><span class="c1">the</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">bindGroup</span><span class="w"> </span><span class="c1">layout</span><span class="w"> </span><span class="c1">entry</span><span class="w"> </span><span class="c1">somewhere.</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">setDefault</span><span class="p">(</span><span class="n">WGPUBindGroupLayoutEntry</span><span class="w"> </span><span class="o">&amp;</span><span class="n">bindingLayout</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">buffer</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">buffer</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUBufferBindingType_Undefined</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">buffer</span><span class="p">.</span><span class="n">hasDynamicOffset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">sampler</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">sampler</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUSamplerBindingType_Undefined</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">storageTexture</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">storageTexture</span><span class="p">.</span><span class="n">access</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUStorageTextureAccess_Undefined</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">storageTexture</span><span class="p">.</span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUTextureFormat_Undefined</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">storageTexture</span><span class="p">.</span><span class="n">viewDimension</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUTextureViewDimension_Undefined</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">texture</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">texture</span><span class="p">.</span><span class="n">multisampled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">texture</span><span class="p">.</span><span class="n">sampleType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUTextureSampleType_Undefined</span><span class="p">;</span>
+<span class="w">    </span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">texture</span><span class="p">.</span><span class="n">viewDimension</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUTextureViewDimension_Undefined</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">binding</span><span class="w"> </span><span class="c1">layout</span>
+<span class="n">WGPUBindGroupLayoutEntry</span><span class="w"> </span><span class="n">bindingLayout</span><span class="p">{};</span>
+<span class="n">setDefault</span><span class="p">(</span><span class="n">bindingLayout</span><span class="p">);</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">binding</span><span class="w"> </span><span class="c1">index</span><span class="w"> </span><span class="c1">as</span><span class="w"> </span><span class="c1">used</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">@binding</span><span class="w"> </span><span class="c1">attribute</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">shader</span>
+<span class="n">bindingLayout</span><span class="p">.</span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">stage</span><span class="w"> </span><span class="c1">that</span><span class="w"> </span><span class="c1">needs</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">access</span><span class="w"> </span><span class="c1">this</span><span class="w"> </span><span class="c1">resource</span>
+<span class="n">bindingLayout</span><span class="p">.</span><span class="n">visibility</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUShaderStage_Vertex</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The remaining of the binding layout depends on the type of resource. We fill either the <code class="docutils literal notranslate"><span class="pre">buffer</span></code> field or the <code class="docutils literal notranslate"><span class="pre">sampler</span></code> and <code class="docutils literal notranslate"><span class="pre">texture</span></code> fields or the <code class="docutils literal notranslate"><span class="pre">storageTexture</span></code> field. In our case it is a buffer:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--5-input--1" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">buffer</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BufferBindingType</span><span class="o">::</span><span class="n">Uniform</span><span class="p">;</span>
+<span class="n">bindingLayout</span><span class="p">.</span><span class="n">buffer</span><span class="p">.</span><span class="n">minBindingSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--5-input--2" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">bindingLayout</span><span class="p">.</span><span class="n">buffer</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUBufferBindingType_Uniform</span><span class="p">;</span>
+<span class="n">bindingLayout</span><span class="p">.</span><span class="n">buffer</span><span class="p">.</span><span class="n">minBindingSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Notice how I initialized the binding layout object with <code class="docutils literal notranslate"><span class="pre">=</span> <span class="pre">Default</span></code> above. It is important because it sets in particular the <code class="docutils literal notranslate"><span class="pre">buffer</span></code>, <code class="docutils literal notranslate"><span class="pre">sampler</span></code>, <code class="docutils literal notranslate"><span class="pre">texture</span></code> and <code class="docutils literal notranslate"><span class="pre">storageTexture</span></code> uses to <code class="docutils literal notranslate"><span class="pre">Undefined</span></code> so that only the resource type we set up is used.</p>
+</div>
+</section>
+</section>
+<section id="bind-group">
+<h2>Bind group<a class="headerlink" href="a-first-uniform.html#bind-group" title="Permalink to this heading">#</a></h2>
+<section id="creation">
+<h3>Creation<a class="headerlink" href="a-first-uniform.html#creation" title="Permalink to this heading">#</a></h3>
+<p>A bind group contains the actual bindings. The structure of a bind group mirrors the bind group layout prescribed in the render pipeline and actually connects it to resources. This way, the same pipeline can be reused as is in multiple draw calls depending on different variants of the resources.</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--6-input--1" name="tab-set--6" type="radio"><label class="tab-label" for="tab-set--6-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">binding</span>
+<span class="n">BindGroupEntry</span><span class="w"> </span><span class="n">binding</span><span class="p">{};</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">Setup</span><span class="w"> </span><span class="c1">binding</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">A</span><span class="w"> </span><span class="c1">bind</span><span class="w"> </span><span class="c1">group</span><span class="w"> </span><span class="c1">contains</span><span class="w"> </span><span class="c1">one</span><span class="w"> </span><span class="c1">or</span><span class="w"> </span><span class="c1">multiple</span><span class="w"> </span><span class="c1">bindings</span>
+<span class="n">BindGroupDescriptor</span><span class="w"> </span><span class="n">bindGroupDesc</span><span class="p">{};</span>
+<span class="n">bindGroupDesc</span><span class="p">.</span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bindGroupLayout</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">There</span><span class="w"> </span><span class="c1">must</span><span class="w"> </span><span class="c1">be</span><span class="w"> </span><span class="c1">as</span><span class="w"> </span><span class="c1">many</span><span class="w"> </span><span class="c1">bindings</span><span class="w"> </span><span class="c1">as</span><span class="w"> </span><span class="c1">declared</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">layout!</span>
+<span class="n">bindGroupDesc</span><span class="p">.</span><span class="n">entryCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bindGroupLayoutDesc</span><span class="p">.</span><span class="n">entryCount</span><span class="p">;</span>
+<span class="n">bindGroupDesc</span><span class="p">.</span><span class="n">entries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">binding</span><span class="p">;</span>
+<span class="n">BindGroup</span><span class="w"> </span><span class="n">bindGroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">device</span><span class="p">.</span><span class="n">createBindGroup</span><span class="p">(</span><span class="n">bindGroupDesc</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--6-input--2" name="tab-set--6" type="radio"><label class="tab-label" for="tab-set--6-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">binding</span>
+<span class="n">WGPUBindGroupEntry</span><span class="w"> </span><span class="n">binding</span><span class="p">{};</span>
+<span class="n">binding</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">Setup</span><span class="w"> </span><span class="c1">binding</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">A</span><span class="w"> </span><span class="c1">bind</span><span class="w"> </span><span class="c1">group</span><span class="w"> </span><span class="c1">contains</span><span class="w"> </span><span class="c1">one</span><span class="w"> </span><span class="c1">or</span><span class="w"> </span><span class="c1">multiple</span><span class="w"> </span><span class="c1">bindings</span>
+<span class="n">WGPUBindGroupDescriptor</span><span class="w"> </span><span class="n">bindGroupDesc</span><span class="p">{};</span>
+<span class="n">bindGroupDesc</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="n">bindGroupDesc</span><span class="p">.</span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bindGroupLayout</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">There</span><span class="w"> </span><span class="c1">must</span><span class="w"> </span><span class="c1">be</span><span class="w"> </span><span class="c1">as</span><span class="w"> </span><span class="c1">many</span><span class="w"> </span><span class="c1">bindings</span><span class="w"> </span><span class="c1">as</span><span class="w"> </span><span class="c1">declared</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">layout!</span>
+<span class="n">bindGroupDesc</span><span class="p">.</span><span class="n">entryCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bindGroupLayoutDesc</span><span class="p">.</span><span class="n">entryCount</span><span class="p">;</span>
+<span class="n">bindGroupDesc</span><span class="p">.</span><span class="n">entries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">binding</span><span class="p">;</span>
+<span class="n">WGPUBindGroup</span><span class="w"> </span><span class="n">bindGroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuDeviceCreateBindGroup</span><span class="p">(</span><span class="n">device</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">bindGroupDesc</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The content of the binding itself is quite straightforward:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">index</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">binding</span><span class="w"> </span><span class="c1">(the</span><span class="w"> </span><span class="c1">entries</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">bindGroupDesc</span><span class="w"> </span><span class="c1">can</span><span class="w"> </span><span class="c1">be</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">any</span><span class="w"> </span><span class="c1">order)</span>
+<span class="n">binding</span><span class="p">.</span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">buffer</span><span class="w"> </span><span class="c1">it</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">actually</span><span class="w"> </span><span class="c1">bound</span><span class="w"> </span><span class="c1">to</span>
+<span class="n">binding</span><span class="p">.</span><span class="n">buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uniformBuffer</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">can</span><span class="w"> </span><span class="c1">specify</span><span class="w"> </span><span class="c1">an</span><span class="w"> </span><span class="c1">offset</span><span class="w"> </span><span class="c1">within</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">buffer,</span><span class="w"> </span><span class="c1">so</span><span class="w"> </span><span class="c1">that</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">single</span><span class="w"> </span><span class="c1">buffer</span><span class="w"> </span><span class="c1">can</span><span class="w"> </span><span class="c1">hold</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">multiple</span><span class="w"> </span><span class="c1">uniform</span><span class="w"> </span><span class="c1">blocks.</span>
+<span class="n">binding</span><span class="p">.</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">And</span><span class="w"> </span><span class="c1">we</span><span class="w"> </span><span class="c1">specify</span><span class="w"> </span><span class="c1">again</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">size</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">buffer.</span>
+<span class="n">binding</span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The fields <code class="docutils literal notranslate"><span class="pre">binding.sampler</span></code> and <code class="docutils literal notranslate"><span class="pre">binding.textureView</span></code> are only needed when the binding layout uses them.</p>
+</div>
+</section>
+<section id="usage">
+<h3>Usage<a class="headerlink" href="a-first-uniform.html#usage" title="Permalink to this heading">#</a></h3>
+<p>Okay we are now ready to connect the dots! It is as simple as setting the bind group to use before the draw call:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--7-input--1" name="tab-set--7" type="radio"><label class="tab-label" for="tab-set--7-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Set</span><span class="w"> </span><span class="c1">binding</span><span class="w"> </span><span class="c1">group</span>
+<span class="n">renderPass</span><span class="p">.</span><span class="n">setBindGroup</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">bindGroup</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">);</span>
+
+<span class="n">renderPass</span><span class="p">.</span><span class="n">drawIndexed</span><span class="p">(</span><span class="n">indexCount</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--7-input--2" name="tab-set--7" type="radio"><label class="tab-label" for="tab-set--7-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Set</span><span class="w"> </span><span class="c1">binding</span><span class="w"> </span><span class="c1">group</span>
+<span class="n">wgpuRenderPassEncoderSetBindGroup</span><span class="p">(</span><span class="n">renderPass</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">bindGroup</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">);</span>
+
+<span class="n">wgpuRenderPassEncoderDrawIndexed</span><span class="p">(</span><span class="n">renderPass</span><span class="p">,</span><span class="w"> </span><span class="n">indexCount</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>It should be working already, though not moving because the content of the buffer does not change yet. So simply add anywhere in the main loop this:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--8-input--1" name="tab-set--8" type="radio"><label class="tab-label" for="tab-set--8-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Update</span><span class="w"> </span><span class="c1">uniform</span><span class="w"> </span><span class="c1">buffer</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">glfwGetTime</span><span class="p">());</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">glfwGetTime</span><span class="w"> </span><span class="c1">returns</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">double</span>
+<span class="n">queue</span><span class="p">.</span><span class="n">writeBuffer</span><span class="p">(</span><span class="n">uniformBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--8-input--2" name="tab-set--8" type="radio"><label class="tab-label" for="tab-set--8-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Update</span><span class="w"> </span><span class="c1">uniform</span><span class="w"> </span><span class="c1">buffer</span>
+<span class="kt">float</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">glfwGetTime</span><span class="p">());</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">glfwGetTime</span><span class="w"> </span><span class="c1">returns</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">double</span>
+<span class="n">wgpuQueueWriteBuffer</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">uniformBuffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+</div>
+<figure class="align-center">
+	<video autoplay loop muted inline nocontrols style="width:100%;height:auto;max-width:642px">
+		<source src="../../_static/turning-webgpu-logo.mp4" type="video/mp4">
+	</video>
+	<figcaption>
+		<p><span class="caption-text">Our first dynamic scene!</span></p>
+	</figcaption>
+</figure>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--9-input--1" name="tab-set--9" type="radio"><label class="tab-label" for="tab-set--9-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step039"><code class="docutils literal notranslate"><span class="pre">step039</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--9-input--2" name="tab-set--9" type="radio"><label class="tab-label" for="tab-set--9-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step039-vanilla"><code class="docutils literal notranslate"><span class="pre">step039-vanilla</span></code></a></p>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="multiple-uniforms.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">More uniforms</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Shader Uniforms</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022-2023, Élie Michel and contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/eliemichel/LearnWebGPU" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      <div class="toc-sticky toc-scroll">
+	<div class="toc-title-container">
+		<span class="toc-title">
+			On this page
+		</span>
+	</div>
+	<div class="toc-tree-container">
+		<div class="toc-tree">
+			<ul>
+<li><a class="reference internal" href="a-first-uniform.html#">A first uniform</a><ul>
+<li><a class="reference internal" href="a-first-uniform.html#introduction">Introduction</a><ul>
+<li><a class="reference internal" href="a-first-uniform.html#motivation">Motivation</a></li>
+<li><a class="reference internal" href="a-first-uniform.html#definition">Definition</a></li>
+<li><a class="reference internal" href="a-first-uniform.html#device-limits">Device limits</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="a-first-uniform.html#shader-side">Shader side</a></li>
+<li><a class="reference internal" href="a-first-uniform.html#uniform-buffer">Uniform buffer</a></li>
+<li><a class="reference internal" href="a-first-uniform.html#binding-configuration">Binding configuration</a><ul>
+<li><a class="reference internal" href="a-first-uniform.html#pipeline-layout">Pipeline layout</a></li>
+<li><a class="reference internal" href="a-first-uniform.html#binding-layout">Binding layout</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="a-first-uniform.html#bind-group">Bind group</a><ul>
+<li><a class="reference internal" href="a-first-uniform.html#creation">Creation</a></li>
+<li><a class="reference internal" href="a-first-uniform.html#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+		</div>
+	</div>
+	
+</div>
+    </aside>
+  </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/sphinx_literate.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

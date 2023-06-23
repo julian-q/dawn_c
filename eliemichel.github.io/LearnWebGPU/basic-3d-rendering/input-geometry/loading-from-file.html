@@ -1,0 +1,885 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content="Loading from file" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://eliemichel.github.io/basic-3d-rendering/input-geometry/loading-from-file.html" />
+<meta property="og:site_name" content="Learn WebGPU for C++" />
+<meta property="og:description" content="With webgpu.hpp Resulting code: step037 Vanilla webgpu.h Resulting code: step037-vanilla With Dawn Resulting code: step037-dawn Now that we are familiar with the representation of geometric data th..." />
+<meta property="og:image" content="https://eliemichel.github.io/images/webgpu-responsive.svg" />
+<meta property="og:image:alt" content="Learn WebGPU for C++" />
+<meta name="description" content="With webgpu.hpp Resulting code: step037 Vanilla webgpu.h Resulting code: step037-vanilla With Dawn Resulting code: step037-dawn Now that we are familiar with the representation of geometric data th..." />
+    <link rel="icon" type="image/svg+xml" href="../../_static/favicon/favicon.svg">
+    <link rel="icon" sizes="16x16" href="../../_static/favicon/favicon-16x16.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="../../_static/favicon/favicon-32x32.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://eliemichel.github.io/LearnWebGPU/_static/favicon/apple-touch-icon-180x180.png" type="image/png"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Shader Uniforms" href="../shader-uniforms/index.html" /><link rel="prev" title="Index Buffer" href="index-buffer.html" />
+
+    <!-- Generated with Sphinx 5.3.0 and Furo 2023.03.27 -->
+        <title>Loading from file - Learn WebGPU for C++ documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx_literate.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  --color-brand-primary: #ac2800;
+  --color-brand-content: #007cac;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     <em>Important</em> This documentation is a work in progress! <a href="../../appendices/feedback-needed.html">Feedback needed!</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Learn WebGPU for C++  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/webgpu-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/webgpu-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../getting-started/index.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/project-setup.html">Project setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/opening-a-window.html">Opening a window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/hello-webgpu.html">Hello WebGPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-adapter.html">The Adapter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-device.html">The Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-command-queue.html">The Command Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/first-color.html">First Color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/cpp-idioms.html">C++ wrapper</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">Basic 3D Rendering</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../hello-triangle.html">Hello Triangle</a></li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">Input Geometry</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="playing-with-buffers.html">Playing with buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="a-first-vertex-attribute.html">A first Vertex Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiple-attributes.html">Multiple Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index-buffer.html">Index Buffer</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="loading-from-file.html#">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../shader-uniforms/index.html">Shader Uniforms</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/a-first-uniform.html">A first uniform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/multiple-uniforms.html">More uniforms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/dynamic-uniforms.html">Dynamic uniforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../3d-meshes/index.html">3D Meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/a-simple-example.html">A simple example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/depth-buffer.html">Depth buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/transformation-matrices.html">Transformation matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/projection-matrices.html">Projection matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/basic-shading.html">Basic shading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../texturing/index.html">Texturing</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/a-first-texture.html">A first texture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/texture-mapping.html">Texture mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/sampler.html">Sampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../some-interaction/index.html">Some interaction</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/refactoring.html">Refactoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/resizing-window.html">Resizing the window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/camera-control.html">Camera control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/simple-gui.html">Simple GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../lighting-and-material/index.html">Lighting and Material</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/recap.html">Recap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/specular.html">Specularity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/normal-mapping.html">Normal mapping (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/ibl.html">Image-Based Lighting (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/cubemap.html">Cube Maps (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/pbr.html">Physically-Based Materials (🚧WIP)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../basic-compute/index.html">Basic Compute</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../basic-compute/compute-pipeline.html">Compute Pipeline</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-compute/image-processing/index.html">Image Processing</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/mipmap-generation.html">Mipmap Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/convolution-filters.html">Convolution Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/cubemap-conversion.html">Cubemap Conversion (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/cubemap-prefiltering.html">Cubemap Prefiltering (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-compute/procedural-geometry/index.html">Procedural Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/procedural-geometry/deformation.html">Deformation (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../basic-compute/neural-networks.html">Neural Networks (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../advanced-techniques/index.html">Advanced Techniques</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/raii.html">RAII</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/hdr-textures.html">High Dynamic Range Textures (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/deferred-shading.html">Deferred Shading (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/benchmarking.html">Benchmarking (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/render-bundles.html">Render Bundles (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/multi-sampling.html">Multi-Sampling (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/scene-tree.html">Scene tree (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/screen-capture.html">Screen capture (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/shadow-maps.html">Shadow maps (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/tesselation.html">Tesselation (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/raytracing.html">Raytracing (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../appendices/index.html">Appendices</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/teaching-native-graphics-in-2023.html">Teaching native graphics in 2023</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/feedback-needed.html">Feedback needed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/debugging.html">Debugging (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/building-for-the-web.html">Building for the Web (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/memory-model.html">Memory Model (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/custom-extensions.html">Custom Extensions (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/references.html">References (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/tmp.html">Temporary page</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="loading-from-file.html#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/eliemichel/LearnWebGPU/edit/main/./basic-3d-rendering/input-geometry/loading-from-file.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="loading-from-file">
+<h1>Loading from file<a class="headerlink" href="loading-from-file.html#loading-from-file" title="Permalink to this heading">#</a></h1>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step037"><code class="docutils literal notranslate"><span class="pre">step037</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step037-vanilla"><code class="docutils literal notranslate"><span class="pre">step037-vanilla</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--3">With Dawn</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step037-dawn"><code class="docutils literal notranslate"><span class="pre">step037-dawn</span></code></a></p>
+</div>
+</div>
+<p>Now that we are familiar with the representation of geometric data that the GPU expect, we can load it from a file instead of hard-coding it in the source code. This is the occasion to introduce some basic <strong>resource management</strong> to our project (although this is not specific to WebGPU).</p>
+<section id="file-format">
+<h2>File format<a class="headerlink" href="loading-from-file.html#file-format" title="Permalink to this heading">#</a></h2>
+<section id="example">
+<h3>Example<a class="headerlink" href="loading-from-file.html#example" title="Permalink to this heading">#</a></h3>
+<p>The file format I introduce here is not standard, but it is simple enough to parse. Here is the content of <code class="docutils literal notranslate"><span class="pre">webgpu.txt</span></code>, which I put in a <code class="docutils literal notranslate"><span class="pre">resources/</span></code> directory:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">points</span><span class="p">]</span>
+<span class="cp">#</span><span class="w"> </span><span class="cp">x</span><span class="w">   </span><span class="cp">y</span><span class="w">      </span><span class="cp">r</span><span class="w">   </span><span class="cp">g</span><span class="w">   </span><span class="cp">b</span>
+
+<span class="mf">0.5</span><span class="w">   </span><span class="mf">0.0</span><span class="w">    </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.353</span><span class="w"> </span><span class="mf">0.612</span>
+<span class="mf">1.0</span><span class="w">   </span><span class="mf">0.866</span><span class="w">  </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.353</span><span class="w"> </span><span class="mf">0.612</span>
+<span class="mf">0.0</span><span class="w">   </span><span class="mf">0.866</span><span class="w">  </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.353</span><span class="w"> </span><span class="mf">0.612</span>
+
+<span class="mf">0.75</span><span class="w">  </span><span class="mf">0.433</span><span class="w">  </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.4</span><span class="w">   </span><span class="mf">0.7</span>
+<span class="mf">1.25</span><span class="w">  </span><span class="mf">0.433</span><span class="w">  </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.4</span><span class="w">   </span><span class="mf">0.7</span>
+<span class="mf">1.0</span><span class="w">   </span><span class="mf">0.866</span><span class="w">  </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.4</span><span class="w">   </span><span class="mf">0.7</span>
+
+<span class="mf">1.0</span><span class="w">   </span><span class="mf">0.0</span><span class="w">    </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.463</span><span class="w"> </span><span class="mf">0.8</span>
+<span class="mf">1.25</span><span class="w">  </span><span class="mf">0.433</span><span class="w">  </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.463</span><span class="w"> </span><span class="mf">0.8</span>
+<span class="mf">0.75</span><span class="w">  </span><span class="mf">0.433</span><span class="w">  </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.463</span><span class="w"> </span><span class="mf">0.8</span>
+
+<span class="mf">1.25</span><span class="w">  </span><span class="mf">0.433</span><span class="w">  </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.525</span><span class="w"> </span><span class="mf">0.91</span>
+<span class="mf">1.375</span><span class="w"> </span><span class="mf">0.65</span><span class="w">   </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.525</span><span class="w"> </span><span class="mf">0.91</span>
+<span class="mf">1.125</span><span class="w"> </span><span class="mf">0.65</span><span class="w">   </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.525</span><span class="w"> </span><span class="mf">0.91</span>
+
+<span class="mf">1.125</span><span class="w"> </span><span class="mf">0.65</span><span class="w">   </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.576</span><span class="w"> </span><span class="mf">1.0</span>
+<span class="mf">1.375</span><span class="w"> </span><span class="mf">0.65</span><span class="w">   </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.576</span><span class="w"> </span><span class="mf">1.0</span>
+<span class="mf">1.25</span><span class="w">  </span><span class="mf">0.866</span><span class="w">  </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.576</span><span class="w"> </span><span class="mf">1.0</span>
+
+<span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+<span class="w"> </span><span class="mi">0</span><span class="w">  </span><span class="mi">1</span><span class="w">  </span><span class="mi">2</span>
+<span class="w"> </span><span class="mi">3</span><span class="w">  </span><span class="mi">4</span><span class="w">  </span><span class="mi">5</span>
+<span class="w"> </span><span class="mi">6</span><span class="w">  </span><span class="mi">7</span><span class="w">  </span><span class="mi">8</span>
+<span class="w"> </span><span class="mi">9</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="mi">11</span>
+<span class="mi">12</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">14</span>
+</pre></div>
+</div>
+<p>It is basically the content of the <code class="docutils literal notranslate"><span class="pre">pointData</span></code> and <code class="docutils literal notranslate"><span class="pre">indexData</span></code> defined previously as C++ vectors, introduced by a line of the form <code class="docutils literal notranslate"><span class="pre">[section</span> <span class="pre">name]</span></code>. Lines that are empty or starting with a <code class="docutils literal notranslate"><span class="pre">#</span></code> are ignored.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We can already bump up the maximum buffer size limit:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">requiredLimits</span><span class="p">.</span><span class="n">limits</span><span class="p">.</span><span class="n">maxBufferSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">15</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="parser">
+<h3>Parser<a class="headerlink" href="loading-from-file.html#parser" title="Permalink to this heading">#</a></h3>
+<p>I am not going to detail the parser. I believe it is rather simple to understand, and it is not the core topic of this lecture.</p>
+<p>Plus once we’ll start using 3D data we will switch to a more standard format anyways.</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;filesystem&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;fstream&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sstream&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">fs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">std</span><span class="o">::</span><span class="nn">filesystem</span><span class="p">;</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="nf">loadGeometry</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">fs</span><span class="o">::</span><span class="n">path</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">pointData</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">indexData</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="w"> </span><span class="n">file</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">file</span><span class="p">.</span><span class="n">is_open</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">pointData</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+<span class="w">    </span><span class="n">indexData</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Section</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">None</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Points</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Indices</span><span class="p">,</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="n">Section</span><span class="w"> </span><span class="n">currentSection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Section</span><span class="o">::</span><span class="n">None</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">value</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">index</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">line</span><span class="p">;</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">file</span><span class="p">.</span><span class="n">eof</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">getline</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="n">line</span><span class="p">);</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="c1">//</span><span class="w"> </span><span class="c1">overcome</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">`CRLF`</span><span class="w"> </span><span class="c1">problem</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">line</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">line</span><span class="p">.</span><span class="n">back</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;\r&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="n">line</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">line</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;[points]&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">currentSection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Section</span><span class="o">::</span><span class="n">Points</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">line</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;[indices]&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">currentSection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Section</span><span class="o">::</span><span class="n">Indices</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;#&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">line</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">//</span><span class="w"> </span><span class="c1">Do</span><span class="w"> </span><span class="c1">nothing,</span><span class="w"> </span><span class="c1">this</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">comment</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">currentSection</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">Section</span><span class="o">::</span><span class="n">Points</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">istringstream</span><span class="w"> </span><span class="n">iss</span><span class="p">(</span><span class="n">line</span><span class="p">);</span>
+<span class="w">            </span><span class="c1">//</span><span class="w"> </span><span class="c1">Get</span><span class="w"> </span><span class="c1">x,</span><span class="w"> </span><span class="c1">y,</span><span class="w"> </span><span class="c1">r,</span><span class="w"> </span><span class="c1">g,</span><span class="w"> </span><span class="c1">b</span>
+<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">iss</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">value</span><span class="p">;</span>
+<span class="w">                </span><span class="n">pointData</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">currentSection</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">Section</span><span class="o">::</span><span class="n">Indices</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">istringstream</span><span class="w"> </span><span class="n">iss</span><span class="p">(</span><span class="n">line</span><span class="p">);</span>
+<span class="w">            </span><span class="c1">//</span><span class="w"> </span><span class="c1">Get</span><span class="w"> </span><span class="c1">corners</span><span class="w"> </span><span class="c1">#0</span><span class="w"> </span><span class="c1">#1</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">#2</span>
+<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">iss</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">index</span><span class="p">;</span>
+<span class="w">                </span><span class="n">indexData</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">index</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="loading-resources-from-disc">
+<h2>Loading resources from disc<a class="headerlink" href="loading-from-file.html#loading-resources-from-disc" title="Permalink to this heading">#</a></h2>
+<section id="basic-approach">
+<h3>Basic approach<a class="headerlink" href="loading-from-file.html#basic-approach" title="Permalink to this heading">#</a></h3>
+<p>We can replace the definition of the <code class="docutils literal notranslate"><span class="pre">pointData</span></code> and <code class="docutils literal notranslate"><span class="pre">indexData</span></code> vectors by a call to our new <code class="docutils literal notranslate"><span class="pre">loadGeometry</span></code> function.</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">pointData</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">indexData</span><span class="p">;</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">loadGeometry</span><span class="p">(</span><span class="s">&quot;resources/webgpu.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pointData</span><span class="p">,</span><span class="w"> </span><span class="n">indexData</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">success</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Could</span><span class="w"> </span><span class="s">not</span><span class="w"> </span><span class="s">load</span><span class="w"> </span><span class="s">geometry!&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>A problem we have with this hard-coded relative path is that its interpretation depends on the directory from which you run your executable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>my_project&gt; ./build/App
+(Working all right)
+my_project&gt; cd build
+my_project/build&gt; ./App
+Could not load geometry!
+</pre></div>
+</div>
+<p>In the second case, your program tries to open <code class="docutils literal notranslate"><span class="pre">my_project/build/resources/webgpu.txt</span></code>, which does not exist. There are a few options to address this:</p>
+<ul class="simple">
+<li><p><strong>Option A</strong> Don’t care, just call your program from the right directory. It could be annoying, and the problem is that IDEs usually run the executable from <code class="docutils literal notranslate"><span class="pre">build/</span></code> or even a subdirectory of <code class="docutils literal notranslate"><span class="pre">build/</span></code>.</p></li>
+<li><p><strong>Option B</strong> Use an absolute path. This will only work on your machine, which is quite of a limitation.</p></li>
+<li><p><strong>Option C</strong> Use an absolute path that is automatically generated thanks to CMake. This is what we’ll do.</p></li>
+<li><p><strong>Option D</strong> Use a command line argument to tell the program where to find the resource directory. This is an interesting option, which can be used in combination with <em>Option C</em>, but requires a bit more work.</p></li>
+<li><p><strong>Option E</strong> Automatically copy the resources in the directory from which your IDE launches the program. This will be a problem once we try to modify resources while the program is running (which is quite handy when writing shaders).</p></li>
+</ul>
+</section>
+<section id="resource-path-resolution">
+<h3>Resource path resolution<a class="headerlink" href="loading-from-file.html#resource-path-resolution" title="Permalink to this heading">#</a></h3>
+<p>We will do something like this:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#define</span><span class="w"> </span><span class="cp">RESOURCE_DIR</span><span class="w"> </span><span class="cp">&quot;/home/me/src/my_project/resources&quot;</span>
+<span class="n">loadGeometry</span><span class="p">(</span><span class="n">RESOURCE_DIR</span><span class="w"> </span><span class="s">&quot;/webgpu.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pointData</span><span class="p">,</span><span class="w"> </span><span class="n">indexData</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Except that the <code class="docutils literal notranslate"><span class="pre">#define</span> <span class="pre">RESOURCE_DIR</span></code> will be added by CMake rather than being explicitly written in our source code!</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When putting two <em>string literals</em> next to each others in a C or C++ source code, like in <code class="docutils literal notranslate"><span class="pre">loadGeometry(&quot;resource&quot;</span> <span class="pre">&quot;/webgpu.txt&quot;</span></code>, …), they are automatically concatenated. This is precisely meant for our use case to work!</p>
+</div>
+<p>To define <code class="docutils literal notranslate"><span class="pre">RESOURCE_DIR</span></code> in the <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> you can add this after creating the <code class="docutils literal notranslate"><span class="pre">App</span></code> target:</p>
+<div class="highlight-CMake notranslate"><div class="highlight"><pre><span></span><span class="nb">target_compile_definitions</span><span class="p">(</span><span class="s">App</span><span class="w"> </span><span class="s">PRIVATE</span>
+<span class="w">    </span><span class="s">RESOURCE_DIR=</span><span class="s2">&quot;${CMAKE_CURRENT_SOURCE_DIR}/resources&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The expression <code class="docutils literal notranslate"><span class="pre">${CMAKE_CURRENT_SOURCE_DIR}</span></code> is replaced by the content of CMake’s variable <a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_CURRENT_SOURCE_DIR.html"><code class="docutils literal notranslate"><span class="pre">CMAKE_CURRENT_SOURCE_DIR</span></code></a>, which is a built-in variable containing the full path to the <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> file that you are editing.</p>
+<p><code class="docutils literal notranslate"><span class="pre">{note}</span></code>
+When writing a CMake <em>function</em>, the <code class="docutils literal notranslate"><span class="pre">CMAKE_CURRENT_SOURCE_DIR</span></code> variable contains the directory of the <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> that is currently calling the function. If you want to refer to the directory of the <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> that defines the function, use <a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_CURRENT_LIST_DIR.html"><code class="docutils literal notranslate"><span class="pre">CMAKE_CURRENT_LIST_DIR</span></code></a> instead.</p>
+</section>
+<section id="portability">
+<h3>Portability<a class="headerlink" href="loading-from-file.html#portability" title="Permalink to this heading">#</a></h3>
+<blockquote>
+<div><p>😒 Hey but in the end our executable uses an <strong>absolute path</strong>, so we have this <strong>portability issue</strong> when trying to share it, right?</p>
+</div></blockquote>
+<p>Yes indeed, but we can easily add an option to globally change the resource directory when building a release that we want to be able to distribute:</p>
+<div class="highlight-CMake notranslate"><div class="highlight"><pre><span></span><span class="c">#</span><span class="w"> </span><span class="c">We</span><span class="w"> </span><span class="c">add</span><span class="w"> </span><span class="c">an</span><span class="w"> </span><span class="c">option</span><span class="w"> </span><span class="c">to</span><span class="w"> </span><span class="c">enable</span><span class="w"> </span><span class="c">different</span><span class="w"> </span><span class="c">settings</span><span class="w"> </span><span class="c">when</span><span class="w"> </span><span class="c">developing</span><span class="w"> </span><span class="c">the</span><span class="w"> </span><span class="c">app</span><span class="w"> </span><span class="c">than</span>
+<span class="c">#</span><span class="w"> </span><span class="c">when</span><span class="w"> </span><span class="c">distributing</span><span class="w"> </span><span class="c">it.</span>
+<span class="nb">option</span><span class="p">(</span><span class="s">DEV_MODE</span><span class="w"> </span><span class="s2">&quot;Set</span><span class="w"> </span><span class="s2">up</span><span class="w"> </span><span class="s2">development</span><span class="w"> </span><span class="s2">helper</span><span class="w"> </span><span class="s2">settings&quot;</span><span class="w"> </span><span class="s">ON</span><span class="p">)</span>
+
+<span class="nb">if</span><span class="p">(</span><span class="s">DEV_MODE</span><span class="p">)</span>
+<span class="w">    </span><span class="c">#</span><span class="w"> </span><span class="c">In</span><span class="w"> </span><span class="c">dev</span><span class="w"> </span><span class="c">mode,</span><span class="w"> </span><span class="c">we</span><span class="w"> </span><span class="c">load</span><span class="w"> </span><span class="c">resources</span><span class="w"> </span><span class="c">from</span><span class="w"> </span><span class="c">the</span><span class="w"> </span><span class="c">source</span><span class="w"> </span><span class="c">tree,</span><span class="w"> </span><span class="c">so</span><span class="w"> </span><span class="c">that</span><span class="w"> </span><span class="c">when</span><span class="w"> </span><span class="c">we</span>
+<span class="w">    </span><span class="c">#</span><span class="w"> </span><span class="c">dynamically</span><span class="w"> </span><span class="c">edit</span><span class="w"> </span><span class="c">resources</span><span class="w"> </span><span class="c">(like</span><span class="w"> </span><span class="c">shaders),</span><span class="w"> </span><span class="c">these</span><span class="w"> </span><span class="c">are</span><span class="w"> </span><span class="c">correctly</span>
+<span class="w">    </span><span class="c">#</span><span class="w"> </span><span class="c">versionned.</span>
+<span class="w">    </span><span class="nb">target_compile_definitions</span><span class="p">(</span><span class="s">App</span><span class="w"> </span><span class="s">PRIVATE</span>
+<span class="w">        </span><span class="s">RESOURCE_DIR=</span><span class="s2">&quot;${CMAKE_CURRENT_SOURCE_DIR}/resources&quot;</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="nb">else</span><span class="p">()</span>
+<span class="w">    </span><span class="c">#</span><span class="w"> </span><span class="c">In</span><span class="w"> </span><span class="c">release</span><span class="w"> </span><span class="c">mode,</span><span class="w"> </span><span class="c">we</span><span class="w"> </span><span class="c">just</span><span class="w"> </span><span class="c">load</span><span class="w"> </span><span class="c">resources</span><span class="w"> </span><span class="c">relatively</span><span class="w"> </span><span class="c">to</span><span class="w"> </span><span class="c">wherever</span><span class="w"> </span><span class="c">the</span>
+<span class="w">    </span><span class="c">#</span><span class="w"> </span><span class="c">executable</span><span class="w"> </span><span class="c">is</span><span class="w"> </span><span class="c">launched</span><span class="w"> </span><span class="c">from,</span><span class="w"> </span><span class="c">so</span><span class="w"> </span><span class="c">that</span><span class="w"> </span><span class="c">the</span><span class="w"> </span><span class="c">binary</span><span class="w"> </span><span class="c">is</span><span class="w"> </span><span class="c">portable</span>
+<span class="w">    </span><span class="nb">target_compile_definitions</span><span class="p">(</span><span class="s">App</span><span class="w"> </span><span class="s">PRIVATE</span>
+<span class="w">        </span><span class="s">RESOURCE_DIR=</span><span class="s2">&quot;./resources&quot;</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You can then have 2 different builds of your project in two different directories:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span> <span class="o">-</span><span class="n">B</span> <span class="n">build</span><span class="o">-</span><span class="n">dev</span> <span class="o">-</span><span class="n">DDEV_MOD</span><span class="o">=</span><span class="n">ON</span> <span class="o">-</span><span class="n">DCMAKE_BUILD_TYPE</span><span class="o">=</span><span class="n">Debug</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">B</span> <span class="n">build</span><span class="o">-</span><span class="n">release</span> <span class="o">-</span><span class="n">DDEV_MOD</span><span class="o">=</span><span class="n">OFF</span> <span class="o">-</span><span class="n">DCMAKE_BUILD_TYPE</span><span class="o">=</span><span class="n">Release</span>
+</pre></div>
+</div>
+<p>The first one for comfort of development, the second one for the portability of a release.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">CMAKE_BUILD_TYPE</span></code> option is a built-in option of CMake that is very commonly used. Set it to <code class="docutils literal notranslate"><span class="pre">Debug</span></code> to compile your program with *<em>debugging symbols</em> (see <a class="reference internal" href="../../appendices/debugging.html"><span class="std std-doc">debugging</span></a>), at the expense of a slower and heavier executable. Set it to <code class="docutils literal notranslate"><span class="pre">Release</span></code> to have a fast and lightweight executable with no debugging safe-guard.</p>
+<p>When using some CMake generators, like the Visual Studio one, this is ignored because the generated solution can switch from Debug to Release mode directly in the IDE instead of asking CMake.</p>
+</div>
+</section>
+<section id="shaders">
+<h3>Shaders<a class="headerlink" href="loading-from-file.html#shaders" title="Permalink to this heading">#</a></h3>
+<p>Now that we have a basic resource path resolution mechanism, I strongly suggest we use to load our shader code, instead of hard-coding it in the C++ source as we have been doing from the beginning. We can even include the whole shader module creation call:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">ShaderModule</span><span class="w"> </span><span class="nf">loadShaderModule</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">fs</span><span class="o">::</span><span class="n">path</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">Device</span><span class="w"> </span><span class="n">device</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="w"> </span><span class="n">file</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">file</span><span class="p">.</span><span class="n">is_open</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">file</span><span class="p">.</span><span class="n">seekg</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ios</span><span class="o">::</span><span class="n">end</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="p">.</span><span class="n">tellg</span><span class="p">();</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">shaderSource</span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;</span><span class="w"> </span><span class="sc">&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">file</span><span class="p">.</span><span class="n">seekg</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">file</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">shaderSource</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">ShaderModuleWGSLDescriptor</span><span class="w"> </span><span class="n">shaderCodeDesc</span><span class="p">{};</span>
+<span class="w">    </span><span class="n">shaderCodeDesc</span><span class="p">.</span><span class="n">chain</span><span class="p">.</span><span class="n">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">shaderCodeDesc</span><span class="p">.</span><span class="n">chain</span><span class="p">.</span><span class="n">sType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SType</span><span class="o">::</span><span class="n">ShaderModuleWGSLDescriptor</span><span class="p">;</span>
+<span class="w">    </span><span class="n">shaderCodeDesc</span><span class="p">.</span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shaderSource</span><span class="p">.</span><span class="n">c_str</span><span class="p">();</span>
+<span class="w">    </span><span class="n">ShaderModuleDescriptor</span><span class="w"> </span><span class="n">shaderDesc</span><span class="p">{};</span>
+<span class="w">    </span><span class="n">shaderDesc</span><span class="p">.</span><span class="n">hintCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">shaderDesc</span><span class="p">.</span><span class="n">hints</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">shaderDesc</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">shaderCodeDesc</span><span class="p">.</span><span class="n">chain</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">device</span><span class="p">.</span><span class="n">createShaderModule</span><span class="p">(</span><span class="n">shaderDesc</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">WGPUShaderModule</span><span class="w"> </span><span class="nf">loadShaderModule</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">fs</span><span class="o">::</span><span class="n">path</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">WGPUDevice</span><span class="w"> </span><span class="n">device</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="w"> </span><span class="n">file</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">file</span><span class="p">.</span><span class="n">is_open</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">file</span><span class="p">.</span><span class="n">seekg</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ios</span><span class="o">::</span><span class="n">end</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="p">.</span><span class="n">tellg</span><span class="p">();</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">shaderSource</span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;</span><span class="w"> </span><span class="sc">&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">file</span><span class="p">.</span><span class="n">seekg</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">file</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">shaderSource</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">WGPUShaderModuleWGSLDescriptor</span><span class="w"> </span><span class="n">shaderCodeDesc</span><span class="p">{};</span>
+<span class="w">    </span><span class="n">shaderCodeDesc</span><span class="p">.</span><span class="n">chain</span><span class="p">.</span><span class="n">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">shaderCodeDesc</span><span class="p">.</span><span class="n">chain</span><span class="p">.</span><span class="n">sType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUSType_ShaderModuleWGSLDescriptor</span><span class="p">;</span>
+<span class="w">    </span><span class="n">shaderCodeDesc</span><span class="p">.</span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shaderSource</span><span class="p">.</span><span class="n">c_str</span><span class="p">();</span>
+<span class="w">    </span><span class="n">ShaderModuleDescriptor</span><span class="w"> </span><span class="n">shaderDesc</span><span class="p">{};</span>
+<span class="w">    </span><span class="n">shaderDesc</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">shaderDesc</span><span class="p">.</span><span class="n">hintCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">shaderDesc</span><span class="p">.</span><span class="n">hints</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">shaderDesc</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">shaderCodeDesc</span><span class="p">.</span><span class="n">chain</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">wgpuDeviceCreateShaderModule</span><span class="p">(</span><span class="n">device</span><span class="p">,</span><span class="w"> </span><span class="n">shaderDesc</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Move the original content of the shaderSource variable into <code class="docutils literal notranslate"><span class="pre">resources/shader.wgsl</span></code> and replace the module creation step by:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Creating</span><span class="w"> </span><span class="s">shader</span><span class="w"> </span><span class="s">module...&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="n">ShaderModule</span><span class="w"> </span><span class="n">shaderModule</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">loadShaderModule</span><span class="p">(</span><span class="n">RESOURCE_DIR</span><span class="w"> </span><span class="s">&quot;/shader.wgsl&quot;</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Shader</span><span class="w"> </span><span class="s">module:</span><span class="w"> </span><span class="s">&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">shaderModule</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>This way, you <strong>no longer need to rebuild</strong> the application when you only want to change the shader!</p>
+</section>
+</section>
+<section id="adjustments">
+<h2>Adjustments<a class="headerlink" href="loading-from-file.html#adjustments" title="Permalink to this heading">#</a></h2>
+<!--
+### Alignment
+
+indexData is aligned to 4 bytes, so if we use u32 its fine, if we use u16 we need some precaution. To be moved in index buffer section actually.
+-->
+<section id="transform">
+<h3>Transform<a class="headerlink" href="loading-from-file.html#transform" title="Permalink to this heading">#</a></h3>
+<p>If you run the program now you should get something like this:</p>
+<figure class="align-center" id="id1">
+<img alt="../../_images/loaded-webgpu-logo-transform-issue.png" class="with-shadow" src="../../_images/loaded-webgpu-logo-transform-issue.png" />
+<figcaption>
+<p><span class="caption-text">Our loaded shape is a bit off, we should move it to better center it!</span><a class="headerlink" href="loading-from-file.html#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>So how do we “move” the object? Similarly to how we fixed the ratio issue in the previous chapter, we can do it in the <strong>vertex shader</strong>, by adding something to the <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> coordinates:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec2f</span><span class="p">(</span><span class="o">-</span><span class="mf">0.6875</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">0.463</span><span class="p">);</span>
+<span class="n">out</span><span class="p">.</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec4f</span><span class="p">(</span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">offset</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">offset</span><span class="p">.</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ratio</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is important to apply the scene transform <strong>before</strong> the viewport transform (the ratio). We will get back on this more in detail when adding the 3D to 2D projection transform needed for <a class="reference internal" href="../3d-meshes/index.html"><span class="std std-doc">drawing 3D meshes</span></a>!</p>
+</div>
+<figure class="align-center" id="id2">
+<img alt="../../_images/loaded-webgpu-logo-colorspace-issue.png" class="with-shadow" src="../../_images/loaded-webgpu-logo-colorspace-issue.png" />
+<figcaption>
+<p><span class="caption-text">The WebGPU Logo loaded from the file, with wrong colors.</span><a class="headerlink" href="loading-from-file.html#id2" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="color-issue">
+<h3>Color issue<a class="headerlink" href="loading-from-file.html#color-issue" title="Permalink to this heading">#</a></h3>
+<p>You are not just being picky, there is indeed <strong>something wrong</strong> with the colors! Compare to the logo in the left panel, the colors in the window seem lighter, and even have a different tint.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This behavior depends on your device, so you may actually see correct colors. I recommend you read the following anyways though!</p>
+</div>
+<blockquote>
+<div><p>🙄 Hum maybe you made a mistake when writing the file you provided.</p>
+</div></blockquote>
+<p>Nice try, but nope. To convince you let’s take a look at the color of the first 3 lines of the file, which correspond to the biggest triangle:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.0</span> <span class="mf">0.353</span> <span class="mf">0.612</span>
+</pre></div>
+</div>
+<p>These are <em>red</em>, <em>green</em> and <em>blue</em> values expressed in the range <span class="math notranslate nohighlight">\((0,1)\)</span> but let’s <strong>remap</strong> them to the integer range <span class="math notranslate nohighlight">\([0,255]\)</span> (8-bit per channel) which is what your screen most likely displays (and hence what usual image file format store):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span> <span class="mi">90</span> <span class="mi">156</span>
+</pre></div>
+</div>
+<p>Now we can check on a screen capture the color of the big triangle:</p>
+<figure class="align-center" id="id3">
+<img alt="../../_images/color-pick.png" class="with-shadow" src="../../_images/color-pick.png" />
+<figcaption>
+<p><span class="caption-text">Color picking the big triangle in a screenshot of our windows shows a color of <span class="math notranslate nohighlight">\((0, 160, 205)\)</span>.</span><a class="headerlink" href="loading-from-file.html#id3" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Oh oh, it does not match. What is happening? We have a <strong>color space</strong> issue, meaning that we are expressing colors in a given space, but they end up being interpreted differently. This may happen in a lot of contexts, so it is quite useful to be aware of the basics (although color science is a non-trivial matter in general).</p>
+<p>Our problem here comes from the <code class="docutils literal notranslate"><span class="pre">swapChainFormat</span></code>. Let us print it:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Swapchain</span><span class="w"> </span><span class="s">format:</span><span class="w"> </span><span class="s">&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">swapChainFormat</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>This gives <em>Swapchain format: 24</em>. The “24” must be compared to the values of the <code class="docutils literal notranslate"><span class="pre">WGPUTextureFormat</span></code> enum in <code class="docutils literal notranslate"><span class="pre">webgpu.h</span></code>. Be aware that values there are expressed in base 16 (number literals start with <code class="docutils literal notranslate"><span class="pre">0x</span></code>), so we are looking for <code class="docutils literal notranslate"><span class="pre">24</span> <span class="pre">=</span> <span class="pre">1</span> <span class="pre">*</span> <span class="pre">16</span> <span class="pre">+</span> <span class="pre">8</span> <span class="pre">=</span> <span class="pre">0x18</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To avoid the need to manually handle enum values, I recommend to have a look at <a class="reference external" href="https://github.com/Neargye/magic_enum/blob/master/include/magic_enum.hpp">magic_enum</a>. After you copy this file to your source tree you can simply do the following:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;magic_enum.hpp&quot;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Swapchain</span><span class="w"> </span><span class="s">format:</span><span class="w"> </span><span class="s">&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">magic_enum</span><span class="o">::</span><span class="n">enum_name</span><span class="o">&lt;</span><span class="n">WGPUTextureFormat</span><span class="o">&gt;</span><span class="p">(</span><span class="n">swapChainFormat</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Thanks to advanced C++ template mechanism, this library is able to output <em>Swapchain format: WGPUTextureFormat_BGRA8UnormSrgb</em>!</p>
+</div>
+<div class="admonition-dawn admonition">
+<p class="admonition-title">Dawn</p>
+<p>Since the Dawn implementation only supports the format <code class="docutils literal notranslate"><span class="pre">BGRA8Unorm</span></code> for the surface, you should directly see correct colors in that case.</p>
+</div>
+<p>In my setup, the preferred format is <code class="docutils literal notranslate"><span class="pre">BGRA8UnormSrgb</span></code>:</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">BGRA</span></code> part means that colors are encoded with the blue channel first, then the green one, then red and alpha.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">8</span></code> means that each channel is encoded using 8 bits (256 possible values).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Unorm</span></code> part means that it is exposed as an unsigned normalized value, so we manipulate floats (well, fixed-point reals actually, not floating-point) in the range <span class="math notranslate nohighlight">\((0,1)\)</span> even if the underlying representation only uses 8-bits. <code class="docutils literal notranslate"><span class="pre">Snorm</span></code> would be in range <span class="math notranslate nohighlight">\((-1,1)\)</span>, <code class="docutils literal notranslate"><span class="pre">Uint</span></code> in integer range <span class="math notranslate nohighlight">\([0,255]\)</span>, etc.</p></li>
+<li><p>And finally, the <code class="docutils literal notranslate"><span class="pre">Srgb</span></code> part tells that values use the <a class="reference external" href="https://en.wikipedia.org/wiki/SRGB">sRGB</a> scale.</p></li>
+</ul>
+</section>
+<section id="the-srgb-color-space">
+<h3>The sRGB color space<a class="headerlink" href="loading-from-file.html#the-srgb-color-space" title="Permalink to this heading">#</a></h3>
+<p>The idea of a color space is to answer the following problem: We have a budget of 256 possible values to represent a color channel, how should these 256 <strong>discrete</strong> values (index <span class="math notranslate nohighlight">\(i\)</span>) be distributed along the <strong>continuous</strong> range of light intensity <span class="math notranslate nohighlight">\(x\)</span>?</p>
+<img alt="../../_images/colorspace-light.plain.svg" class="only-light align-center" src="../../_images/colorspace-light.plain.svg" /><img alt="../../_images/colorspace-dark.plain.svg" class="only-dark align-center" src="../../_images/colorspace-dark.plain.svg" /><p>The most intuitive approach, the <strong>linear</strong> one, consists in regularly distributing the 256 indices across the range of intensities. But we may need more precision in some parts of the range and less in others. Also, the <strong>physical response</strong> of your screen is typically not linear! <strong>Even your eyes</strong> don’t have a linear response when translating physical stimuli into psychological <strong>perception</strong> (and it depends on the surrounding lighting).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The sRGB color space has been designed specifically to address the non-linearity of the display. On <a class="reference external" href="https://en.wikipedia.org/wiki/Cathode-ray_tube">CRT</a> displays, this was in line with the spontaneous response behavior of the physical device. Now we have switched to LCD or OLED display so the physical device has a different behavior, but screen manufacturer artificially reproduce the CRT response curve to ensure backward compatibility.</p>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The sRGB color space is so much the standard that it is the one used by all common image file formats, like PNG and JPG. As a consequence, when not doing any color conversion, everything we do, including the color picking tool, is in sRGB.</p>
+<p><strong>However</strong>, WebGPU assumes that the colors output by the fragment shader are linear, so when setting the surface format to <code class="docutils literal notranslate"><span class="pre">BGRA8UnormSrgb</span></code> it performs a <em>linear to sRGB</em> conversion. <strong>This is what causes our colors to be wrong!</strong></p>
+</div>
+</section>
+<section id="gamma-correction">
+<h3>Gamma correction<a class="headerlink" href="loading-from-file.html#gamma-correction" title="Permalink to this heading">#</a></h3>
+<p>An easy-fix is to force a non-sRGB texture format:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">TextureFormat</span><span class="w"> </span><span class="n">swapChainFormat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TextureFormat</span><span class="o">::</span><span class="n">BGRA8Unorm</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>But ignoring the preferred format of the target surface may result in performance issues (the driver would need to convert formats all the time). Instead, we will handle the <strong>color space conversion in the fragment shader</strong>. A good approximation of the rRGB conversion is <span class="math notranslate nohighlight">\(R_{\text{linear}} = R_{\text{sRGB}}^{2.2}\)</span>:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">apply</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">gamma-correction</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">color</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">need</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">convert</span><span class="w"> </span><span class="c1">our</span><span class="w"> </span><span class="c1">input</span><span class="w"> </span><span class="c1">sRGB</span><span class="w"> </span><span class="c1">color</span><span class="w"> </span><span class="c1">into</span><span class="w"> </span><span class="c1">linear</span><span class="w"> </span><span class="c1">before</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">target</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">surface</span><span class="w"> </span><span class="c1">converts</span><span class="w"> </span><span class="c1">it</span><span class="w"> </span><span class="c1">back</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">sRGB.</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">linear_color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pow</span><span class="p">(</span><span class="k">in</span><span class="p">.</span><span class="n">color</span><span class="p">,</span><span class="w"> </span><span class="n">vec3f</span><span class="p">(</span><span class="mf">2.2</span><span class="p">));</span>
+<span class="k">return</span><span class="w"> </span><span class="n">vec4f</span><span class="p">(</span><span class="n">linear_color</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id4">
+<img alt="../../_images/loaded-webgpu-logo.png" class="with-shadow" src="../../_images/loaded-webgpu-logo.png" />
+<figcaption>
+<p><span class="caption-text">The WebGPU Logo with gamma-corrected colors.</span><a class="headerlink" href="loading-from-file.html#id4" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Perfect! We fixed the problem, and we can even check with the color picker:</p>
+<figure class="align-center" id="id5">
+<img alt="../../_images/color-pick-corrected.png" class="with-shadow" src="../../_images/color-pick-corrected.png" />
+<figcaption>
+<p><span class="caption-text">Now color picking shows the right value (almost, our gamma curve is an approximation).</span><a class="headerlink" href="loading-from-file.html#id5" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>This conversion from linear to non-linear color scale (or the other way around) is called <strong>gamma correction</strong> or <strong>tone mapping</strong>. Here it was for rather technical consideration, but it is common to add an artistically driven tone mapping operation at the end of a 3D rendering pipeline. And the fragment shader is the right place to do so.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In general a color space is characterized by a <strong>gamut</strong> and a <strong>gamma</strong>. The gamma is this non-linearity of the discrete scale of values, and the gamut is the range of intensities that we want to cover (the vertical axis above, generalized to 3 colors). The gamut is often given by 3 <em>primaries</em>.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>There is more generally a lot to get lost about with color spaces, don’t try to learn it all at once but I personally find it fascinating!</p>
+</div>
+</section>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="loading-from-file.html#conclusion" title="Permalink to this heading">#</a></h2>
+<p>Loading geometric data from a file was an apparently simple change, but it was actually a good way to introduce multiple concerns that can easily become a nightmare if we don’t pay attention to them:</p>
+<ul class="simple">
+<li><p>Resource path resolution</p></li>
+<li><p>File format</p></li>
+<li><p>Color space and more generally data encoding</p></li>
+<li><p>Transform (ratio, position)</p></li>
+</ul>
+<p>We are going to come back on these from time to time to refine them. We are now ready to move on to a way to avoid hard-coded values in the shader and add a lot of flexibility, namely <strong>uniforms</strong>.</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step037"><code class="docutils literal notranslate"><span class="pre">step037</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step037-vanilla"><code class="docutils literal notranslate"><span class="pre">step037-vanilla</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--2-input--3" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--3">With Dawn</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step037-dawn"><code class="docutils literal notranslate"><span class="pre">step037-dawn</span></code></a></p>
+</div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../shader-uniforms/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Shader Uniforms</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index-buffer.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Index Buffer</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022-2023, Élie Michel and contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/eliemichel/LearnWebGPU" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      <div class="toc-sticky toc-scroll">
+	<div class="toc-title-container">
+		<span class="toc-title">
+			On this page
+		</span>
+	</div>
+	<div class="toc-tree-container">
+		<div class="toc-tree">
+			<ul>
+<li><a class="reference internal" href="loading-from-file.html#">Loading from file</a><ul>
+<li><a class="reference internal" href="loading-from-file.html#file-format">File format</a><ul>
+<li><a class="reference internal" href="loading-from-file.html#example">Example</a></li>
+<li><a class="reference internal" href="loading-from-file.html#parser">Parser</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="loading-from-file.html#loading-resources-from-disc">Loading resources from disc</a><ul>
+<li><a class="reference internal" href="loading-from-file.html#basic-approach">Basic approach</a></li>
+<li><a class="reference internal" href="loading-from-file.html#resource-path-resolution">Resource path resolution</a></li>
+<li><a class="reference internal" href="loading-from-file.html#portability">Portability</a></li>
+<li><a class="reference internal" href="loading-from-file.html#shaders">Shaders</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="loading-from-file.html#adjustments">Adjustments</a><ul>
+<li><a class="reference internal" href="loading-from-file.html#transform">Transform</a></li>
+<li><a class="reference internal" href="loading-from-file.html#color-issue">Color issue</a></li>
+<li><a class="reference internal" href="loading-from-file.html#the-srgb-color-space">The sRGB color space</a></li>
+<li><a class="reference internal" href="loading-from-file.html#gamma-correction">Gamma correction</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="loading-from-file.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+		</div>
+	</div>
+	
+</div>
+    </aside>
+  </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/sphinx_literate.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

@@ -1,0 +1,893 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content="Hello Triangle" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://eliemichel.github.io/basic-3d-rendering/hello-triangle.html" />
+<meta property="og:site_name" content="Learn WebGPU for C++" />
+<meta property="og:description" content="With webgpu.hpp Resulting code: step030 Vanilla webgpu.h Resulting code: step030-vanilla In its overall outline, drawing a triangle is as simple as this: With webgpu.hpp Vanilla webgpu.h What is a ..." />
+<meta property="og:image" content="https://eliemichel.github.io/images/webgpu-responsive.svg" />
+<meta property="og:image:alt" content="Learn WebGPU for C++" />
+<meta name="description" content="With webgpu.hpp Resulting code: step030 Vanilla webgpu.h Resulting code: step030-vanilla In its overall outline, drawing a triangle is as simple as this: With webgpu.hpp Vanilla webgpu.h What is a ..." />
+    <link rel="icon" type="image/svg+xml" href="../_static/favicon/favicon.svg">
+    <link rel="icon" sizes="16x16" href="../_static/favicon/favicon-16x16.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="../_static/favicon/favicon-32x32.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://eliemichel.github.io/LearnWebGPU/_static/favicon/apple-touch-icon-180x180.png" type="image/png"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Input Geometry" href="input-geometry/index.html" /><link rel="prev" title="Basic 3D Rendering" href="index.html" />
+
+    <!-- Generated with Sphinx 5.3.0 and Furo 2023.03.27 -->
+        <title>Hello Triangle - Learn WebGPU for C++ documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_literate.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  --color-brand-primary: #ac2800;
+  --color-brand-content: #007cac;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     <em>Important</em> This documentation is a work in progress! <a href="../appendices/feedback-needed.html">Feedback needed!</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Learn WebGPU for C++  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/webgpu-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/webgpu-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../getting-started/index.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/project-setup.html">Project setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/opening-a-window.html">Opening a window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/hello-webgpu.html">Hello WebGPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/the-adapter.html">The Adapter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/the-device.html">The Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/the-command-queue.html">The Command Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/first-color.html">First Color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started/cpp-idioms.html">C++ wrapper</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Basic 3D Rendering</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="hello-triangle.html#">Hello Triangle</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="input-geometry/index.html">Input Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="input-geometry/playing-with-buffers.html">Playing with buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="input-geometry/a-first-vertex-attribute.html">A first Vertex Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="input-geometry/multiple-attributes.html">Multiple Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="input-geometry/index-buffer.html">Index Buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="input-geometry/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="shader-uniforms/index.html">Shader Uniforms</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="shader-uniforms/a-first-uniform.html">A first uniform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shader-uniforms/multiple-uniforms.html">More uniforms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shader-uniforms/dynamic-uniforms.html">Dynamic uniforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="3d-meshes/index.html">3D Meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="3d-meshes/a-simple-example.html">A simple example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3d-meshes/depth-buffer.html">Depth buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3d-meshes/transformation-matrices.html">Transformation matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3d-meshes/projection-matrices.html">Projection matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3d-meshes/basic-shading.html">Basic shading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3d-meshes/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="texturing/index.html">Texturing</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="texturing/a-first-texture.html">A first texture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="texturing/texture-mapping.html">Texture mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="texturing/sampler.html">Sampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="texturing/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="some-interaction/index.html">Some interaction</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="some-interaction/refactoring.html">Refactoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="some-interaction/resizing-window.html">Resizing the window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="some-interaction/camera-control.html">Camera control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="some-interaction/simple-gui.html">Simple GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="lighting-and-material/index.html">Lighting and Material</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="lighting-and-material/recap.html">Recap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lighting-and-material/specular.html">Specularity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lighting-and-material/normal-mapping.html">Normal mapping (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lighting-and-material/ibl.html">Image-Based Lighting (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lighting-and-material/cubemap.html">Cube Maps (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lighting-and-material/pbr.html">Physically-Based Materials (🚧WIP)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../basic-compute/index.html">Basic Compute</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../basic-compute/compute-pipeline.html">Compute Pipeline</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-compute/image-processing/index.html">Image Processing</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/image-processing/mipmap-generation.html">Mipmap Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/image-processing/convolution-filters.html">Convolution Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/image-processing/cubemap-conversion.html">Cubemap Conversion (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/image-processing/cubemap-prefiltering.html">Cubemap Prefiltering (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-compute/procedural-geometry/index.html">Procedural Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/procedural-geometry/deformation.html">Deformation (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../basic-compute/neural-networks.html">Neural Networks (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../advanced-techniques/index.html">Advanced Techniques</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/raii.html">RAII</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/hdr-textures.html">High Dynamic Range Textures (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/deferred-shading.html">Deferred Shading (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/benchmarking.html">Benchmarking (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/render-bundles.html">Render Bundles (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/multi-sampling.html">Multi-Sampling (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/scene-tree.html">Scene tree (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/screen-capture.html">Screen capture (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/shadow-maps.html">Shadow maps (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/tesselation.html">Tesselation (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/raytracing.html">Raytracing (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../appendices/index.html">Appendices</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/teaching-native-graphics-in-2023.html">Teaching native graphics in 2023</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/feedback-needed.html">Feedback needed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/debugging.html">Debugging (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/building-for-the-web.html">Building for the Web (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/memory-model.html">Memory Model (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/custom-extensions.html">Custom Extensions (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/references.html">References (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/tmp.html">Temporary page</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="hello-triangle.html#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/eliemichel/LearnWebGPU/edit/main/./basic-3d-rendering/hello-triangle.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="hello-triangle">
+<h1>Hello Triangle<a class="headerlink" href="hello-triangle.html#hello-triangle" title="Permalink to this heading">#</a></h1>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step030"><code class="docutils literal notranslate"><span class="pre">step030</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step030-vanilla"><code class="docutils literal notranslate"><span class="pre">step030-vanilla</span></code></a></p>
+</div>
+</div>
+<p>In its overall outline, drawing a triangle is as simple as this:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Select</span><span class="w"> </span><span class="c1">which</span><span class="w"> </span><span class="c1">render</span><span class="w"> </span><span class="c1">pipeline</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">use</span>
+<span class="n">renderPass</span><span class="p">.</span><span class="n">setPipeline</span><span class="p">(</span><span class="n">pipeline</span><span class="p">);</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">Draw</span><span class="w"> </span><span class="c1">1</span><span class="w"> </span><span class="c1">instance</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">3-vertices</span><span class="w"> </span><span class="c1">shape</span>
+<span class="n">renderPass</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Select</span><span class="w"> </span><span class="c1">which</span><span class="w"> </span><span class="c1">render</span><span class="w"> </span><span class="c1">pipeline</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">use</span>
+<span class="n">wgpuRenderPassEncoderSetPipeline</span><span class="p">(</span><span class="n">renderPass</span><span class="p">,</span><span class="w"> </span><span class="n">pipeline</span><span class="p">);</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">Draw</span><span class="w"> </span><span class="c1">1</span><span class="w"> </span><span class="c1">instance</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">3-vertices</span><span class="w"> </span><span class="c1">shape</span>
+<span class="n">wgpuRenderPassEncoderDraw</span><span class="p">(</span><span class="n">renderPass</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>What is a bit verbose is the configuration of the <strong>render pipeline</strong>, and the creation of <strong>shaders</strong>. This is done only once when initializing the application.</p>
+<section id="render-pipeline">
+<h2>Render Pipeline<a class="headerlink" href="hello-triangle.html#render-pipeline" title="Permalink to this heading">#</a></h2>
+<p>In order to achieve high performance real-time 3D rendering, the GPU processes shapes through a predefined pipeline. The pipeline itself is <strong>always the same</strong> (it is generally burnt into the physical architecture of the hardware), but we can <strong>configure</strong> it in many ways. To do so, WebGPU provides a <em>Render Pipeline</em> object.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are familiar with OpenGL, you can see WebGPU’s render pipeline as a memorized value for all the stateful functions that configure the rendering pipeline.</p>
+</div>
+<p>The figure below illustrates the sequence of data processing <strong>stages</strong> executed by the render pipeline. Most of them are <strong>fixed-function</strong> stages, for which we can only customize some variables, but the most powerful ones are the <strong>programmable stages</strong>.</p>
+<p>In these programmable stages, a true program, called a <strong>shader</strong>, is executed in a massively parallel way (across input <strong>vertices</strong>, or across rasterized <strong>fragments</strong>).</p>
+<img alt="../_images/render-pipeline-light.svg" class="only-light align-center" src="../_images/render-pipeline-light.svg" /><img alt="../_images/render-pipeline-dark.svg" class="only-dark align-center" src="../_images/render-pipeline-dark.svg" /><p class="align-center">
+    <span class="caption-text"><em>The Render Pipeline abstraction used by WebGPU, detailed in subsections below.</em></span>
+</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Other graphics APIs provide access to more programmable stages (geometry shader, mesh shader, task shader). These are not part of the Web standard. They might be available in the future as native-only extensions, but in a lot of cases one can use general purpose <a class="reference internal" href="../basic-compute/index.html"><span class="std std-doc">compute shaders</span></a> to mimic their behavior.</p>
+</div>
+<p>As always, we build a descriptor in order to create the render pipeline:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">RenderPipelineDescriptor</span><span class="w"> </span><span class="n">pipelineDesc</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">Describe</span><span class="w"> </span><span class="c1">render</span><span class="w"> </span><span class="c1">pipeline</span>
+<span class="n">RenderPipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">device</span><span class="p">.</span><span class="n">createRenderPipeline</span><span class="p">(</span><span class="n">pipelineDesc</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">WGPURenderPipelineDescriptor</span><span class="w"> </span><span class="n">pipelineDesc</span><span class="p">{};</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">Describe</span><span class="w"> </span><span class="c1">render</span><span class="w"> </span><span class="c1">pipeline</span>
+<span class="n">WGPURenderPipeline</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuDeviceCreateRenderPipeline</span><span class="p">(</span><span class="n">device</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">pipelineDesc</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We now detail the configuration of the different stages. We start with a very minimal setup where we leave a lot of features unused, they will be introduce progressively in the next chapters.</p>
+<section id="vertex-pipeline-state">
+<h3>Vertex pipeline state<a class="headerlink" href="hello-triangle.html#vertex-pipeline-state" title="Permalink to this heading">#</a></h3>
+<p>Both the <strong>vertex fetch</strong> and <strong>vertex shader</strong> stages are configured through the <strong>vertex state</strong> structure, accessible at <code class="docutils literal notranslate"><span class="pre">pipelineDesc.vertex</span></code>.</p>
+<p>The render pipeline first <strong>fetches vertex attributes</strong> from some buffers. This includes usually at least a position, and might include additional per-vertex information like color, normal, texture coordinate, etc. In this first example, we hard-code the position of the 3 vertices of the triangles in shaders so we do not even need a position buffer.</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">pipelineDesc</span><span class="p">.</span><span class="n">vertex</span><span class="p">.</span><span class="n">bufferCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">vertex</span><span class="p">.</span><span class="n">buffers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Then each vertex is processed by a custom <strong>vertex shader</strong>. A shader is the combination of:</p>
+<ol class="arabic simple">
+<li><p>A <strong>shader module</strong>, which contains the actual code of the shader.</p></li>
+<li><p>An <strong>entry point</strong>, which is the name of the function in the shader module that must be called for each vertex. This enables a given shader module to include entry points for multiple render pipeline configurations at the same time. In particular, we use the same module for the vertex and fragment shaders.</p></li>
+<li><p>An array of value assignments for the <strong>constants</strong> of the shader. We do not use any for now.</p></li>
+</ol>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">pipelineDesc</span><span class="p">.</span><span class="n">vertex</span><span class="p">.</span><span class="k">module</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shaderModule</span><span class="p">;</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">vertex</span><span class="p">.</span><span class="n">entryPoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;vs_main&quot;</span><span class="p">;</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">vertex</span><span class="p">.</span><span class="n">constantCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">vertex</span><span class="p">.</span><span class="n">constants</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">shaderModule</span></code> will be defined in <a class="reference internal" href="hello-triangle.html#shaders">the next section</a>.</p>
+</section>
+<section id="primitive-pipeline-state">
+<h3>Primitive pipeline state<a class="headerlink" href="hello-triangle.html#primitive-pipeline-state" title="Permalink to this heading">#</a></h3>
+<p>The <strong>primitive state</strong> structure found at <code class="docutils literal notranslate"><span class="pre">pipelineDesc.primitive</span></code> configures the <strong>primitive assembly</strong> and <strong>rasterization</strong> stages.</p>
+<p>The <strong>rasterization</strong> is the very heart of the 3D rendering algorithm implemented by a GPU. It transforms a <strong>primitive</strong> (a point, a line or a triangle) into a series of <strong>fragments</strong>, that correspond to the pixels covered by the primitive. It <strong>interpolates</strong> any extra attribute output by the vertex shader, such that each fragment receives a value for all attributes.</p>
+<p>The primitive assembly configuration consists in stating how the array of vertices fetched earlier must be connected to for either a point cloud, a wire frame or a triangle soup. We set it to its default configuration:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--3-input--1" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Each</span><span class="w"> </span><span class="c1">sequence</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">3</span><span class="w"> </span><span class="c1">vertices</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">considered</span><span class="w"> </span><span class="c1">as</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">triangle</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">primitive</span><span class="p">.</span><span class="n">topology</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PrimitiveTopology</span><span class="o">::</span><span class="n">TriangleList</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">We&#39;ll</span><span class="w"> </span><span class="c1">see</span><span class="w"> </span><span class="c1">later</span><span class="w"> </span><span class="c1">how</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">specify</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">order</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">which</span><span class="w"> </span><span class="c1">vertices</span><span class="w"> </span><span class="c1">should</span><span class="w"> </span><span class="c1">be</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">connected.</span><span class="w"> </span><span class="c1">When</span><span class="w"> </span><span class="c1">not</span><span class="w"> </span><span class="c1">specified,</span><span class="w"> </span><span class="c1">vertices</span><span class="w"> </span><span class="c1">are</span><span class="w"> </span><span class="c1">considered</span><span class="w"> </span><span class="c1">sequentially.</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">primitive</span><span class="p">.</span><span class="n">stripIndexFormat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IndexFormat</span><span class="o">::</span><span class="n">Undefined</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">face</span><span class="w"> </span><span class="c1">orientation</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">defined</span><span class="w"> </span><span class="c1">by</span><span class="w"> </span><span class="c1">assuming</span><span class="w"> </span><span class="c1">that</span><span class="w"> </span><span class="c1">when</span><span class="w"> </span><span class="c1">looking</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">from</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">front</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">face,</span><span class="w"> </span><span class="c1">its</span><span class="w"> </span><span class="c1">corner</span><span class="w"> </span><span class="c1">vertices</span><span class="w"> </span><span class="c1">are</span><span class="w"> </span><span class="c1">enumerated</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">counter-clockwise</span><span class="w"> </span><span class="c1">(CCW)</span><span class="w"> </span><span class="c1">order.</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">primitive</span><span class="p">.</span><span class="n">frontFace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FrontFace</span><span class="o">::</span><span class="n">CCW</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">But</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">face</span><span class="w"> </span><span class="c1">orientation</span><span class="w"> </span><span class="c1">does</span><span class="w"> </span><span class="c1">not</span><span class="w"> </span><span class="c1">matter</span><span class="w"> </span><span class="c1">much</span><span class="w"> </span><span class="c1">because</span><span class="w"> </span><span class="c1">we</span><span class="w"> </span><span class="c1">do</span><span class="w"> </span><span class="c1">not</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">cull</span><span class="w"> </span><span class="c1">(i.e.</span><span class="w"> </span><span class="c1">&quot;hide&quot;)</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">faces</span><span class="w"> </span><span class="c1">pointing</span><span class="w"> </span><span class="c1">away</span><span class="w"> </span><span class="c1">from</span><span class="w"> </span><span class="c1">us</span><span class="w"> </span><span class="c1">(which</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">often</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">used</span><span class="w"> </span><span class="c1">for</span><span class="w"> </span><span class="c1">optimization).</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">primitive</span><span class="p">.</span><span class="n">cullMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CullMode</span><span class="o">::</span><span class="n">None</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--3-input--2" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Each</span><span class="w"> </span><span class="c1">sequence</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">3</span><span class="w"> </span><span class="c1">vertices</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">considered</span><span class="w"> </span><span class="c1">as</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">triangle</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">primitive</span><span class="p">.</span><span class="n">topology</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUPrimitiveTopology_TriangleList</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">We&#39;ll</span><span class="w"> </span><span class="c1">see</span><span class="w"> </span><span class="c1">later</span><span class="w"> </span><span class="c1">how</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">specify</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">order</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">which</span><span class="w"> </span><span class="c1">vertices</span><span class="w"> </span><span class="c1">should</span><span class="w"> </span><span class="c1">be</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">connected.</span><span class="w"> </span><span class="c1">When</span><span class="w"> </span><span class="c1">not</span><span class="w"> </span><span class="c1">specified,</span><span class="w"> </span><span class="c1">vertices</span><span class="w"> </span><span class="c1">are</span><span class="w"> </span><span class="c1">considered</span><span class="w"> </span><span class="c1">sequentially.</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">primitive</span><span class="p">.</span><span class="n">stripIndexFormat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUIndexFormat_Undefined</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">face</span><span class="w"> </span><span class="c1">orientation</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">defined</span><span class="w"> </span><span class="c1">by</span><span class="w"> </span><span class="c1">assuming</span><span class="w"> </span><span class="c1">that</span><span class="w"> </span><span class="c1">when</span><span class="w"> </span><span class="c1">looking</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">from</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">front</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">face,</span><span class="w"> </span><span class="c1">its</span><span class="w"> </span><span class="c1">corner</span><span class="w"> </span><span class="c1">vertices</span><span class="w"> </span><span class="c1">are</span><span class="w"> </span><span class="c1">enumerated</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">counter-clockwise</span><span class="w"> </span><span class="c1">(CCW)</span><span class="w"> </span><span class="c1">order.</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">primitive</span><span class="p">.</span><span class="n">frontFace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUFrontFace_CCW</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">But</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">face</span><span class="w"> </span><span class="c1">orientation</span><span class="w"> </span><span class="c1">does</span><span class="w"> </span><span class="c1">not</span><span class="w"> </span><span class="c1">matter</span><span class="w"> </span><span class="c1">much</span><span class="w"> </span><span class="c1">because</span><span class="w"> </span><span class="c1">we</span><span class="w"> </span><span class="c1">do</span><span class="w"> </span><span class="c1">not</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">cull</span><span class="w"> </span><span class="c1">(i.e.</span><span class="w"> </span><span class="c1">&quot;hide&quot;)</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">faces</span><span class="w"> </span><span class="c1">pointing</span><span class="w"> </span><span class="c1">away</span><span class="w"> </span><span class="c1">from</span><span class="w"> </span><span class="c1">us</span><span class="w"> </span><span class="c1">(which</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">often</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">used</span><span class="w"> </span><span class="c1">for</span><span class="w"> </span><span class="c1">optimization).</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">primitive</span><span class="p">.</span><span class="n">cullMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUCullMode_None</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Usually we set the cull mode to <code class="docutils literal notranslate"><span class="pre">Front</span></code> to avoid wasting resources in rendering the inside of objects. But for beginners it can be very frustrating to see nothing on screen for hours only to discover that the triangle was just facing in the wrong direction, so I advise you to set it to <code class="docutils literal notranslate"><span class="pre">None</span></code> when developing.</p>
+</div>
+</section>
+<section id="fragment-shader">
+<h3>Fragment shader<a class="headerlink" href="hello-triangle.html#fragment-shader" title="Permalink to this heading">#</a></h3>
+<p>Once a primitive have been turned into fragments, the <strong>fragment shader</strong> stage is invoked for each one of them. This shader receives the interpolated values generated by the vertex shader, and must output on its turn the <strong>final color</strong> of the fragment.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Keep in mind that all these stages are happening in a very parallel and asynchronous environment. When rendering a large mesh, the fragment shader for the first primitives may be invoked before the last primitives have been rasterized.</p>
+</div>
+<p>The configuration is very similar to the configuration of the vertex shader:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--4-input--1" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">FragmentState</span><span class="w"> </span><span class="n">fragmentState</span><span class="p">;</span>
+<span class="n">fragmentState</span><span class="p">.</span><span class="k">module</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shaderModule</span><span class="p">;</span>
+<span class="n">fragmentState</span><span class="p">.</span><span class="n">entryPoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;fs_main&quot;</span><span class="p">;</span>
+<span class="n">fragmentState</span><span class="p">.</span><span class="n">constantCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">fragmentState</span><span class="p">.</span><span class="n">constants</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">We&#39;ll</span><span class="w"> </span><span class="c1">configure</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">blend</span><span class="w"> </span><span class="c1">stage</span><span class="w"> </span><span class="c1">here</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">fragment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">fragmentState</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--4-input--2" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">WGPUFragmentState</span><span class="w"> </span><span class="n">fragmentState</span><span class="p">{};</span>
+<span class="n">fragmentState</span><span class="p">.</span><span class="k">module</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shaderModule</span><span class="p">;</span>
+<span class="n">fragmentState</span><span class="p">.</span><span class="n">entryPoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;fs_main&quot;</span><span class="p">;</span>
+<span class="n">fragmentState</span><span class="p">.</span><span class="n">constantCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">fragmentState</span><span class="p">.</span><span class="n">constants</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">We&#39;ll</span><span class="w"> </span><span class="c1">configure</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">blend</span><span class="w"> </span><span class="c1">stage</span><span class="w"> </span><span class="c1">here</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">fragment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">fragmentState</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that the fragment stage is optional, so <code class="docutils literal notranslate"><span class="pre">pipelineDesc.fragment</span></code> is a (potentially null) pointer instead of directly holding the fragment state structure.</p>
+</section>
+<section id="stencil-depth-state">
+<h3>Stencil/Depth state<a class="headerlink" href="hello-triangle.html#stencil-depth-state" title="Permalink to this heading">#</a></h3>
+<p>The <strong>depth test</strong> is used to discard fragments that are <strong>behind</strong> other fragments associated to the same pixel. Remember that a fragment is the projection of a given primitive on a given pixel, so when primitives overlap each others, multiple fragments are emitted for the same pixel. Fragments have a <strong>depth</strong> information, which is used by the depth test.</p>
+<p>The stencil test is another fragment discarding mechanism, used to hide fragments based on previously rendered primitives. Let’s ignore the depth and stencil mechanism for now, we will introduce them in the <a class="reference internal" href="3d-meshes/depth-buffer.html"><span class="std std-doc">Depth buffer</span></a> chapter.</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">pipelineDesc</span><span class="p">.</span><span class="n">depthStencil</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="blending">
+<h3>Blending<a class="headerlink" href="hello-triangle.html#blending" title="Permalink to this heading">#</a></h3>
+<p>The blending stage takes each fragment’s color and “paints” it onto the target color attachment. If the original color in the <strong>destination</strong> pixel is <span class="math notranslate nohighlight">\((r_d, g_d, b_d, a_d)\)</span> and the color of the <strong>source</strong> fragment to paint is <span class="math notranslate nohighlight">\((r_s, g_s, b_s, a_s)\)</span>, what should be the final color <span class="math notranslate nohighlight">\((r, g, b, a)\)</span> of the final pixel? This is what the <strong>blend state</strong> specifies.</p>
+<p>We must also specify what <strong>format</strong> (i.e., how to represent the values as zeros and ones) the colors are to be stored in the final attachment.</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--5-input--1" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">BlendState</span><span class="w"> </span><span class="n">blendState</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">Configure</span><span class="w"> </span><span class="c1">blend</span><span class="w"> </span><span class="c1">state</span>
+
+<span class="n">ColorTargetState</span><span class="w"> </span><span class="n">colorTarget</span><span class="p">;</span>
+<span class="n">colorTarget</span><span class="p">.</span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">swapChainFormat</span><span class="p">;</span>
+<span class="n">colorTarget</span><span class="p">.</span><span class="n">blend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">blendState</span><span class="p">;</span>
+<span class="n">colorTarget</span><span class="p">.</span><span class="n">writeMask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ColorWriteMask</span><span class="o">::</span><span class="n">All</span><span class="p">;</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">could</span><span class="w"> </span><span class="c1">write</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">only</span><span class="w"> </span><span class="c1">some</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">color</span><span class="w"> </span><span class="c1">channels.</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">have</span><span class="w"> </span><span class="c1">only</span><span class="w"> </span><span class="c1">one</span><span class="w"> </span><span class="c1">target</span><span class="w"> </span><span class="c1">because</span><span class="w"> </span><span class="c1">our</span><span class="w"> </span><span class="c1">render</span><span class="w"> </span><span class="c1">pass</span><span class="w"> </span><span class="c1">has</span><span class="w"> </span><span class="c1">only</span><span class="w"> </span><span class="c1">one</span><span class="w"> </span><span class="c1">output</span><span class="w"> </span><span class="c1">color</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">attachment.</span>
+<span class="n">fragmentState</span><span class="p">.</span><span class="n">targetCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">fragmentState</span><span class="p">.</span><span class="n">targets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">colorTarget</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--5-input--2" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">WGPUBlendState</span><span class="w"> </span><span class="n">blendState</span><span class="p">{};</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">Configure</span><span class="w"> </span><span class="c1">blend</span><span class="w"> </span><span class="c1">state</span>
+
+<span class="n">WGPUColorTargetState</span><span class="w"> </span><span class="n">colorTarget</span><span class="p">{};</span>
+<span class="n">colorTarget</span><span class="p">.</span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">swapChainFormat</span><span class="p">;</span>
+<span class="n">colorTarget</span><span class="p">.</span><span class="n">blend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">blendState</span><span class="p">;</span>
+<span class="n">colorTarget</span><span class="p">.</span><span class="n">writeMask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUColorWriteMask_All</span><span class="p">;</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">could</span><span class="w"> </span><span class="c1">write</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">only</span><span class="w"> </span><span class="c1">some</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">color</span><span class="w"> </span><span class="c1">channels.</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">We</span><span class="w"> </span><span class="c1">have</span><span class="w"> </span><span class="c1">only</span><span class="w"> </span><span class="c1">one</span><span class="w"> </span><span class="c1">target</span><span class="w"> </span><span class="c1">because</span><span class="w"> </span><span class="c1">our</span><span class="w"> </span><span class="c1">render</span><span class="w"> </span><span class="c1">pass</span><span class="w"> </span><span class="c1">has</span><span class="w"> </span><span class="c1">only</span><span class="w"> </span><span class="c1">one</span><span class="w"> </span><span class="c1">output</span><span class="w"> </span><span class="c1">color</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">attachment.</span>
+<span class="n">fragmentState</span><span class="p">.</span><span class="n">targetCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">fragmentState</span><span class="p">.</span><span class="n">targets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">colorTarget</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The blending equation can be set independently for the rgb channels and the alpha channel, in general, it takes the following form:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+rgb = \texttt{srcFactor} \times rgb_s ~~[\texttt{operation}]~~ \texttt{dstFactor} \times rgb_d
+\]</div>
+</div>
+<p>The usual <strong>alpha blending</strong> equation is configured as <span class="math notranslate nohighlight">\(rgb = a_s \times rgb_s + (1 - a_s) \times rgb_d\)</span></p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--6-input--1" name="tab-set--6" type="radio"><label class="tab-label" for="tab-set--6-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">blendState</span><span class="p">.</span><span class="n">color</span><span class="p">.</span><span class="n">srcFactor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlendFactor</span><span class="o">::</span><span class="n">SrcAlpha</span><span class="p">;</span>
+<span class="n">blendState</span><span class="p">.</span><span class="n">color</span><span class="p">.</span><span class="n">dstFactor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlendFactor</span><span class="o">::</span><span class="n">OneMinusSrcAlpha</span><span class="p">;</span>
+<span class="n">blendState</span><span class="p">.</span><span class="n">color</span><span class="p">.</span><span class="n">operation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlendOperation</span><span class="o">::</span><span class="n">Add</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--6-input--2" name="tab-set--6" type="radio"><label class="tab-label" for="tab-set--6-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">blendState</span><span class="p">.</span><span class="n">color</span><span class="p">.</span><span class="n">srcFactor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUBlendFactor_SrcAlpha</span><span class="p">;</span>
+<span class="n">blendState</span><span class="p">.</span><span class="n">color</span><span class="p">.</span><span class="n">dstFactor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUBlendFactor_OneMinusSrcAlpha</span><span class="p">;</span>
+<span class="n">blendState</span><span class="p">.</span><span class="n">color</span><span class="p">.</span><span class="n">operation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUBlendOperation_Add</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And similarly for the alpha channel:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+a = \texttt{srcFactor} \times a_s ~~[\texttt{operation}]~~ \texttt{dstFactor} \times a_d
+\]</div>
+</div>
+<p>For instance we can leave the target alpha untouched: <span class="math notranslate nohighlight">\(a = a_d = 0 \times a_s + 1 \times a_d\)</span></p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--7-input--1" name="tab-set--7" type="radio"><label class="tab-label" for="tab-set--7-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">blendState</span><span class="p">.</span><span class="n">alpha</span><span class="p">.</span><span class="n">srcFactor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlendFactor</span><span class="o">::</span><span class="n">Zero</span><span class="p">;</span>
+<span class="n">blendState</span><span class="p">.</span><span class="n">alpha</span><span class="p">.</span><span class="n">dstFactor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlendFactor</span><span class="o">::</span><span class="n">One</span><span class="p">;</span>
+<span class="n">blendState</span><span class="p">.</span><span class="n">alpha</span><span class="p">.</span><span class="n">operation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlendOperation</span><span class="o">::</span><span class="n">Add</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--7-input--2" name="tab-set--7" type="radio"><label class="tab-label" for="tab-set--7-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">blendState</span><span class="p">.</span><span class="n">alpha</span><span class="p">.</span><span class="n">srcFactor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUBlendFactor_Zero</span><span class="p">;</span>
+<span class="n">blendState</span><span class="p">.</span><span class="n">alpha</span><span class="p">.</span><span class="n">dstFactor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUBlendFactor_One</span><span class="p">;</span>
+<span class="n">blendState</span><span class="p">.</span><span class="n">alpha</span><span class="p">.</span><span class="n">operation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUBlendOperation_Add</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="multi-sampling">
+<h3>Multi-sampling<a class="headerlink" href="hello-triangle.html#multi-sampling" title="Permalink to this heading">#</a></h3>
+<p>I said previously that a fragment is the portion of a primitive that is projected onto a specific pixel. Actually, we can split pixels into sub-elements, called <strong>samples</strong>, and the fragment is associated to a sample. The value of a pixel is computed by averaging its associated samples.</p>
+<p>This mechanism is called multi-sampling and is used for anti-aliasing, but we’ll leave it off for now by setting the number of sample per pixel to 1.</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Samples</span><span class="w"> </span><span class="c1">per</span><span class="w"> </span><span class="c1">pixel</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">multisample</span><span class="p">.</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">Default</span><span class="w"> </span><span class="c1">value</span><span class="w"> </span><span class="c1">for</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">mask,</span><span class="w"> </span><span class="c1">meaning</span><span class="w"> </span><span class="c1">&quot;all</span><span class="w"> </span><span class="c1">bits</span><span class="w"> </span><span class="c1">on&quot;</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">multisample</span><span class="p">.</span><span class="n">mask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="mi">0u</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">Default</span><span class="w"> </span><span class="c1">value</span><span class="w"> </span><span class="c1">as</span><span class="w"> </span><span class="c1">well</span><span class="w"> </span><span class="c1">(irrelevant</span><span class="w"> </span><span class="c1">for</span><span class="w"> </span><span class="c1">count</span><span class="w"> </span><span class="c1">=</span><span class="w"> </span><span class="c1">1</span><span class="w"> </span><span class="c1">anyways)</span>
+<span class="n">pipelineDesc</span><span class="p">.</span><span class="n">multisample</span><span class="p">.</span><span class="n">alphaToCoverageEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="shaders">
+<h2>Shaders<a class="headerlink" href="hello-triangle.html#shaders" title="Permalink to this heading">#</a></h2>
+<p>Both the vertex and fragment programmable stages use the same <strong>shader module</strong>, that we must first create. This module is a kind of dynamic library, like a .dll, .so or .dylib file, except that it talks the binary language of your GPU rather than your CPU’s.</p>
+<p>Like any compiled program, the shader is first written in a <strong>human-writable programming language</strong>, then compiled into low-level machine code. However, the low-level code is highly hardware-dependent, and often not publicly documented. So the application is distributed with the <strong>source code</strong> of the shaders, which is <strong>compiled on the fly</strong> when initializing the application.</p>
+<section id="shader-code">
+<h3>Shader code<a class="headerlink" href="hello-triangle.html#shader-code" title="Permalink to this heading">#</a></h3>
+<p>The shader language officially used by WebGPU is called <a class="reference external" href="https://gpuweb.github.io/gpuweb/wgsl/">WGSL</a>, namely the <em>WebGPU Shading Language</em>. Any implementation of WebGPU must support it, and the JavaScript version of the API only supports WGSL, but the native header <code class="docutils literal notranslate"><span class="pre">webgpu.h</span></code> also offers the possibility to provide shaders written in <a class="reference external" href="https://www.khronos.org/spir">SPIR-V</a> or <a class="reference external" href="https://www.khronos.org/opengl/wiki/Core_Language_(GLSL)">GLSL</a> (<code class="docutils literal notranslate"><span class="pre">wgpu-native</span></code> only).</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><strong>SPIR-V</strong> is more of an intermediate representation, a <strong>bytecode</strong>, than something that one would write manually. It is the shader language used by the Vulkan API and a lot of tools exist to <strong>cross-compile</strong> code from other common shader languages (HLSL, GLSL) so it is an interesting choice when one needs to reuse <strong>existing shader code bases</strong>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Also note that WGSL has been designed to be a human-editable version of SPIR-V programming model, so <strong>transpilation</strong> from SPIR-V to WGSL is efficient and lossless (use <a class="reference external" href="https://github.com/gfx-rs/naga">Naga</a> or <a class="reference external" href="https://dawn.googlesource.com/tint">Tint</a> for this).</p>
+</div>
+<p>In this documentation we mostly use WGSL. Its syntax may seem a bit unfamiliar if you are used to C/C++ so let us start with a very simple function and its equivalent in C++:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">WGSL</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">my_addition</span><span class="p">(</span><span class="n">x</span>:<span class="w"> </span><span class="kt">f32</span><span class="p">,</span><span class="w"> </span><span class="n">y</span>:<span class="w"> </span><span class="kt">f32</span><span class="p">)</span><span class="w"> </span>-&gt;<span class="w"> </span><span class="kt">f32</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">z</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">In</span><span class="w"> </span><span class="c1">C++</span>
+<span class="kt">float</span><span class="w"> </span><span class="nf">my_addition</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">z</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Notice how the <strong>types</strong> are specified <strong>after</strong> instead of <strong>before</strong> the argument names. The type of <code class="docutils literal notranslate"><span class="pre">z</span></code> is automatically inferred, though we could have forced it using <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">z:</span> <span class="pre">f32</span> <span class="pre">=</span> <span class="pre">...</span></code>. The return type is specified after the arguments, using the arrow <code class="docutils literal notranslate"><span class="pre">-&gt;</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The keyword <code class="docutils literal notranslate"><span class="pre">let</span></code> defines a constant, i.e., a variable that cannot be reassigned. A regular variable is defined using the <code class="docutils literal notranslate"><span class="pre">var</span></code> keyword.</p>
+</div>
+<p>Now here is the shader for our triangle:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="o">@</span><span class="n">vertex</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">vs_main</span><span class="p">(</span><span class="o">@</span><span class="n">builtin</span><span class="p">(</span><span class="n">vertex_index</span><span class="p">)</span><span class="w"> </span><span class="n">in_vertex_index</span>:<span class="w"> </span><span class="kt">u32</span><span class="p">)</span><span class="w"> </span>-&gt;<span class="w"> </span><span class="o">@</span><span class="n">builtin</span><span class="p">(</span><span class="n">position</span><span class="p">)</span><span class="w"> </span><span class="n">vec4f</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">var</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec2f</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">in_vertex_index</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec2f</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">0.5</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">in_vertex_index</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec2f</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">0.5</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec2f</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">vec4f</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="o">@</span><span class="n">fragment</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">fs_main</span><span class="p">()</span><span class="w"> </span>-&gt;<span class="w"> </span><span class="o">@</span><span class="n">location</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">vec4f</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">vec4f</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The function names <code class="docutils literal notranslate"><span class="pre">vs_main</span></code> (resp. <code class="docutils literal notranslate"><span class="pre">fs_main</span></code>) must have the very same name as what was specified as <code class="docutils literal notranslate"><span class="pre">entryPoint</span></code> in the vertex (resp. fragment) state.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Shader languages natively support <strong>vector and matrix types</strong> up to size 4. The type <code class="docutils literal notranslate"><span class="pre">vec2f</span></code> is a vector of 2 floats, and an <strong>alias</strong> for the <em>templated</em> type <code class="docutils literal notranslate"><span class="pre">vec2&lt;f32&gt;</span></code>. As another example, the type <code class="docutils literal notranslate"><span class="pre">vec4&lt;u32&gt;</span></code> is a vector of 4 unsigned integers and has alias <code class="docutils literal notranslate"><span class="pre">vec4u</span></code>.</p>
+</div>
+<p>Tokens that start with an <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> are called <strong>attributes</strong> and decorate the object that comes afterward with various information. For instance, <code class="docutils literal notranslate"><span class="pre">&#64;builtin(vertex_index)</span></code> tells that the argument <code class="docutils literal notranslate"><span class="pre">in_vertex_index</span></code>, which could have any name, will be populated by the <strong>built-in</strong> input vertex attribute that is the vertex index. We use it to set the output value of the shader, which is labelled with <code class="docutils literal notranslate"><span class="pre">&#64;builtin(position)</span></code> as something that must be interpreted by the rasterizer as the vertex position.</p>
+<p>For more flexibility, the shader code should be loaded from a file, but for now we simply store it in a multi-line string literal in our <code class="docutils literal notranslate"><span class="pre">main.cpp</span></code>:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">shaderSource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">R</span><span class="s">&quot;</span><span class="dl">(</span>
+<span class="s">[...]</span><span class="w"> </span><span class="s">The</span><span class="w"> </span><span class="s">WGSL</span><span class="w"> </span><span class="s">shader</span><span class="w"> </span><span class="s">source</span><span class="w"> </span><span class="s">code</span>
+<span class="dl">)</span><span class="s">&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="creation-of-a-shader-module">
+<h3>Creation of a shader module<a class="headerlink" href="hello-triangle.html#creation-of-a-shader-module" title="Permalink to this heading">#</a></h3>
+<p>The creation of the shader module starts as usual:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--8-input--1" name="tab-set--8" type="radio"><label class="tab-label" for="tab-set--8-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">ShaderModuleDescriptor</span><span class="w"> </span><span class="n">shaderDesc</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">Describe</span><span class="w"> </span><span class="c1">shader</span><span class="w"> </span><span class="c1">module</span>
+<span class="n">ShaderModule</span><span class="w"> </span><span class="n">shaderModule</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">device</span><span class="p">.</span><span class="n">createShaderModule</span><span class="p">(</span><span class="n">shaderDesc</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--8-input--2" name="tab-set--8" type="radio"><label class="tab-label" for="tab-set--8-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">WGPUShaderModuleDescriptor</span><span class="w"> </span><span class="n">shaderDesc</span><span class="p">{};</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">Describe</span><span class="w"> </span><span class="c1">shader</span><span class="w"> </span><span class="c1">module</span>
+<span class="n">WGPUShaderModule</span><span class="w"> </span><span class="n">shaderModule</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuDeviceCreateShaderModule</span><span class="p">(</span><span class="n">device</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">shaderDesc</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>At first glance, this descriptor seems to have only an array of compilation “hints” to fill, which we leave empty (and even nothing at all when using Dawn):</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifdef</span><span class="w"> </span><span class="cp">WEBGPU_BACKEND_WGPU</span>
+<span class="n">shaderDesc</span><span class="p">.</span><span class="n">hintCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">shaderDesc</span><span class="p">.</span><span class="n">hints</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p>But this time, we do <strong>not</strong> set <code class="docutils literal notranslate"><span class="pre">nextInChain</span></code> to <code class="docutils literal notranslate"><span class="pre">nullptr</span></code>!</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">nextInChain</span></code> pointer is the entry point of WebGPU’s <strong>extension mechanism</strong>. It is either null, or pointing to a structure of type <code class="docutils literal notranslate"><span class="pre">WGPUChainedStruct</span></code>. This structure is very simple. First it may recursively have a <code class="docutils literal notranslate"><span class="pre">next</span></code> element (again, either null or pointing to some <code class="docutils literal notranslate"><span class="pre">WGPUChainedStruct</span></code>). Second, it has a <strong>struct type</strong> <code class="docutils literal notranslate"><span class="pre">sType</span></code>, which is an enum telling in which struct the chain element can be cast. Each struct whose definition starts with a field <code class="docutils literal notranslate"><span class="pre">WGPUChainedStruct</span> <span class="pre">chain</span></code> has an associated SType.</p>
+<p>To create a shader module from WGSL code, we use the <code class="docutils literal notranslate"><span class="pre">ShaderModuleWGSLDescriptor</span></code> SType. A SPIR-V shader can similarly be created using the <code class="docutils literal notranslate"><span class="pre">WGPUShaderModuleSPIRVDescriptor</span></code>.</p>
+<p>The field <code class="docutils literal notranslate"><span class="pre">shaderCodeDesc.chain</span></code> corresponds to the chained struct when cast as a simple <code class="docutils literal notranslate"><span class="pre">WGPUChainedStruct</span></code>, which must be set to the corresponding SType enum value:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--9-input--1" name="tab-set--9" type="radio"><label class="tab-label" for="tab-set--9-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">ShaderModuleWGSLDescriptor</span><span class="w"> </span><span class="n">shaderCodeDesc</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">Set</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">chained</span><span class="w"> </span><span class="c1">struct&#39;s</span><span class="w"> </span><span class="c1">header</span>
+<span class="n">shaderCodeDesc</span><span class="p">.</span><span class="n">chain</span><span class="p">.</span><span class="n">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="n">shaderCodeDesc</span><span class="p">.</span><span class="n">chain</span><span class="p">.</span><span class="n">sType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SType</span><span class="o">::</span><span class="n">ShaderModuleWGSLDescriptor</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">Connect</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">chain</span>
+<span class="n">shaderDesc</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">shaderCodeDesc</span><span class="p">.</span><span class="n">chain</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--9-input--2" name="tab-set--9" type="radio"><label class="tab-label" for="tab-set--9-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">WGPUShaderModuleWGSLDescriptor</span><span class="w"> </span><span class="n">shaderCodeDesc</span><span class="p">{};</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">Set</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">chained</span><span class="w"> </span><span class="c1">struct&#39;s</span><span class="w"> </span><span class="c1">header</span>
+<span class="n">shaderCodeDesc</span><span class="p">.</span><span class="n">chain</span><span class="p">.</span><span class="n">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="n">shaderCodeDesc</span><span class="p">.</span><span class="n">chain</span><span class="p">.</span><span class="n">sType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUSType_ShaderModuleWGSLDescriptor</span><span class="p">;</span>
+<span class="c1">//</span><span class="w"> </span><span class="c1">Connect</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">chain</span>
+<span class="n">shaderDesc</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">shaderCodeDesc</span><span class="p">.</span><span class="n">chain</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Finally we can setup the actual payload of the shader code descriptor:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">shaderCodeDesc</span><span class="p">.</span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shaderSource</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition-dawn admonition">
+<p class="admonition-title">Dawn</p>
+<p>The Dawn implementation of WebGPU does not fully handle this pipeline. First, it does not include the <code class="docutils literal notranslate"><span class="pre">hints</span></code>/<code class="docutils literal notranslate"><span class="pre">hintCount</span></code> in the shader module descriptor. Secondly, it renamed <code class="docutils literal notranslate"><span class="pre">shaderCodeDesc.code</span></code> into <code class="docutils literal notranslate"><span class="pre">shaderCodeDesc.source</span></code>.</p>
+</div>
+</section>
+<section id="pipeline-layout">
+<h3>Pipeline layout<a class="headerlink" href="hello-triangle.html#pipeline-layout" title="Permalink to this heading">#</a></h3>
+<p>One last thing before we can run our code: the shaders might need to <strong>access input and output resources</strong> (buffers and/or textures). These resources are made available to the pipeline by configuring a memory <strong>layout</strong>. Our first example does not use any resource:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">pipelineDesc</span><span class="p">.</span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Actually, setting the pipeline layout to <code class="docutils literal notranslate"><span class="pre">nullptr</span></code> does not mean that there is no input/output resources. It rather asks the backend to <strong>figure out the layout</strong> by itself by inspecting the shader (which in this very case is equivalent).</p>
+</div>
+</section>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="hello-triangle.html#conclusion" title="Permalink to this heading">#</a></h2>
+<p>This chapter introduced the core skeleton for rendering triangle-based shapes on the GPU. For now these are 2D graphics, but once everything will be in place, switching to 3D will be straightforward. We have seen two very important concepts:</p>
+<ul class="simple">
+<li><p>The <strong>render pipeline</strong>, which is based on the way the hardware actually works, with some parts fixed, for the sake of efficiency, and some parts are programmable.</p></li>
+<li><p>The <strong>shaders</strong>, which are the GPU-side programs driving the programmable stages of the pipeline.</p></li>
+</ul>
+<figure class="align-center" id="id1">
+<img alt="../_images/hello-triangle.png" class="with-shadow" src="../_images/hello-triangle.png" />
+<figcaption>
+<p><span class="caption-text">Our first triangle rendered using WebGPU.</span><a class="headerlink" href="hello-triangle.html#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="admonition-dawn admonition">
+<p class="admonition-title">Dawn</p>
+<p>When using Dawn, you may see different colors, because the target surface use a <strong>different color space</strong>. More on this <a class="reference internal" href="input-geometry/loading-from-file.html#color-issue"><span class="std std-ref">later on</span></a>.</p>
+</div>
+<section id="what-s-next">
+<h3>What’s next?<a class="headerlink" href="hello-triangle.html#what-s-next" title="Permalink to this heading">#</a></h3>
+<p>The key algorithms and techniques of computer graphics used for 3D rendering are for a large part implemented in the shaders code. What we still miss at this point though is ways to <strong>communicate</strong> between the C++ code (CPU) and the shaders (GPU).</p>
+<p>The next two chapters focus on two ways to <strong>feed input</strong> to this render pipeline: <strong>vertex</strong> attributes, where there is one value per vertex, and <strong>uniforms</strong>, which define variable that are common to all vertices and fragments for a given call.</p>
+<p>We then take a break away from pipeline things with the switch to <strong>3D meshes</strong>, which is in the end less about code and more about math. We also introduce a bit of <strong>interaction</strong> with a basic <strong>camera controller</strong>. We then introduce a 3rd way to provide input resource, namely <strong>textures</strong>, and how to map them onto meshes.</p>
+<p>Storage textures, which are used the other way around, to get data out of the render pipeline, will be presented only in advanced chapters. Instead, the last chapter of this section is fully dedicated to the computer graphics matter of <strong>lighting</strong> and <strong>material modeling</strong>.</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--10-input--1" name="tab-set--10" type="radio"><label class="tab-label" for="tab-set--10-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step030"><code class="docutils literal notranslate"><span class="pre">step030</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--10-input--2" name="tab-set--10" type="radio"><label class="tab-label" for="tab-set--10-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step030-vanilla"><code class="docutils literal notranslate"><span class="pre">step030-vanilla</span></code></a></p>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="input-geometry/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Input Geometry</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Basic 3D Rendering</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022-2023, Élie Michel and contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/eliemichel/LearnWebGPU" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      <div class="toc-sticky toc-scroll">
+	<div class="toc-title-container">
+		<span class="toc-title">
+			On this page
+		</span>
+	</div>
+	<div class="toc-tree-container">
+		<div class="toc-tree">
+			<ul>
+<li><a class="reference internal" href="hello-triangle.html#">Hello Triangle</a><ul>
+<li><a class="reference internal" href="hello-triangle.html#render-pipeline">Render Pipeline</a><ul>
+<li><a class="reference internal" href="hello-triangle.html#vertex-pipeline-state">Vertex pipeline state</a></li>
+<li><a class="reference internal" href="hello-triangle.html#primitive-pipeline-state">Primitive pipeline state</a></li>
+<li><a class="reference internal" href="hello-triangle.html#fragment-shader">Fragment shader</a></li>
+<li><a class="reference internal" href="hello-triangle.html#stencil-depth-state">Stencil/Depth state</a></li>
+<li><a class="reference internal" href="hello-triangle.html#blending">Blending</a></li>
+<li><a class="reference internal" href="hello-triangle.html#multi-sampling">Multi-sampling</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="hello-triangle.html#shaders">Shaders</a><ul>
+<li><a class="reference internal" href="hello-triangle.html#shader-code">Shader code</a></li>
+<li><a class="reference internal" href="hello-triangle.html#creation-of-a-shader-module">Creation of a shader module</a></li>
+<li><a class="reference internal" href="hello-triangle.html#pipeline-layout">Pipeline layout</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="hello-triangle.html#conclusion">Conclusion</a><ul>
+<li><a class="reference internal" href="hello-triangle.html#what-s-next">What’s next?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+		</div>
+	</div>
+	
+</div>
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/tabs.js"></script>
+    <script src="../_static/sphinx_literate.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

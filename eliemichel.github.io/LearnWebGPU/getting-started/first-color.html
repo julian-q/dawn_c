@@ -1,0 +1,745 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content="First Color" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://eliemichel.github.io/getting-started/first-color.html" />
+<meta property="og:site_name" content="Learn WebGPU for C++" />
+<meta property="og:description" content="Resulting code: step020 The goal of this chapter is to draw a solid color all over our window. This will be the occasion to introduce 3 new concepts of WebGPU: Swap Chains, Texture Views, Render Pa..." />
+<meta property="og:image" content="https://eliemichel.github.io/images/webgpu-responsive.svg" />
+<meta property="og:image:alt" content="Learn WebGPU for C++" />
+<meta name="description" content="Resulting code: step020 The goal of this chapter is to draw a solid color all over our window. This will be the occasion to introduce 3 new concepts of WebGPU: Swap Chains, Texture Views, Render Pa..." />
+    <link rel="icon" type="image/svg+xml" href="../_static/favicon/favicon.svg">
+    <link rel="icon" sizes="16x16" href="../_static/favicon/favicon-16x16.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="../_static/favicon/favicon-32x32.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://eliemichel.github.io/LearnWebGPU/_static/favicon/apple-touch-icon-180x180.png" type="image/png"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="C++ wrapper" href="cpp-idioms.html" /><link rel="prev" title="The Command Queue" href="the-command-queue.html" />
+
+    <!-- Generated with Sphinx 5.3.0 and Furo 2023.03.27 -->
+        <title>First Color - Learn WebGPU for C++ documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_literate.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  --color-brand-primary: #ac2800;
+  --color-brand-content: #007cac;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     <em>Important</em> This documentation is a work in progress! <a href="../appendices/feedback-needed.html">Feedback needed!</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Learn WebGPU for C++  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/webgpu-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/webgpu-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Getting Started</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="project-setup.html">Project setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="opening-a-window.html">Opening a window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hello-webgpu.html">Hello WebGPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="the-adapter.html">The Adapter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="the-device.html">The Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="the-command-queue.html">The Command Queue</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="first-color.html#">First Color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpp-idioms.html">C++ wrapper</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../basic-3d-rendering/index.html">Basic 3D Rendering</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../basic-3d-rendering/hello-triangle.html">Hello Triangle</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/input-geometry/index.html">Input Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/playing-with-buffers.html">Playing with buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/a-first-vertex-attribute.html">A first Vertex Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/multiple-attributes.html">Multiple Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/index-buffer.html">Index Buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/shader-uniforms/index.html">Shader Uniforms</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/shader-uniforms/a-first-uniform.html">A first uniform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/shader-uniforms/multiple-uniforms.html">More uniforms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/shader-uniforms/dynamic-uniforms.html">Dynamic uniforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/index.html">3D Meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/a-simple-example.html">A simple example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/depth-buffer.html">Depth buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/transformation-matrices.html">Transformation matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/projection-matrices.html">Projection matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/basic-shading.html">Basic shading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/texturing/index.html">Texturing</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/texturing/a-first-texture.html">A first texture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/texturing/texture-mapping.html">Texture mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/texturing/sampler.html">Sampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/texturing/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/some-interaction/index.html">Some interaction</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/some-interaction/refactoring.html">Refactoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/some-interaction/resizing-window.html">Resizing the window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/some-interaction/camera-control.html">Camera control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/some-interaction/simple-gui.html">Simple GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/index.html">Lighting and Material</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/recap.html">Recap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/specular.html">Specularity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/normal-mapping.html">Normal mapping (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/ibl.html">Image-Based Lighting (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/cubemap.html">Cube Maps (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/pbr.html">Physically-Based Materials (🚧WIP)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../basic-compute/index.html">Basic Compute</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../basic-compute/compute-pipeline.html">Compute Pipeline</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-compute/image-processing/index.html">Image Processing</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/image-processing/mipmap-generation.html">Mipmap Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/image-processing/convolution-filters.html">Convolution Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/image-processing/cubemap-conversion.html">Cubemap Conversion (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/image-processing/cubemap-prefiltering.html">Cubemap Prefiltering (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-compute/procedural-geometry/index.html">Procedural Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/procedural-geometry/deformation.html">Deformation (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../basic-compute/neural-networks.html">Neural Networks (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../advanced-techniques/index.html">Advanced Techniques</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/raii.html">RAII</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/hdr-textures.html">High Dynamic Range Textures (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/deferred-shading.html">Deferred Shading (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/benchmarking.html">Benchmarking (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/render-bundles.html">Render Bundles (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/multi-sampling.html">Multi-Sampling (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/scene-tree.html">Scene tree (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/screen-capture.html">Screen capture (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/shadow-maps.html">Shadow maps (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/tesselation.html">Tesselation (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/raytracing.html">Raytracing (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../appendices/index.html">Appendices</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/teaching-native-graphics-in-2023.html">Teaching native graphics in 2023</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/feedback-needed.html">Feedback needed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/debugging.html">Debugging (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/building-for-the-web.html">Building for the Web (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/memory-model.html">Memory Model (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/custom-extensions.html">Custom Extensions (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/references.html">References (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/tmp.html">Temporary page</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="first-color.html#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/eliemichel/LearnWebGPU/edit/main/./getting-started/first-color.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="first-color">
+<h1>First Color<a class="headerlink" href="first-color.html#first-color" title="Permalink to this heading">#</a></h1>
+<div class="literal-block-wrapper lit-block-wrapper lit-block-hidden docutils container" id="lit-0">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n"><lit-ref name="Get Queue" href="the-command-queue.html#lit-0" lexer="C++" hidden-link="false">{{<a href="the-command-queue.html#lit-0">Get Queue</a>}}</lit-ref></span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Test command encoding&quot;, &quot;permalink&quot;: &quot;#lit-0&quot;, &quot;hidden&quot;: true, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [{&quot;name&quot;: &quot;Test command encoding&quot;, &quot;url&quot;: &quot;the-command-queue.html#lit-6&quot;, &quot;details&quot;: null}], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: []}"></lit-block-info></div>
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step020"><code class="docutils literal notranslate"><span class="pre">step020</span></code></a></p>
+<p>The goal of this chapter is to <strong>draw a solid color</strong> all over our window. This will be the occasion to introduce 3 new concepts of WebGPU:</p>
+<ul class="simple">
+<li><p>Swap Chains</p></li>
+<li><p>Texture Views</p></li>
+<li><p>Render Passes</p></li>
+</ul>
+<section id="swap-chain">
+<h2>Swap Chain<a class="headerlink" href="first-color.html#swap-chain" title="Permalink to this heading">#</a></h2>
+<section id="drawing-process">
+<h3>Drawing process<a class="headerlink" href="first-color.html#drawing-process" title="Permalink to this heading">#</a></h3>
+<p>To understand the notion of <strong>Swap Chain</strong>, we need to know a little more about how the window’s surface is drawn.</p>
+<p>First, the render pipeline <strong>does not draw directly on the texture that is currently displayed</strong>, otherwise we would see pixels change all the time. A typical pipeline draws to an off-screen texture, which replaces the currently displayed one only once it is complete. We then say that the texture is <strong>presented</strong> to the surface.</p>
+<p>Second, drawing takes a <strong>different time</strong> than the frame rate required by your application, so the GPU may have to wait until the next frame is needed. There might be more than one off-screen texture waiting in the queue to be presented, so that fluctuations in the render time get amortized.</p>
+<p>Last, <strong>these off-screen textures are reused</strong> as much as possible. As soon as a new texture is presented, the previous one can be reused as a target for the next frame. This whole texture swapping mechanism is implemented by the <strong>Swap Chain</strong> object.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Remember that the GPU process runs at its own pace and that our CPU-issued commands are only asynchronously executed. Implementing the swap chain process manually would hence require a lot of boilerplate, so we are glad it is provided by the API!</p>
+</div>
+<video autoplay loop muted inline nocontrols style="width:100%;height:auto;max-width:960px">
+    <source src="../_static/swapchain.mp4" type="video/mp4">
+</video>
+<p><em>Left: The render process draws on an off-screen texture. Middle: Rendered textures wait in a queue. Right: At a regular frame rate, rendered textures are presented to the window’s surface.</em></p>
+</section>
+<section id="creation">
+<h3>Creation<a class="headerlink" href="first-color.html#creation" title="Permalink to this heading">#</a></h3>
+<p>As always, we pass swap chain creation option through a descriptor. A first obvious option is the size of all the textures that are manipulated:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-1">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">WGPUSwapChainDescriptor</span><span class="w"> </span><span class="n">swapChainDesc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<span class="n">swapChainDesc</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="n">swapChainDesc</span><span class="p">.</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">640</span><span class="p">;</span>
+<span class="n">swapChainDesc</span><span class="p">.</span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">480</span><span class="p">;</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Describe Swap Chain&quot;, &quot;permalink&quot;: &quot;#lit-1&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [{&quot;name&quot;: &quot;Describe Swap Chain&quot;, &quot;url&quot;: &quot;#lit-3&quot;, &quot;details&quot;: null}], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Create things&quot;, &quot;url&quot;: &quot;#lit-8&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>As you can guess, we will have to take care of creating a new swap chain <strong>when the window is resized</strong>. In the meantime, do not try to resize it. You may add <code class="docutils literal notranslate"><span class="pre">glfwWindowHint(GLFW_RESIZABLE,</span> <span class="pre">GLFW_FALSE);</span></code> before creating the window to instruct GLFW to disable resizing.</p>
+</div>
+<p>For the swap chain to <strong>allocate textures</strong>, we also need to specify their <strong>format</strong>. The format is a combination of a number of channels (a subset of red, green, blue, alpha), a size per channel (8, 16 or 32 bits) and a channel type (float, integer, signed or not), a compression scheme, a normalization mode, etc.</p>
+<p>All available combinations are listed in the <code class="docutils literal notranslate"><span class="pre">WGPUTextureFormat</span></code> enum, but since our swap chain targets an existing surface, we can just use whichever format the surface uses:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-2">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">WGPUTextureFormat</span><span class="w"> </span><span class="n">swapChainFormat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuSurfaceGetPreferredFormat</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span><span class="w"> </span><span class="n">adapter</span><span class="p">);</span>
+<span class="n">swapChainDesc</span><span class="p">.</span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">swapChainFormat</span><span class="p">;</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Describe Swap Chain format&quot;, &quot;permalink&quot;: &quot;#lit-2&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [{&quot;name&quot;: &quot;Describe Swap Chain format&quot;, &quot;url&quot;: &quot;#lit-4&quot;, &quot;details&quot;: null}], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Describe Swap Chain&quot;, &quot;url&quot;: &quot;#lit-1&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<div class="literal-block-wrapper lit-block-wrapper lit-block-hidden docutils container" id="lit-3">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n"><lit-ref name="Describe Swap Chain format" href="#lit-2" lexer="C++" hidden-link="false">{{<a href="first-color.html#lit-2">Describe Swap Chain format</a>}}</lit-ref></span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Describe Swap Chain&quot;, &quot;permalink&quot;: &quot;#lit-3&quot;, &quot;hidden&quot;: true, &quot;replaced by&quot;: [], &quot;completed in&quot;: [{&quot;name&quot;: &quot;Describe Swap Chain&quot;, &quot;url&quot;: &quot;#lit-5&quot;, &quot;details&quot;: null}], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [{&quot;name&quot;: &quot;Describe Swap Chain&quot;, &quot;url&quot;: &quot;#lit-1&quot;, &quot;details&quot;: null}], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Create things&quot;, &quot;url&quot;: &quot;#lit-8&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<div class="admonition-dawn admonition">
+<p class="admonition-title">Dawn</p>
+<p>When using the Dawn implementation of WebGPU, <code class="docutils literal notranslate"><span class="pre">wgpuSurfaceGetPreferredFormat</span></code> is not implemented yet. Actually, the only texture format it supports is <code class="docutils literal notranslate"><span class="pre">WGPUTextureFormat_BGRA8Unorm</span></code>.</p>
+</div>
+<div class="literal-block-wrapper lit-block-wrapper lit-block-hidden docutils container" id="lit-4">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifdef</span><span class="w"> </span><span class="cp">WEBGPU_BACKEND_WGPU</span>
+<span class="w">    </span><span class="n">WGPUTextureFormat</span><span class="w"> </span><span class="n">swapChainFormat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuSurfaceGetPreferredFormat</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span><span class="w"> </span><span class="n">adapter</span><span class="p">);</span>
+<span class="cp">#else</span>
+<span class="w">    </span><span class="n">WGPUTextureFormat</span><span class="w"> </span><span class="n">swapChainFormat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUTextureFormat_BGRA8Unorm</span><span class="p">;</span>
+<span class="cp">#endif</span>
+<span class="n">swapChainDesc</span><span class="p">.</span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">swapChainFormat</span><span class="p">;</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Describe Swap Chain format&quot;, &quot;permalink&quot;: &quot;#lit-4&quot;, &quot;hidden&quot;: true, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [{&quot;name&quot;: &quot;Describe Swap Chain format&quot;, &quot;url&quot;: &quot;#lit-2&quot;, &quot;details&quot;: null}], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Describe Swap Chain&quot;, &quot;url&quot;: &quot;#lit-1&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>Textures are allocated for a <strong>specific usage</strong>, that dictates the way the GPU organizes its memory. In our case, we use the swap chain textures as targets for a <em>Render Pass</em> so it needs to be created with the <code class="docutils literal notranslate"><span class="pre">RenderAttachment</span></code> usage flag:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-5">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">swapChainDesc</span><span class="p">.</span><span class="n">usage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUTextureUsage_RenderAttachment</span><span class="p">;</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Describe Swap Chain&quot;, &quot;permalink&quot;: &quot;#lit-5&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [{&quot;name&quot;: &quot;Describe Swap Chain&quot;, &quot;url&quot;: &quot;#lit-6&quot;, &quot;details&quot;: null}], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [{&quot;name&quot;: &quot;Describe Swap Chain&quot;, &quot;url&quot;: &quot;#lit-3&quot;, &quot;details&quot;: null}], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Create things&quot;, &quot;url&quot;: &quot;#lit-8&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>Finally, we can tell which texture from the waiting queue must be presented at each frame. Possible values are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Immediate</span></code>: No off-screen texture is used, the render process directly draws on the surface, which might lead to artifacts (called <em>tearing</em>) but has zero latency.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Mailbox</span></code>: There is only one slot in the queue, and when a new frame is rendered, it replaces the one currently waiting (which is discarded without ever being presented).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Fifo</span></code>: Stands for “first in, first out”, meaning that the presented texture is always the oldest one, like a regular queue. No rendered texture is wasted.</p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Force32</span></code> enum values that you can find when reading the source code of <code class="docutils literal notranslate"><span class="pre">webgpu.h</span></code> is not a “legal” value, it is just here to force the underlying enum type to be a 32 bit integer.</p>
+</div>
+<p>In our case, we use <code class="docutils literal notranslate"><span class="pre">Fifo</span></code>, as illustrated in the video above.</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-6">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">swapChainDesc</span><span class="p">.</span><span class="n">presentMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUPresentMode_Fifo</span><span class="p">;</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Describe Swap Chain&quot;, &quot;permalink&quot;: &quot;#lit-6&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [{&quot;name&quot;: &quot;Describe Swap Chain&quot;, &quot;url&quot;: &quot;#lit-5&quot;, &quot;details&quot;: null}], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Create things&quot;, &quot;url&quot;: &quot;#lit-8&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>We may now create the swap chain:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-7">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">WGPUSwapChain</span><span class="w"> </span><span class="n">swapChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuDeviceCreateSwapChain</span><span class="p">(</span><span class="n">device</span><span class="p">,</span><span class="w"> </span><span class="n">surface</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">swapChainDesc</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Swapchain:</span><span class="w"> </span><span class="s">&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">swapChain</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Create Swap Chain&quot;, &quot;permalink&quot;: &quot;#lit-7&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Create things&quot;, &quot;url&quot;: &quot;#lit-8&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<div class="literal-block-wrapper lit-block-wrapper lit-block-hidden docutils container" id="lit-8">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n"><lit-ref name="Describe Swap Chain" href="#lit-1" lexer="C++" hidden-link="false">{{<a href="first-color.html#lit-1">Describe Swap Chain</a>}}</lit-ref></span>
+<span class="n"><lit-ref name="Create Swap Chain" href="#lit-7" lexer="C++" hidden-link="false">{{<a href="first-color.html#lit-7">Create Swap Chain</a>}}</lit-ref></span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Create things&quot;, &quot;permalink&quot;: &quot;#lit-8&quot;, &quot;hidden&quot;: true, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [{&quot;name&quot;: &quot;Create things&quot;, &quot;url&quot;: &quot;the-command-queue.html#lit-7&quot;, &quot;details&quot;: null}], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: []}"></lit-block-info></div>
+<p>And of course at the end of the program we destroy it:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-9">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">wgpuSwapChainRelease</span><span class="p">(</span><span class="n">swapChain</span><span class="p">);</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Destroy things&quot;, &quot;permalink&quot;: &quot;#lit-9&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [{&quot;name&quot;: &quot;Destroy things&quot;, &quot;url&quot;: &quot;the-device.html#lit-10&quot;, &quot;details&quot;: null}], &quot;inserted in&quot;: [], &quot;referenced in&quot;: []}"></lit-block-info></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Swap Chain is something that is not exposed in the JavaScript version of the API. Like the notion of <em>surface</em> that we have met already, by the way. The web browser takes care of it and does not offer any option.</p>
+</div>
+<div class="admonition-troubleshooting admonition">
+<p class="admonition-title">Troubleshooting</p>
+<p>If you get the error <code class="docutils literal notranslate"><span class="pre">Uncaptured</span> <span class="pre">device</span> <span class="pre">error:</span> <span class="pre">type</span> <span class="pre">3</span> <span class="pre">(Device(OutOfMemory))</span></code> when calling <code class="docutils literal notranslate"><span class="pre">wgpuDeviceCreateSwapChain</span></code>, check that you specified the <code class="docutils literal notranslate"><span class="pre">GLFW_NO_API</span></code> value to glfw when creating the window.</p>
+</div>
+</section>
+</section>
+<section id="texture-view">
+<h2>Texture View<a class="headerlink" href="first-color.html#texture-view" title="Permalink to this heading">#</a></h2>
+<p>Let’s move on to the <strong>main loop</strong> and see how to use the swap chain. As explained above, the swap chain provides us with the texture where to draw the next frame. It is as simple as this:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-10">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">glfwWindowShouldClose</span><span class="p">(</span><span class="n">window</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">glfwPollEvents</span><span class="p">();</span>
+<span class="w">    </span><span class="n"><lit-ref name="Get target texture view" href="#lit-11" lexer="C++" hidden-link="false">{{<a href="first-color.html#lit-11">Get target texture view</a>}}</lit-ref></span>
+<span class="w">    </span><span class="n"><lit-ref name="Draw things" href="#lit-15" lexer="C++" hidden-link="false">{{<a href="first-color.html#lit-15">Draw things</a>}}</lit-ref></span>
+<span class="w">    </span><span class="n"><lit-ref name="Destroy texture view" href="#lit-13" lexer="C++" hidden-link="false">{{<a href="first-color.html#lit-13">Destroy texture view</a>}}</lit-ref></span>
+<span class="w">    </span><span class="n"><lit-ref name="Present swap chain" href="#lit-14" lexer="C++" hidden-link="false">{{<a href="first-color.html#lit-14">Present swap chain</a>}}</lit-ref></span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Main loop&quot;, &quot;permalink&quot;: &quot;#lit-10&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: []}"></lit-block-info></div>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-11">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">WGPUTextureView</span><span class="w"> </span><span class="n">nextTexture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuSwapChainGetCurrentTextureView</span><span class="p">(</span><span class="n">swapChain</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;nextTexture:</span><span class="w"> </span><span class="s">&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">nextTexture</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Get target texture view&quot;, &quot;permalink&quot;: &quot;#lit-11&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [{&quot;name&quot;: &quot;Get target texture view&quot;, &quot;url&quot;: &quot;#lit-12&quot;, &quot;details&quot;: null}], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Main loop&quot;, &quot;url&quot;: &quot;#lit-10&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>Note that this returns a <strong>Texture View</strong>. This gives a restricted access to the actual texture object allocated by the swap chain, so that internally the swap chain can use whatever organization it wants while exposing a view that has the dimensions and format that we expect.</p>
+<p>Getting the texture view <strong>may fail</strong>, in particular if the window has been resized and thus the target surface changed, so don’t forget to check that it is not null:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-12">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">nextTexture</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Cannot</span><span class="w"> </span><span class="s">acquire</span><span class="w"> </span><span class="s">next</span><span class="w"> </span><span class="s">swap</span><span class="w"> </span><span class="s">chain</span><span class="w"> </span><span class="s">texture&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">break</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Get target texture view&quot;, &quot;permalink&quot;: &quot;#lit-12&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [{&quot;name&quot;: &quot;Get target texture view&quot;, &quot;url&quot;: &quot;#lit-11&quot;, &quot;details&quot;: null}], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Main loop&quot;, &quot;url&quot;: &quot;#lit-10&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>The texture view is <strong>used only for a single frame</strong>, after which it is our responsibility to destroy it:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-13">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">wgpuTextureViewRelease</span><span class="p">(</span><span class="n">nextTexture</span><span class="p">);</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Destroy texture view&quot;, &quot;permalink&quot;: &quot;#lit-13&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Main loop&quot;, &quot;url&quot;: &quot;#lit-10&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>At the end of the main loop, once the texture is filled in and the view released, we can tell the swap chain to present the next texture (which depends on the <code class="docutils literal notranslate"><span class="pre">presentMode</span></code> of the swap chain):</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-14">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">wgpuSwapChainPresent</span><span class="p">(</span><span class="n">swapChain</span><span class="p">);</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Present swap chain&quot;, &quot;permalink&quot;: &quot;#lit-14&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Main loop&quot;, &quot;url&quot;: &quot;#lit-10&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+</section>
+<section id="render-pass">
+<h2>Render Pass<a class="headerlink" href="first-color.html#render-pass" title="Permalink to this heading">#</a></h2>
+<section id="render-pass-encoder">
+<h3>Render pass encoder<a class="headerlink" href="first-color.html#render-pass-encoder" title="Permalink to this heading">#</a></h3>
+<p>We now hold the texture where to draw to display something in our window. Like any GPU-side operation, we trigger drawing operations from the command queue, using a command encoder as described in <a class="reference internal" href="the-command-queue.html"><span class="std std-doc">the previous chapter</span></a>.</p>
+<p>Build a <code class="docutils literal notranslate"><span class="pre">WGPUCommandEncoder</span></code> called <code class="docutils literal notranslate"><span class="pre">encoder</span></code>, then submit it to the queue. In between we will add a command that clears the screen with a uniform color.</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-15">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n"><lit-ref name="Create Command Encoder" href="the-command-queue.html#lit-3" lexer="C++" hidden-link="false">{{<a href="the-command-queue.html#lit-3">Create Command Encoder</a>}}</lit-ref></span>
+<span class="n"><lit-ref name="Encode Render Pass" href="#lit-16" lexer="C++" hidden-link="false">{{<a href="first-color.html#lit-16">Encode Render Pass</a>}}</lit-ref></span>
+<span class="n"><lit-ref name="Finish encoding and submit" href="the-command-queue.html#lit-5" lexer="C++" hidden-link="false">{{<a href="the-command-queue.html#lit-5">Finish encoding and submit</a>}}</lit-ref></span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Draw things&quot;, &quot;permalink&quot;: &quot;#lit-15&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Main loop&quot;, &quot;url&quot;: &quot;#lit-10&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>If you look in <code class="docutils literal notranslate"><span class="pre">webgpu.h</span></code> at the methods of the encoder (the procedures starting with <code class="docutils literal notranslate"><span class="pre">wgpuCommandEncoder</span></code>), most of them are related to copying buffers and textures around. Except <strong>two special ones</strong>: <code class="docutils literal notranslate"><span class="pre">wgpuCommandEncoderBeginComputePass</span></code> and <code class="docutils literal notranslate"><span class="pre">wgpuCommandEncoderBeginRenderPass</span></code>. These return specialized encoder objects, namely <code class="docutils literal notranslate"><span class="pre">WGPUComputePassEncoder</span></code> and <code class="docutils literal notranslate"><span class="pre">WGPURenderPassEncoder</span></code>, that give access to commands dedicated to respectively computing and 3D rendering.</p>
+<p>In our case, we use a render pass:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-16">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">WGPURenderPassDescriptor</span><span class="w"> </span><span class="n">renderPassDesc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<span class="n"><lit-ref name="Describe Render Pass" href="#lit-17" lexer="C++" hidden-link="false">{{<a href="first-color.html#lit-17">Describe Render Pass</a>}}</lit-ref></span>
+<span class="n">WGPURenderPassEncoder</span><span class="w"> </span><span class="n">renderPass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuCommandEncoderBeginRenderPass</span><span class="p">(</span><span class="n">encoder</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">renderPassDesc</span><span class="p">);</span>
+<span class="n">wgpuRenderPassEncoderEnd</span><span class="p">(</span><span class="n">renderPass</span><span class="p">);</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Encode Render Pass&quot;, &quot;permalink&quot;: &quot;#lit-16&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Draw things&quot;, &quot;url&quot;: &quot;#lit-15&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>Note that we directly end the pass without issuing any other command. This is because the render pass has a built-in mechanism for clearing the screen when it begins, which we’ll set up through the descriptor.</p>
+</section>
+<section id="color-attachment">
+<h3>Color attachment<a class="headerlink" href="first-color.html#color-attachment" title="Permalink to this heading">#</a></h3>
+<p>A render pass leverages the 3D rendering circuits of the GPU to draw content into one or multiple textures. So one important thing to set up is to tell <strong>which textures are the target</strong> of this process. These are the <strong>attachments</strong> of the render pass.</p>
+<p>The number of attachment is variable, so the descriptor gets it through two fields: the number <code class="docutils literal notranslate"><span class="pre">colorAttachmentCount</span></code> of attachments and the address <code class="docutils literal notranslate"><span class="pre">colorAttachments</span></code> of the color attachment array. Since we only use one, the address of the array is just the address of a single <code class="docutils literal notranslate"><span class="pre">WGPURenderPassColorAttachment</span></code> variable.</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-17">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">WGPURenderPassColorAttachment</span><span class="w"> </span><span class="n">renderPassColorAttachment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<span class="n"><lit-ref name="Set up the attachment" href="#lit-18" lexer="C++" hidden-link="false">{{<a href="first-color.html#lit-18">Set up the attachment</a>}}</lit-ref></span>
+
+<span class="n">renderPassDesc</span><span class="p">.</span><span class="n">colorAttachmentCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">renderPassDesc</span><span class="p">.</span><span class="n">colorAttachments</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">renderPassColorAttachment</span><span class="p">;</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Describe Render Pass&quot;, &quot;permalink&quot;: &quot;#lit-17&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [{&quot;name&quot;: &quot;Describe Render Pass&quot;, &quot;url&quot;: &quot;#lit-21&quot;, &quot;details&quot;: null}], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Encode Render Pass&quot;, &quot;url&quot;: &quot;#lit-16&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>The first important setting of the attachment is the texture view it must draw in. In our case, the view returned by the swap chain because we directly want to draw on screen, but in advanced pipelines it is very common to draw on intermediate textures, which are then fed to e.g., post-process passes.</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-18">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">renderPassColorAttachment</span><span class="p">.</span><span class="n">view</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nextTexture</span><span class="p">;</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Set up the attachment&quot;, &quot;permalink&quot;: &quot;#lit-18&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [{&quot;name&quot;: &quot;Set up the attachment&quot;, &quot;url&quot;: &quot;#lit-19&quot;, &quot;details&quot;: null}], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Describe Render Pass&quot;, &quot;url&quot;: &quot;#lit-17&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>There is a second target texture view called <code class="docutils literal notranslate"><span class="pre">resolveTarget</span></code>, but it is not relevant here because we do not use <em>multi-sampling</em> (more on this later).</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-19">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">renderPassColorAttachment</span><span class="p">.</span><span class="n">resolveTarget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Set up the attachment&quot;, &quot;permalink&quot;: &quot;#lit-19&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [{&quot;name&quot;: &quot;Set up the attachment&quot;, &quot;url&quot;: &quot;#lit-20&quot;, &quot;details&quot;: null}], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [{&quot;name&quot;: &quot;Set up the attachment&quot;, &quot;url&quot;: &quot;#lit-18&quot;, &quot;details&quot;: null}], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Describe Render Pass&quot;, &quot;url&quot;: &quot;#lit-17&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>The <code class="docutils literal notranslate"><span class="pre">loadOp</span></code> setting indicates the load operation to perform on view prior to executing the render pass. It can be either read from the view or set to a default uniform color, namely the clear value. When it does not matter, use <code class="docutils literal notranslate"><span class="pre">WGPULoadOp_Clear</span></code> as it is likely more efficient.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">storeOp</span></code> indicates the operation to perform on view after executing the render pass. It can be either stored or discarded (which only makes sense if the render pass has side-effects).</p>
+<p>And the <code class="docutils literal notranslate"><span class="pre">clearValue</span></code> is the value to clear the screen with, put anything you want in here! The 4 values are the red, green, blue and alpha channels, on a scale from 0.0 to 1.0.</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-20">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">renderPassColorAttachment</span><span class="p">.</span><span class="n">loadOp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPULoadOp_Clear</span><span class="p">;</span>
+<span class="n">renderPassColorAttachment</span><span class="p">.</span><span class="n">storeOp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUStoreOp_Store</span><span class="p">;</span>
+<span class="n">renderPassColorAttachment</span><span class="p">.</span><span class="n">clearValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUColor</span><span class="p">{</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="p">};</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Set up the attachment&quot;, &quot;permalink&quot;: &quot;#lit-20&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [{&quot;name&quot;: &quot;Set up the attachment&quot;, &quot;url&quot;: &quot;#lit-19&quot;, &quot;details&quot;: null}], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Describe Render Pass&quot;, &quot;url&quot;: &quot;#lit-17&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+</section>
+<section id="misc">
+<h3>Misc<a class="headerlink" href="first-color.html#misc" title="Permalink to this heading">#</a></h3>
+<p>There is also one special type of attachment, namely the <em>depth</em> and <em>stencil</em> attachment (it is a single attachment potentially containing two channels). We’ll come back on this later on, for now we do not use it so we set it to null:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-21">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">renderPassDesc</span><span class="p">.</span><span class="n">depthStencilAttachment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Describe Render Pass&quot;, &quot;permalink&quot;: &quot;#lit-21&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [{&quot;name&quot;: &quot;Describe Render Pass&quot;, &quot;url&quot;: &quot;#lit-22&quot;, &quot;details&quot;: null}], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [{&quot;name&quot;: &quot;Describe Render Pass&quot;, &quot;url&quot;: &quot;#lit-17&quot;, &quot;details&quot;: null}], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Encode Render Pass&quot;, &quot;url&quot;: &quot;#lit-16&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>When measuring the performance of a render pass, it is not possible to use CPU-side timing functions, since the commands are not executed synchronously. Instead, the render pass can receive a set of timestamp queries. We do not use it in this example.</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-22">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">renderPassDesc</span><span class="p">.</span><span class="n">timestampWriteCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">renderPassDesc</span><span class="p">.</span><span class="n">timestampWrites</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Describe Render Pass&quot;, &quot;permalink&quot;: &quot;#lit-22&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [{&quot;name&quot;: &quot;Describe Render Pass&quot;, &quot;url&quot;: &quot;#lit-23&quot;, &quot;details&quot;: null}], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [{&quot;name&quot;: &quot;Describe Render Pass&quot;, &quot;url&quot;: &quot;#lit-21&quot;, &quot;details&quot;: null}], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Encode Render Pass&quot;, &quot;url&quot;: &quot;#lit-16&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>Lastly, we set <code class="docutils literal notranslate"><span class="pre">nextInChain</span></code> to a null pointer (remember this pointer is an extension mechanism that the standard WebGPU API does not use).</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-23">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">renderPassDesc</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Describe Render Pass&quot;, &quot;permalink&quot;: &quot;#lit-23&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [{&quot;name&quot;: &quot;Describe Render Pass&quot;, &quot;url&quot;: &quot;#lit-22&quot;, &quot;details&quot;: null}], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;Encode Render Pass&quot;, &quot;url&quot;: &quot;#lit-16&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+</section>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="first-color.html#conclusion" title="Permalink to this heading">#</a></h2>
+<p>At this stage you should be able to get a colored window. This seems simple, but it made us meet a lot of important concepts.</p>
+<ul class="simple">
+<li><p>Instead of directly drawing to the window’s surface, we draw to an off-screen texture and the <strong>swap chain</strong> is responsible for managing the texture turn over.</p></li>
+<li><p>The 3D rendering pipeline of the GPU is leveraged through the <strong>render pass</strong>, which is a special scope of commands accessible through the command encoder.</p></li>
+<li><p>The render pass draws to one or multiple <strong>attachments</strong>, which are texture views.</p></li>
+</ul>
+<figure class="align-center" id="id1">
+<img alt="../_images/first-color.png" class="with-shadow" src="../_images/first-color.png" />
+<figcaption>
+<p><span class="caption-text">Our first color!</span><a class="headerlink" href="first-color.html#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When using Dawn, the displayed color is potentially different because the surface color format uses another color space. More on this <a class="reference internal" href="../basic-3d-rendering/input-geometry/loading-from-file.html"><span class="std std-doc">later</span></a>!</p>
+</div>
+<p>We are now ready with the basic WebGPU setup, and can dive more deeply in the 3D rendering pipeline.</p>
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step020"><code class="docutils literal notranslate"><span class="pre">step020</span></code></a></p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="cpp-idioms.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">C++ wrapper</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="the-command-queue.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">The Command Queue</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022-2023, Élie Michel and contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/eliemichel/LearnWebGPU" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      <div class="toc-sticky toc-scroll">
+	<div class="toc-title-container">
+		<span class="toc-title">
+			On this page
+		</span>
+	</div>
+	<div class="toc-tree-container">
+		<div class="toc-tree">
+			<ul>
+<li><a class="reference internal" href="first-color.html#">First Color</a><ul>
+<li><a class="reference internal" href="first-color.html#swap-chain">Swap Chain</a><ul>
+<li><a class="reference internal" href="first-color.html#drawing-process">Drawing process</a></li>
+<li><a class="reference internal" href="first-color.html#creation">Creation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="first-color.html#texture-view">Texture View</a></li>
+<li><a class="reference internal" href="first-color.html#render-pass">Render Pass</a><ul>
+<li><a class="reference internal" href="first-color.html#render-pass-encoder">Render pass encoder</a></li>
+<li><a class="reference internal" href="first-color.html#color-attachment">Color attachment</a></li>
+<li><a class="reference internal" href="first-color.html#misc">Misc</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="first-color.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+		</div>
+	</div>
+	
+	<div class="toc-title-container">
+		<span class="toc-title">
+			Literate options
+		</span>
+	</div>
+	<div class="toc-tree-container">
+		<div class="toc-tree">
+			
+<ul>
+	<li>
+		<label for="lit-opts-show-block-name">
+			<input id="lit-opts-show-block-name" type="checkbox" checked />
+			Show block name
+		</label>
+	</li>
+	<li>
+		<label for="lit-opts-show-reference-details">
+			<input id="lit-opts-show-reference-details" type="checkbox" checked />
+			Show reference details
+		</label>
+	</li>
+	<li>
+		<label for="lit-opts-show-reference-links">
+			<input id="lit-opts-show-reference-links" type="checkbox" checked />
+			Highlight links
+		</label>
+	</li>
+	<li>
+		<label for="lit-opts-show-hidden-links">
+			<input id="lit-opts-show-hidden-links" type="checkbox" checked />
+			Show hidden links
+		</label>
+	</li>
+	<li>
+		<label for="lit-opts-show-hidden-blocks">
+			<input id="lit-opts-show-hidden-blocks" type="checkbox" checked />
+			Show hidden blocks
+		</label>
+	</li>
+</ul>
+
+		</div>
+	</div>
+	
+</div>
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/tabs.js"></script>
+    <script src="../_static/sphinx_literate.js"></script>
+    </body>
+</html>

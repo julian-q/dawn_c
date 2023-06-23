@@ -1,0 +1,634 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content="A simple example" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://eliemichel.github.io/basic-3d-rendering/3d-meshes/a-simple-example.html" />
+<meta property="og:site_name" content="Learn WebGPU for C++" />
+<meta property="og:description" content="With webgpu.hpp Resulting code: step050 Vanilla webgpu.h Resulting code: step050-vanilla Let’s dive into what you are quite likely here for: rendering 3D shapes! Switching to 3D data: The first thi..." />
+<meta property="og:image" content="https://eliemichel.github.io/images/webgpu-responsive.svg" />
+<meta property="og:image:alt" content="Learn WebGPU for C++" />
+<meta name="description" content="With webgpu.hpp Resulting code: step050 Vanilla webgpu.h Resulting code: step050-vanilla Let’s dive into what you are quite likely here for: rendering 3D shapes! Switching to 3D data: The first thi..." />
+    <link rel="icon" type="image/svg+xml" href="../../_static/favicon/favicon.svg">
+    <link rel="icon" sizes="16x16" href="../../_static/favicon/favicon-16x16.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="../../_static/favicon/favicon-32x32.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://eliemichel.github.io/LearnWebGPU/_static/favicon/apple-touch-icon-180x180.png" type="image/png"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Depth buffer" href="depth-buffer.html" /><link rel="prev" title="3D Meshes" href="index.html" />
+
+    <!-- Generated with Sphinx 5.3.0 and Furo 2023.03.27 -->
+        <title>A simple example - Learn WebGPU for C++ documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx_literate.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  --color-brand-primary: #ac2800;
+  --color-brand-content: #007cac;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     <em>Important</em> This documentation is a work in progress! <a href="../../appendices/feedback-needed.html">Feedback needed!</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Learn WebGPU for C++  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/webgpu-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/webgpu-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../getting-started/index.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/project-setup.html">Project setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/opening-a-window.html">Opening a window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/hello-webgpu.html">Hello WebGPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-adapter.html">The Adapter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-device.html">The Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-command-queue.html">The Command Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/first-color.html">First Color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/cpp-idioms.html">C++ wrapper</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">Basic 3D Rendering</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../hello-triangle.html">Hello Triangle</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../input-geometry/index.html">Input Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/playing-with-buffers.html">Playing with buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/a-first-vertex-attribute.html">A first Vertex Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/multiple-attributes.html">Multiple Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/index-buffer.html">Index Buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input-geometry/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../shader-uniforms/index.html">Shader Uniforms</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/a-first-uniform.html">A first uniform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/multiple-uniforms.html">More uniforms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/dynamic-uniforms.html">Dynamic uniforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">3D Meshes</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="a-simple-example.html#">A simple example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="depth-buffer.html">Depth buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformation-matrices.html">Transformation matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="projection-matrices.html">Projection matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic-shading.html">Basic shading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../texturing/index.html">Texturing</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/a-first-texture.html">A first texture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/texture-mapping.html">Texture mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/sampler.html">Sampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../some-interaction/index.html">Some interaction</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/refactoring.html">Refactoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/resizing-window.html">Resizing the window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/camera-control.html">Camera control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/simple-gui.html">Simple GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../lighting-and-material/index.html">Lighting and Material</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/recap.html">Recap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/specular.html">Specularity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/normal-mapping.html">Normal mapping (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/ibl.html">Image-Based Lighting (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/cubemap.html">Cube Maps (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/pbr.html">Physically-Based Materials (🚧WIP)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../basic-compute/index.html">Basic Compute</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../basic-compute/compute-pipeline.html">Compute Pipeline</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-compute/image-processing/index.html">Image Processing</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/mipmap-generation.html">Mipmap Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/convolution-filters.html">Convolution Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/cubemap-conversion.html">Cubemap Conversion (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/cubemap-prefiltering.html">Cubemap Prefiltering (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-compute/procedural-geometry/index.html">Procedural Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/procedural-geometry/deformation.html">Deformation (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../basic-compute/neural-networks.html">Neural Networks (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../advanced-techniques/index.html">Advanced Techniques</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/raii.html">RAII</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/hdr-textures.html">High Dynamic Range Textures (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/deferred-shading.html">Deferred Shading (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/benchmarking.html">Benchmarking (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/render-bundles.html">Render Bundles (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/multi-sampling.html">Multi-Sampling (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/scene-tree.html">Scene tree (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/screen-capture.html">Screen capture (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/shadow-maps.html">Shadow maps (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/tesselation.html">Tesselation (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/raytracing.html">Raytracing (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../appendices/index.html">Appendices</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/teaching-native-graphics-in-2023.html">Teaching native graphics in 2023</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/feedback-needed.html">Feedback needed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/debugging.html">Debugging (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/building-for-the-web.html">Building for the Web (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/memory-model.html">Memory Model (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/custom-extensions.html">Custom Extensions (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/references.html">References (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/tmp.html">Temporary page</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="a-simple-example.html#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/eliemichel/LearnWebGPU/edit/main/./basic-3d-rendering/3d-meshes/a-simple-example.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="a-simple-example">
+<h1>A simple example<a class="headerlink" href="a-simple-example.html#a-simple-example" title="Permalink to this heading">#</a></h1>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step050"><code class="docutils literal notranslate"><span class="pre">step050</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step050-vanilla"><code class="docutils literal notranslate"><span class="pre">step050-vanilla</span></code></a></p>
+</div>
+</div>
+<p>Let’s dive into what you are quite likely here for: rendering <strong>3D shapes</strong>!</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>I rolled back the part of the code about dynamic uniforms for now. I also set the <code class="docutils literal notranslate"><span class="pre">offset</span></code> to <code class="docutils literal notranslate"><span class="pre">vec2&lt;f32&gt;(0.0)</span></code>;</p>
+</div>
+<div class="admonition-wip admonition">
+<p class="admonition-title">WIP</p>
+<p>From this chapter on, the example WGSL code uses templated types <code class="docutils literal notranslate"><span class="pre">vec2&lt;f32&gt;</span></code> where we can use simpler aliases <code class="docutils literal notranslate"><span class="pre">vec2f</span></code> because when I first wrote this aliases were not supported by <code class="docutils literal notranslate"><span class="pre">wgpu-native</span></code>.</p>
+</div>
+<section id="switching-to-3d-data">
+<h2>Switching to 3D data<a class="headerlink" href="a-simple-example.html#switching-to-3d-data" title="Permalink to this heading">#</a></h2>
+<p>The first thing we need is a 3rd column in our point position!</p>
+<p>Here is a simple shape that you can save in <code class="docutils literal notranslate"><span class="pre">resources/pyramid.txt</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">points</span><span class="p">]</span>
+<span class="c1"># We add a Z coordinate</span>
+<span class="c1"># x   y   z      r   g   b</span>
+
+<span class="c1"># The base</span>
+<span class="o">-</span><span class="mf">0.5</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">-</span><span class="mf">0.3</span>    <span class="mf">1.0</span> <span class="mf">1.0</span> <span class="mf">1.0</span>
+<span class="o">+</span><span class="mf">0.5</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">-</span><span class="mf">0.3</span>    <span class="mf">1.0</span> <span class="mf">1.0</span> <span class="mf">1.0</span>
+<span class="o">+</span><span class="mf">0.5</span> <span class="o">+</span><span class="mf">0.5</span> <span class="o">-</span><span class="mf">0.3</span>    <span class="mf">1.0</span> <span class="mf">1.0</span> <span class="mf">1.0</span>
+<span class="o">-</span><span class="mf">0.5</span> <span class="o">+</span><span class="mf">0.5</span> <span class="o">-</span><span class="mf">0.3</span>    <span class="mf">1.0</span> <span class="mf">1.0</span> <span class="mf">1.0</span>
+
+<span class="c1"># And the tip of the pyramid</span>
+<span class="o">+</span><span class="mf">0.0</span> <span class="o">+</span><span class="mf">0.0</span> <span class="o">+</span><span class="mf">0.5</span>    <span class="mf">0.5</span> <span class="mf">0.5</span> <span class="mf">0.5</span>
+
+<span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+<span class="c1"># Base</span>
+ <span class="mi">0</span>  <span class="mi">1</span>  <span class="mi">2</span>
+ <span class="mi">0</span>  <span class="mi">2</span>  <span class="mi">3</span>
+<span class="c1"># Sides</span>
+ <span class="mi">0</span>  <span class="mi">1</span>  <span class="mi">4</span>
+ <span class="mi">1</span>  <span class="mi">2</span>  <span class="mi">4</span>
+ <span class="mi">2</span>  <span class="mi">3</span>  <span class="mi">4</span>
+ <span class="mi">3</span>  <span class="mi">0</span>  <span class="mi">4</span>
+</pre></div>
+</div>
+<p>Of course we need to adapt our <code class="docutils literal notranslate"><span class="pre">loadGeometry</span></code> function to handle this extra dimension. I added a <code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">dimensions</span></code> argument that should be either 2 or 3 depending on whether we are in 2D or 3D:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span><span class="w"> </span><span class="nf">loadGeometry</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">fs</span><span class="o">::</span><span class="n">path</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">pointData</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">indexData</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">dimensions</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Get</span><span class="w"> </span><span class="c1">x,</span><span class="w"> </span><span class="c1">y,</span><span class="w"> </span><span class="c1">z,</span><span class="w"> </span><span class="c1">r,</span><span class="w"> </span><span class="c1">g,</span><span class="w"> </span><span class="c1">b</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">dimensions</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w">                  </span><span class="c1">^^^^^^^^^^^^^^</span><span class="w"> </span><span class="c1">This</span><span class="w"> </span><span class="c1">was</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">5</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>We can now load the geometry as follows:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">loadGeometry</span><span class="p">(</span><span class="n">RESOURCE_DIR</span><span class="w"> </span><span class="s">&quot;/pyramid.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pointData</span><span class="p">,</span><span class="w"> </span><span class="n">indexData</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="cm">/*</span><span class="w"> </span><span class="cm">dimensions</span><span class="w"> </span><span class="cm">*/</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>As a consequence of this new dimension, we need to update the vertex buffer stride, the position attribute format and the color attribute offset:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Position</span><span class="w"> </span><span class="c1">attribute</span>
+<span class="n">vertexAttribs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VertexFormat</span><span class="o">::</span><span class="n">Float32x3</span><span class="p">;</span>
+<span class="c1">//</span><span class="w">                                              </span><span class="c1">^</span><span class="w"> </span><span class="c1">This</span><span class="w"> </span><span class="c1">was</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">2</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Color</span><span class="w"> </span><span class="c1">attribute</span>
+<span class="n">vertexAttribs</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+<span class="c1">//</span><span class="w">                        </span><span class="c1">^</span><span class="w"> </span><span class="c1">This</span><span class="w"> </span><span class="c1">was</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">2</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">buffer</span><span class="w"> </span><span class="c1">stride</span>
+<span class="n">vertexBufferLayout</span><span class="p">.</span><span class="n">arrayStride</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+<span class="c1">//</span><span class="w">                               </span><span class="c1">^</span><span class="w"> </span><span class="c1">This</span><span class="w"> </span><span class="c1">was</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">5</span>
+</pre></div>
+</div>
+<p>And don’t forget to update the vertex input struct in the <strong>shader</strong>!</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">VertexInput</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="o">@</span><span class="n">location</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">position</span>:<span class="w"> </span><span class="nc">vec3</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">//</span><span class="w">                        </span><span class="c1">^</span><span class="w"> </span><span class="c1">This</span><span class="w"> </span><span class="c1">was</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">2</span>
+<span class="w">    </span><span class="o">@</span><span class="n">location</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">color</span>:<span class="w"> </span><span class="nc">vec3</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>Now it kinda works, we can guess a pyramid is here, but I wouldn’t call it 3D yet. And adding <code class="docutils literal notranslate"><span class="pre">in.position.z</span></code> to <code class="docutils literal notranslate"><span class="pre">out.position.z</span></code> does not change anything so far:</p>
+<figure class="align-center" id="id1">
+<img alt="../../_images/pyramid-base.png" class="with-shadow" src="../../_images/pyramid-base.png" />
+<figcaption>
+<p><span class="caption-text">The pyramid… seen from above, with no perspective.</span><a class="headerlink" href="a-simple-example.html#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>I intentionally set a different color for the tip of the pyramid so that we can see better. This will be better addressed when introducing a basic <strong>shading</strong>.</p>
+</div>
+</section>
+<section id="basic-transform">
+<h2>Basic transform<a class="headerlink" href="a-simple-example.html#basic-transform" title="Permalink to this heading">#</a></h2>
+<p><em>This is a gentle introduction to trigonometry. If you are familiar with the concept, you may jump ahead.</em></p>
+<p>Seen from above, this pyramid boringly looks like an square. Could we <strong>rotate</strong> this? A very basic way to change the view angle is to swap axes:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="n">var</span><span class="w"> </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec3</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">    </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="p">,</span>
+<span class="w">    </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">z</span><span class="p">,</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">swap</span><span class="w"> </span><span class="c1">axis</span><span class="w"> </span><span class="c1">Y</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">Z</span>
+<span class="w">    </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="p">,</span>
+<span class="p">);</span>
+<span class="n">out</span><span class="p">.</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ratio</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id2">
+<img alt="../../_images/pyramid-side.png" class="with-shadow" src="../../_images/pyramid-side.png" />
+<figcaption>
+<p><span class="caption-text">The pyramid seen from the side (still no perspective).</span><a class="headerlink" href="a-simple-example.html#id2" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>What about in-between rotations? The idea is to <strong>mix axes</strong>, adding a little bit of z in the y coordinates and a little bit of y in the z coordinates.</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="n">var</span><span class="w"> </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec3</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">    </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="p">,</span>
+<span class="w">    </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">z</span><span class="p">,</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">add</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">bit</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">Z</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">Y...</span>
+<span class="w">    </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">z</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">...and</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">bit</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">Y</span><span class="w"> </span><span class="c1">in</span><span class="w"> </span><span class="c1">Z.</span>
+<span class="p">);</span>
+<span class="n">out</span><span class="p">.</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ratio</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id3">
+<img alt="../../_images/pyramid-tilted.png" class="with-shadow" src="../../_images/pyramid-tilted.png" />
+<figcaption>
+<p><span class="caption-text">The pyramid from a tilted view angle.</span><a class="headerlink" href="a-simple-example.html#id3" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Of course at some point we have to remove some of <code class="docutils literal notranslate"><span class="pre">in.position.y</span></code> from Y so that after a quarter of turn we reach <code class="docutils literal notranslate"><span class="pre">Y</span> <span class="pre">=</span> <span class="pre">0.0</span> <span class="pre">*</span> <span class="pre">in.position.y</span> <span class="pre">+</span> <span class="pre">1.0</span> <span class="pre">*</span> <span class="pre">in.position.z</span></code>, as in the example above. So more generally our transform writes like this, where <code class="docutils literal notranslate"><span class="pre">alpha</span></code> and <code class="docutils literal notranslate"><span class="pre">beta</span></code> depend on the rotation angle:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">angle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uMyUniforms</span><span class="p">.</span><span class="n">time</span><span class="p">;</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">you</span><span class="w"> </span><span class="c1">can</span><span class="w"> </span><span class="c1">multiply</span><span class="w"> </span><span class="c1">it</span><span class="w"> </span><span class="c1">go</span><span class="w"> </span><span class="c1">rotate</span><span class="w"> </span><span class="c1">faster</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">alpha</span>:<span class="w"> </span><span class="kt">f32</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="cm">/*</span><span class="w"> </span><span class="cm">???</span><span class="w"> </span><span class="cm">*/</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">beta</span>:<span class="w"> </span><span class="kt">f32</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="cm">/*</span><span class="w"> </span><span class="cm">???</span><span class="w"> </span><span class="cm">*/</span><span class="p">;</span>
+<span class="n">var</span><span class="w"> </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec3</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">    </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="p">,</span>
+<span class="w">    </span><span class="n">alpha</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">beta</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">z</span><span class="p">,</span>
+<span class="w">    </span><span class="n">alpha</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">beta</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="p">,</span>
+<span class="p">);</span>
+<span class="n">out</span><span class="p">.</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ratio</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you payed close attention to the snippet above, you should have noticed a minus sign <code class="docutils literal notranslate"><span class="pre">-</span></code> before the second <code class="docutils literal notranslate"><span class="pre">beta</span></code>. It is not visible on our pyramid because it is symmetrical but swapping axes also flips the object. To counter-balance this, we can change the sign of one of the dimensions. Hence the Z coordinate after a quarter of turn must be <code class="docutils literal notranslate"><span class="pre">-in.position.y</span></code> instead of <code class="docutils literal notranslate"><span class="pre">in.position.y</span></code>.</p>
+</div>
+<p>It turns out that these weights <code class="docutils literal notranslate"><span class="pre">alpha</span></code> and <code class="docutils literal notranslate"><span class="pre">beta</span></code> are not easy to express in terms of basic operations with respect to the angle. So mathematicians came up with a dedicated name for them: <strong>cosine</strong> and <strong>sine</strong>! And the good news is that these are <strong>built-in operations</strong> in WGSL:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">angle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uMyUniforms</span><span class="p">.</span><span class="n">time</span><span class="p">;</span><span class="w"> </span><span class="c1">//</span><span class="w"> </span><span class="c1">you</span><span class="w"> </span><span class="c1">can</span><span class="w"> </span><span class="c1">multiply</span><span class="w"> </span><span class="c1">it</span><span class="w"> </span><span class="c1">go</span><span class="w"> </span><span class="c1">rotate</span><span class="w"> </span><span class="c1">faster</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">beta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">);</span>
+<span class="n">var</span><span class="w"> </span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec3</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">    </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="p">,</span>
+<span class="w">    </span><span class="n">alpha</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">beta</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">z</span><span class="p">,</span>
+<span class="w">    </span><span class="n">alpha</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">beta</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">in</span><span class="p">.</span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="p">,</span>
+<span class="p">);</span>
+<span class="n">out</span><span class="p">.</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">position</span><span class="p">.</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ratio</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+</pre></div>
+</div>
+<figure class="align-center">
+	<video autoplay loop muted inline nocontrols style="width:100%;height:auto;max-width:642px">
+		<source src="../../_static/pyramid-ryz.mp4" type="video/mp4">
+	</video>
+	<figcaption>
+		<p><span class="caption-text">Rotation in the YZ plane</span></p>
+	</figcaption>
+</figure>
+<img alt="../../_images/trigo-light.svg" class="only-light align-center" src="../../_images/trigo-light.svg" /><img alt="../../_images/trigo-dark.svg" class="only-dark align-center" src="../../_images/trigo-dark.svg" /><p>Congratulations, you have learned most of what there is to know about trigonometry for computer graphics!</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>If you cannot remember which one is the <span class="math notranslate nohighlight">\(cos\)</span> and which one is the <span class="math notranslate nohighlight">\(sin\)</span> among <code class="docutils literal notranslate"><span class="pre">alpha</span></code> and <code class="docutils literal notranslate"><span class="pre">beta</span></code>, which happens all the time, just take an example of very simple rotation: <code class="docutils literal notranslate"><span class="pre">angle</span> <span class="pre">=</span> <span class="pre">0</span></code>. In such a case, we need <code class="docutils literal notranslate"><span class="pre">alpha</span> <span class="pre">=</span> <span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">beta</span> <span class="pre">=</span> <span class="pre">0</span></code>. If you look at a plot of the <span class="math notranslate nohighlight">\(sin\)</span> and <span class="math notranslate nohighlight">\(cos\)</span> functions you’ll quickly see that <span class="math notranslate nohighlight">\(cos(0) = 1\)</span> and <span class="math notranslate nohighlight">\(sin(0) = 0\)</span></p>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The argument of trigonometric functions is an angle, but be aware that it must be expressed in <strong>radians</strong>. There is a total of <span class="math notranslate nohighlight">\(2\pi\)</span> radians for a full turn, which leads to the following elementary cross-multiplication rule:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+\frac{r \text{ radians}}{d \text{ degrees}} = \frac{2\pi \text{ radians}}{360 \text{ degrees}}
+\]</div>
+</div>
+<p>So to convert an angle <span class="math notranslate nohighlight">\(d\)</span> in degrees into its equivalent <span class="math notranslate nohighlight">\(r\)</span> in radians, we simply do:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+r = d \times \frac{\pi}{180}
+\]</div>
+</div>
+</div>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="a-simple-example.html#conclusion" title="Permalink to this heading">#</a></h2>
+<p>We have a beginning of something. With this rotation, it starts looking like 3D, but there remains some important points to be concerned about:</p>
+<ul class="simple">
+<li><p><strong>Depth fighting</strong> As highlighted in the image below, the triangles do not overlap in the correct order.</p></li>
+<li><p><strong>Transform</strong> We have the basics, but it is a bit manual, and there is still <strong>no perspective</strong>!</p></li>
+<li><p><strong>Shading</strong> The trick of setting the tip of the pyramid to a darker color was good for starting, but we can do much better.</p></li>
+</ul>
+<p>These points are, in this order, the topic of the next 4 chapters (transforms are split in 2 chapters).</p>
+<figure class="align-center" id="id4">
+<img alt="../../_images/pyramid-zissue.png" class="with-shadow" src="../../_images/pyramid-zissue.png" />
+<figcaption>
+<p><span class="caption-text">There is something wrong with the depth.</span><a class="headerlink" href="a-simple-example.html#id4" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step050"><code class="docutils literal notranslate"><span class="pre">step050</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step050-vanilla"><code class="docutils literal notranslate"><span class="pre">step050-vanilla</span></code></a></p>
+</div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="depth-buffer.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Depth buffer</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">3D Meshes</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022-2023, Élie Michel and contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/eliemichel/LearnWebGPU" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      <div class="toc-sticky toc-scroll">
+	<div class="toc-title-container">
+		<span class="toc-title">
+			On this page
+		</span>
+	</div>
+	<div class="toc-tree-container">
+		<div class="toc-tree">
+			<ul>
+<li><a class="reference internal" href="a-simple-example.html#">A simple example</a><ul>
+<li><a class="reference internal" href="a-simple-example.html#switching-to-3d-data">Switching to 3D data</a></li>
+<li><a class="reference internal" href="a-simple-example.html#basic-transform">Basic transform</a></li>
+<li><a class="reference internal" href="a-simple-example.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+		</div>
+	</div>
+	
+</div>
+    </aside>
+  </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/sphinx_literate.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

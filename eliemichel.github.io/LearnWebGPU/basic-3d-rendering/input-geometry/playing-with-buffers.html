@@ -1,0 +1,747 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content="Playing with buffers" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://eliemichel.github.io/basic-3d-rendering/input-geometry/playing-with-buffers.html" />
+<meta property="og:site_name" content="Learn WebGPU for C++" />
+<meta property="og:description" content="With webgpu.hpp Resulting code: step018 Vanilla webgpu.h Resulting code: step018-vanilla Before feeding vertex data to the render pipeline, we need to get familiar with the notion of buffer. A buff..." />
+<meta property="og:image" content="https://eliemichel.github.io/images/webgpu-responsive.svg" />
+<meta property="og:image:alt" content="Learn WebGPU for C++" />
+<meta name="description" content="With webgpu.hpp Resulting code: step018 Vanilla webgpu.h Resulting code: step018-vanilla Before feeding vertex data to the render pipeline, we need to get familiar with the notion of buffer. A buff..." />
+    <link rel="icon" type="image/svg+xml" href="../../_static/favicon/favicon.svg">
+    <link rel="icon" sizes="16x16" href="../../_static/favicon/favicon-16x16.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="../../_static/favicon/favicon-32x32.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://eliemichel.github.io/LearnWebGPU/_static/favicon/apple-touch-icon-180x180.png" type="image/png"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="A first Vertex Attribute" href="a-first-vertex-attribute.html" /><link rel="prev" title="Input Geometry" href="index.html" />
+
+    <!-- Generated with Sphinx 5.3.0 and Furo 2023.03.27 -->
+        <title>Playing with buffers - Learn WebGPU for C++ documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx_literate.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  --color-brand-primary: #ac2800;
+  --color-brand-content: #007cac;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     <em>Important</em> This documentation is a work in progress! <a href="../../appendices/feedback-needed.html">Feedback needed!</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Learn WebGPU for C++  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/webgpu-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/webgpu-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../getting-started/index.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/project-setup.html">Project setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/opening-a-window.html">Opening a window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/hello-webgpu.html">Hello WebGPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-adapter.html">The Adapter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-device.html">The Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-command-queue.html">The Command Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/first-color.html">First Color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/cpp-idioms.html">C++ wrapper</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">Basic 3D Rendering</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../hello-triangle.html">Hello Triangle</a></li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">Input Geometry</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="playing-with-buffers.html#">Playing with buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="a-first-vertex-attribute.html">A first Vertex Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiple-attributes.html">Multiple Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index-buffer.html">Index Buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../shader-uniforms/index.html">Shader Uniforms</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/a-first-uniform.html">A first uniform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/multiple-uniforms.html">More uniforms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../shader-uniforms/dynamic-uniforms.html">Dynamic uniforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../3d-meshes/index.html">3D Meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/a-simple-example.html">A simple example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/depth-buffer.html">Depth buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/transformation-matrices.html">Transformation matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/projection-matrices.html">Projection matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/basic-shading.html">Basic shading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../3d-meshes/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../texturing/index.html">Texturing</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/a-first-texture.html">A first texture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/texture-mapping.html">Texture mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/sampler.html">Sampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../texturing/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../some-interaction/index.html">Some interaction</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/refactoring.html">Refactoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/resizing-window.html">Resizing the window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/camera-control.html">Camera control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../some-interaction/simple-gui.html">Simple GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../lighting-and-material/index.html">Lighting and Material</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/recap.html">Recap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/specular.html">Specularity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/normal-mapping.html">Normal mapping (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/ibl.html">Image-Based Lighting (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/cubemap.html">Cube Maps (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lighting-and-material/pbr.html">Physically-Based Materials (🚧WIP)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../basic-compute/index.html">Basic Compute</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../basic-compute/compute-pipeline.html">Compute Pipeline</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-compute/image-processing/index.html">Image Processing</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/mipmap-generation.html">Mipmap Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/convolution-filters.html">Convolution Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/cubemap-conversion.html">Cubemap Conversion (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/image-processing/cubemap-prefiltering.html">Cubemap Prefiltering (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-compute/procedural-geometry/index.html">Procedural Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-compute/procedural-geometry/deformation.html">Deformation (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../basic-compute/neural-networks.html">Neural Networks (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../advanced-techniques/index.html">Advanced Techniques</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/raii.html">RAII</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/hdr-textures.html">High Dynamic Range Textures (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/deferred-shading.html">Deferred Shading (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/benchmarking.html">Benchmarking (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/render-bundles.html">Render Bundles (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/multi-sampling.html">Multi-Sampling (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/scene-tree.html">Scene tree (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/screen-capture.html">Screen capture (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/shadow-maps.html">Shadow maps (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/tesselation.html">Tesselation (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/raytracing.html">Raytracing (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../appendices/index.html">Appendices</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/teaching-native-graphics-in-2023.html">Teaching native graphics in 2023</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/feedback-needed.html">Feedback needed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/debugging.html">Debugging (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/building-for-the-web.html">Building for the Web (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/memory-model.html">Memory Model (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/custom-extensions.html">Custom Extensions (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/references.html">References (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/tmp.html">Temporary page</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="playing-with-buffers.html#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/eliemichel/LearnWebGPU/edit/main/./basic-3d-rendering/input-geometry/playing-with-buffers.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="playing-with-buffers">
+<h1>Playing with buffers<a class="headerlink" href="playing-with-buffers.html#playing-with-buffers" title="Permalink to this heading">#</a></h1>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step018"><code class="docutils literal notranslate"><span class="pre">step018</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step018-vanilla"><code class="docutils literal notranslate"><span class="pre">step018-vanilla</span></code></a></p>
+</div>
+</div>
+<p>Before feeding vertex data to the render pipeline, we need to get familiar with the notion of <strong>buffer</strong>. A buffer is “just” a chunk of memory allocated in the VRAM (the GPU’s memory). Think of it as some kind of <code class="docutils literal notranslate"><span class="pre">new</span></code> or <code class="docutils literal notranslate"><span class="pre">malloc</span></code> for the GPU.</p>
+<p>One notable difference is that we must state some hint about our use of this memory upon its creation. For instance, if we are going to use it only to write it from the CPU but never to read it back, we set its <code class="docutils literal notranslate"><span class="pre">CopyDst</span></code> flag on but not the <code class="docutils literal notranslate"><span class="pre">CopySrc</span></code> flag. This not fully agnostic memory management helps the device figure out the best memory layout.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that textures are a special kind of memory (because of the way we usually sample them) that they live in a different kind of object.</p>
+</div>
+<section id="creating-a-buffer">
+<h2>Creating a buffer<a class="headerlink" href="playing-with-buffers.html#creating-a-buffer" title="Permalink to this heading">#</a></h2>
+<p>The overall structure of the buffer creation will surprise no one now:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">BufferDescriptor</span><span class="w"> </span><span class="n">bufferDesc</span><span class="p">;</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Some</span><span class="w"> </span><span class="s">GPU-side</span><span class="w"> </span><span class="s">data</span><span class="w"> </span><span class="s">buffer&quot;</span><span class="p">;</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">usage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">CopyDst</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">CopySrc</span><span class="p">;</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">mappedAtCreation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="n">Buffer</span><span class="w"> </span><span class="n">buffer1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">device</span><span class="p">.</span><span class="n">createBuffer</span><span class="p">(</span><span class="n">bufferDesc</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">WGPUBufferDescriptor</span><span class="w"> </span><span class="n">bufferDesc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">nextInChain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Some</span><span class="w"> </span><span class="s">GPU-side</span><span class="w"> </span><span class="s">data</span><span class="w"> </span><span class="s">buffer&quot;</span><span class="p">;</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">usage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUBufferUsage_CopyDst</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">WGPUBufferUsage_CopySrc</span><span class="p">;</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span>
+<span class="n">bufferDesc</span><span class="p">.</span><span class="n">mappedAtCreation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="n">WGPUBuffer</span><span class="w"> </span><span class="n">buffer1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wgpuDeviceCreateBuffer</span><span class="p">(</span><span class="n">device</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">bufferDesc</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A GPU buffer is <em>mapped</em> when it is connected to a specific part of the CPU-side RAM. The driver then automatically synchronizes its content, either for reading or for writing. We will not use it here.</p>
+</div>
+<p>For our little exercise, create a second buffer, called <code class="docutils literal notranslate"><span class="pre">buffer2</span></code>. We will load data in the first buffer, issue a copy command so that the GPU copies data from one to another, then read the destination buffer back.</p>
+<p>Also, don’t forget to free your buffers once you no longer use them:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">buffer1</span><span class="p">.</span><span class="n">destroy</span><span class="p">();</span>
+<span class="n">buffer2</span><span class="p">.</span><span class="n">destroy</span><span class="p">();</span>
+
+<span class="n">wgpuBufferRelease</span><span class="p">(</span><span class="n">buffer1</span><span class="p">);</span>
+<span class="n">wgpuBufferRelease</span><span class="p">(</span><span class="n">buffer2</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">wgpuBufferDestroy</span><span class="p">(</span><span class="n">buffer1</span><span class="p">);</span>
+<span class="n">wgpuBufferDestroy</span><span class="p">(</span><span class="n">buffer2</span><span class="p">);</span>
+
+<span class="n">wgpuBufferRelease</span><span class="p">(</span><span class="n">buffer1</span><span class="p">);</span>
+<span class="n">wgpuBufferRelease</span><span class="p">(</span><span class="n">buffer2</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that there are two different operations here:</p>
+<ul class="simple">
+<li><p><strong>Destroy</strong> frees the GPU memory that was allocated for the buffer, but the buffer object itself, which lives on the driver/backend side, still exists.</p></li>
+<li><p><strong>Release</strong> frees the driver/backend side object (or rather decreases its reference pointer and frees it if nobody else uses it).</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As of now (May 13, 2023) the <code class="docutils literal notranslate"><span class="pre">wgpuBufferRelease</span></code> function is not provided by the C++ wrapper when using <code class="docutils literal notranslate"><span class="pre">wgpu-native</span></code> (one cannot do <code class="docutils literal notranslate"><span class="pre">buffer1.release()</span></code>) because they use a different procedure with different semantics (<code class="docutils literal notranslate"><span class="pre">wgpuBufferDrop</span></code>). The C-style <code class="docutils literal notranslate"><span class="pre">wgpuBufferRelease</span></code> works for both thanks to the <code class="docutils literal notranslate"><span class="pre">webgpu-release.h</span></code> (that should eventually no longer be needed).</p>
+</div>
+</section>
+<section id="writing-to-a-buffer">
+<h2>Writing to a buffer<a class="headerlink" href="playing-with-buffers.html#writing-to-a-buffer" title="Permalink to this heading">#</a></h2>
+<p>Let us simply use the <code class="docutils literal notranslate"><span class="pre">queue.writeBuffer</span></code> function (or the C-style <code class="docutils literal notranslate"><span class="pre">wgpuQueueWriteBuffer</span></code>), to which we give a memory address and size from which data is copied:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--3-input--1" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">some</span><span class="w"> </span><span class="c1">CPU-side</span><span class="w"> </span><span class="c1">data</span><span class="w"> </span><span class="c1">buffer</span><span class="w"> </span><span class="c1">(of</span><span class="w"> </span><span class="c1">size</span><span class="w"> </span><span class="c1">16</span><span class="w"> </span><span class="c1">bytes)</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numbers</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">numbers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Copy</span><span class="w"> </span><span class="c1">this</span><span class="w"> </span><span class="c1">from</span><span class="w"> </span><span class="c1">`numbers`</span><span class="w"> </span><span class="c1">(RAM)</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">`buffer1`</span><span class="w"> </span><span class="c1">(VRAM)</span>
+<span class="n">queue</span><span class="p">.</span><span class="n">writeBuffer</span><span class="p">(</span><span class="n">buffer1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">numbers</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">numbers</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--3-input--2" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Create</span><span class="w"> </span><span class="c1">some</span><span class="w"> </span><span class="c1">CPU-side</span><span class="w"> </span><span class="c1">data</span><span class="w"> </span><span class="c1">buffer</span><span class="w"> </span><span class="c1">(of</span><span class="w"> </span><span class="c1">size</span><span class="w"> </span><span class="c1">16</span><span class="w"> </span><span class="c1">bytes)</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">numbers</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">numbers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+
+<span class="c1">//</span><span class="w"> </span><span class="c1">Copy</span><span class="w"> </span><span class="c1">this</span><span class="w"> </span><span class="c1">from</span><span class="w"> </span><span class="c1">`numbers`</span><span class="w"> </span><span class="c1">(RAM)</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">`buffer1`</span><span class="w"> </span><span class="c1">(VRAM)</span>
+<span class="n">wgpuQueueWriteBuffer</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">buffer1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">numbers</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">numbers</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Uploading data from the CPU-side memory (RAM) to the GPU-side memory (VRAM) <strong>takes time</strong>. When the function <code class="docutils literal notranslate"><span class="pre">writeBuffer()</span></code> returns, data transfer may not have finished yet but it is <strong>guaranteed</strong> that:</p>
+<ul class="simple">
+<li><p>You can <strong>free up the memory</strong> from the address you just passed, because the backend maintains its own CPU-side copy of the buffer during transfer.</p></li>
+<li><p>Commands that are <strong>submitted in the queue after</strong> the <code class="docutils literal notranslate"><span class="pre">writeBuffer()</span></code> operation will not be executed before the data transfer is finished.</p></li>
+</ul>
+</div>
+<p>We can thus submit a buffer-buffer copy operation to the command queue, after having created a command encoder:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--4-input--1" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">encoder</span><span class="p">.</span><span class="n">copyBufferToBuffer</span><span class="p">(</span><span class="n">buffer1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">buffer2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--4-input--2" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">wgpuCommandEncoderCopyBufferToBuffer</span><span class="p">(</span><span class="n">encoder</span><span class="p">,</span><span class="w"> </span><span class="n">buffer1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">buffer2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Make sure that command encoding operations are called before <code class="docutils literal notranslate"><span class="pre">encoder.finish()</span></code> or <code class="docutils literal notranslate"><span class="pre">wgpuCommandEncoderFinish()</span></code>!</p>
+</div>
+</section>
+<section id="reading-from-a-buffer">
+<h2>Reading from a buffer<a class="headerlink" href="playing-with-buffers.html#reading-from-a-buffer" title="Permalink to this heading">#</a></h2>
+<p>We cannot just use the command queue to read memory back from the GPU, because this is a “fire and forget” queue: functions do not return a value since they are run on a different timeline.</p>
+<p>Instead, we use an <strong>asynchronous operation</strong>, namely <code class="docutils literal notranslate"><span class="pre">buffer.mapAsync</span></code> (or <code class="docutils literal notranslate"><span class="pre">wgpuBufferMapAsync</span></code>). This operation maps the GPU buffer into CPU memory, and then whenever it is ready it executes the callback function it was provided.</p>
+<p>This asynchronicity makes the programming workflow more complicated than synchronous operations, but once again it is important to minimize wasteful processor idling.</p>
+<section id="mapping">
+<h3>Mapping<a class="headerlink" href="playing-with-buffers.html#mapping" title="Permalink to this heading">#</a></h3>
+<p>Let us first change the <code class="docutils literal notranslate"><span class="pre">usage</span></code> of the second buffer by adding the <code class="docutils literal notranslate"><span class="pre">BufferUsage::MapRead</span></code> flag, so that the buffer can be mapped for reading:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--5-input--1" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">bufferDesc2</span><span class="p">.</span><span class="n">usage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">CopyDst</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">BufferUsage</span><span class="o">::</span><span class="n">MapRead</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--5-input--2" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">bufferDesc2</span><span class="p">.</span><span class="n">usage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WGPUBufferUsage_CopyDst</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">WGPUBufferUsage_MapRead</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">BufferUsage::MapRead</span></code> flag is not compatible with <code class="docutils literal notranslate"><span class="pre">BufferUsage::CopySrc</span></code> one, so make sure not to have both at the same time.</p>
+</div>
+<p>We can now call the buffer mapping with a simple callback.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>I intentionally use the C-style procedure for now, it helps understanding what is happening under the hood when using the simpler API provided by the C++ wrapper.</p>
+</div>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--6-input--1" name="tab-set--6" type="radio"><label class="tab-label" for="tab-set--6-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">onBuffer2Mapped</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[](</span><span class="n">WGPUBufferMapAsyncStatus</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="cm">/*pUserData*/</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Buffer</span><span class="w"> </span><span class="s">2</span><span class="w"> </span><span class="s">mapped</span><span class="w"> </span><span class="s">with</span><span class="w"> </span><span class="s">status</span><span class="w"> </span><span class="s">&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="n">wgpuBufferMapAsync</span><span class="p">(</span><span class="n">buffer2</span><span class="p">,</span><span class="w"> </span><span class="n">MapMode</span><span class="o">::</span><span class="n">Read</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="n">onBuffer2Mapped</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="w"> </span><span class="cm">/*pUserData*/</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--6-input--2" name="tab-set--6" type="radio"><label class="tab-label" for="tab-set--6-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">onBuffer2Mapped</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[](</span><span class="n">WGPUBufferMapAsyncStatus</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="cm">/*pUserData*/</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Buffer</span><span class="w"> </span><span class="s">2</span><span class="w"> </span><span class="s">mapped</span><span class="w"> </span><span class="s">with</span><span class="w"> </span><span class="s">status</span><span class="w"> </span><span class="s">&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="n">wgpuBufferMapAsync</span><span class="p">(</span><span class="n">buffer2</span><span class="p">,</span><span class="w"> </span><span class="n">WGPUMapMode_Read</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="n">onBuffer2Mapped</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="w"> </span><span class="cm">/*pUserData*/</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">onBuffer2Mapped</span></code> is defined here as a <a class="reference external" href="https://en.cppreference.com/w/cpp/language/lambda">lambda expression</a> but it could also be a regular function declared before <code class="docutils literal notranslate"><span class="pre">main()</span></code>, provided it has the same signature:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">onBuffer2Mapped</span><span class="p">(</span><span class="n">WGPUBufferMapAsyncStatus</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="cm">/*pUserData*/</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Buffer</span><span class="w"> </span><span class="s">2</span><span class="w"> </span><span class="s">mapped</span><span class="w"> </span><span class="s">with</span><span class="w"> </span><span class="s">status</span><span class="w"> </span><span class="s">&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="asynchronous-polling">
+<h3>Asynchronous polling<a class="headerlink" href="playing-with-buffers.html#asynchronous-polling" title="Permalink to this heading">#</a></h3>
+<p>If you run the program at this point, you might be surprised (and disappointed) to see that the callback is <strong>never executed</strong>!</p>
+<p>This is because there is no hidden process executed by the WebGPU library to check that the async operation is ready. Instead, the backend checks for ongoing async operations only when we call another operation, so we will add in the main loop a simple operation that does nothing.</p>
+<p>Unfortunately, this mechanism has no standard solution, so we write it differently for Dawn and <code class="docutils literal notranslate"><span class="pre">wgpu-native</span></code>:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--7-input--1" name="tab-set--7" type="radio"><label class="tab-label" for="tab-set--7-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">glfwWindowShouldClose</span><span class="p">(</span><span class="n">window</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Do</span><span class="w"> </span><span class="c1">nothing,</span><span class="w"> </span><span class="c1">this</span><span class="w"> </span><span class="c1">checks</span><span class="w"> </span><span class="c1">for</span><span class="w"> </span><span class="c1">ongoing</span><span class="w"> </span><span class="c1">asynchronous</span><span class="w"> </span><span class="c1">operations</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">call</span><span class="w"> </span><span class="c1">their</span><span class="w"> </span><span class="c1">callbacks</span>
+<span class="cp">#ifdef</span><span class="w"> </span><span class="cp">WEBGPU_BACKEND_WGPU</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Non-standardized</span><span class="w"> </span><span class="c1">behavior:</span><span class="w"> </span><span class="c1">submit</span><span class="w"> </span><span class="c1">empty</span><span class="w"> </span><span class="c1">queue</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">flush</span><span class="w"> </span><span class="c1">callbacks</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">(wgpu-native</span><span class="w"> </span><span class="c1">also</span><span class="w"> </span><span class="c1">has</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">device.poll</span><span class="w"> </span><span class="c1">but</span><span class="w"> </span><span class="c1">its</span><span class="w"> </span><span class="c1">API</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">more</span><span class="w"> </span><span class="c1">complex)</span>
+<span class="w">    </span><span class="n">queue</span><span class="p">.</span><span class="n">submit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">);</span>
+<span class="cp">#else</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Non-standard</span><span class="w"> </span><span class="c1">Dawn</span><span class="w"> </span><span class="c1">way</span>
+<span class="w">    </span><span class="n">device</span><span class="p">.</span><span class="n">tick</span><span class="p">();</span>
+<span class="cp">#endif</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">(This</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">same</span><span class="w"> </span><span class="c1">idea,</span><span class="w"> </span><span class="c1">for</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">GLFW</span><span class="w"> </span><span class="c1">library</span><span class="w"> </span><span class="c1">callbacks)</span>
+<span class="w">    </span><span class="n">glfwPollEvents</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--7-input--2" name="tab-set--7" type="radio"><label class="tab-label" for="tab-set--7-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">glfwWindowShouldClose</span><span class="p">(</span><span class="n">window</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Do</span><span class="w"> </span><span class="c1">nothing,</span><span class="w"> </span><span class="c1">this</span><span class="w"> </span><span class="c1">checks</span><span class="w"> </span><span class="c1">for</span><span class="w"> </span><span class="c1">ongoing</span><span class="w"> </span><span class="c1">asynchronous</span><span class="w"> </span><span class="c1">operations</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">call</span><span class="w"> </span><span class="c1">their</span><span class="w"> </span><span class="c1">callbacks</span>
+<span class="cp">#ifdef</span><span class="w"> </span><span class="cp">WEBGPU_BACKEND_WGPU</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Non-standardized</span><span class="w"> </span><span class="c1">behavior:</span><span class="w"> </span><span class="c1">submit</span><span class="w"> </span><span class="c1">empty</span><span class="w"> </span><span class="c1">queue</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">flush</span><span class="w"> </span><span class="c1">callbacks</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">(wgpu-native</span><span class="w"> </span><span class="c1">also</span><span class="w"> </span><span class="c1">has</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">wgpuDevicePoll</span><span class="w"> </span><span class="c1">but</span><span class="w"> </span><span class="c1">its</span><span class="w"> </span><span class="c1">API</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">more</span><span class="w"> </span><span class="c1">complex)</span>
+<span class="w">    </span><span class="n">wgpuQueueSubmit</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">);</span>
+<span class="cp">#else</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Non-standard</span><span class="w"> </span><span class="c1">Dawn</span><span class="w"> </span><span class="c1">way</span>
+<span class="w">    </span><span class="n">wgpuDeviceTick</span><span class="p">(</span><span class="n">device</span><span class="p">);</span>
+<span class="cp">#endif</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">(This</span><span class="w"> </span><span class="c1">is</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">same</span><span class="w"> </span><span class="c1">idea,</span><span class="w"> </span><span class="c1">for</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">GLFW</span><span class="w"> </span><span class="c1">library</span><span class="w"> </span><span class="c1">callbacks)</span>
+<span class="w">    </span><span class="n">glfwPollEvents</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Make sure the calls to <code class="docutils literal notranslate"><span class="pre">buffer.destroy</span></code> are issued <em>after</em> the main loop, otherwise the callback will be called with status <code class="docutils literal notranslate"><span class="pre">BufferMapAsyncStatus::DestroyedBeforeCallback</span></code>.</p>
+</div>
+<p>You should now see <code class="docutils literal notranslate"><span class="pre">Buffer</span> <span class="pre">2</span> <span class="pre">mapped</span> <span class="pre">with</span> <span class="pre">status</span> <span class="pre">0</span></code> (0 being the value of <code class="docutils literal notranslate"><span class="pre">BufferMapAsyncStatus::Success</span></code>) when running your program.</p>
+</section>
+<section id="mapping-context">
+<h3>Mapping context<a class="headerlink" href="playing-with-buffers.html#mapping-context" title="Permalink to this heading">#</a></h3>
+<p>Now, we need to get more than a status when running this callback, we need to access the buffer’s content. But the <code class="docutils literal notranslate"><span class="pre">onBuffer2Mapped</span></code> function cannot access the <code class="docutils literal notranslate"><span class="pre">buffer2</span></code> variable so far.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When using a regular function, it is clear that <code class="docutils literal notranslate"><span class="pre">buffer2</span></code> is not accessible. When using a lambda expression, one could be tempted to add <code class="docutils literal notranslate"><span class="pre">buffer2</span></code> in the <strong>capture list</strong> (the brackets before function arguments). But this <strong>does not work</strong> because capturing lambdas have a different type, that cannot be used as a regular callback. The C++ wrapper fixes this.</p>
+</div>
+<p>We thus use the <code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">*userdata</span></code> pointer communicated from the original call to <code class="docutils literal notranslate"><span class="pre">wgpuBufferMapAsync</span></code> to the callback, like we did in <a class="reference internal" href="../../getting-started/the-adapter.html"><span class="std std-doc">the adapter request</span></a> or <a class="reference internal" href="../../getting-started/the-device.html"><span class="std std-doc">the device request</span></a>:</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--8-input--1" name="tab-set--8" type="radio"><label class="tab-label" for="tab-set--8-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">context</span><span class="w"> </span><span class="c1">shared</span><span class="w"> </span><span class="c1">between</span><span class="w"> </span><span class="c1">this</span><span class="w"> </span><span class="c1">main</span><span class="w"> </span><span class="c1">function</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">callback.</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">Context</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Buffer</span><span class="w"> </span><span class="n">buffer</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">auto</span><span class="w"> </span><span class="n">onBuffer2Mapped</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[](</span><span class="n">WGPUBufferMapAsyncStatus</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">pUserData</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Context</span><span class="o">*</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">Context</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">pUserData</span><span class="p">);</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Buffer</span><span class="w"> </span><span class="s">2</span><span class="w"> </span><span class="s">mapped</span><span class="w"> </span><span class="s">with</span><span class="w"> </span><span class="s">status</span><span class="w"> </span><span class="s">&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">BufferMapAsyncStatus</span><span class="o">::</span><span class="n">Success</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Get</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">pointer</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">wherever</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">driver</span><span class="w"> </span><span class="c1">mapped</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">GPU</span><span class="w"> </span><span class="c1">memory</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">RAM</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">bufferData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span><span class="n">context</span><span class="o">-&gt;</span><span class="n">buffer</span><span class="p">.</span><span class="n">getConstMappedRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">(Do</span><span class="w"> </span><span class="c1">stuff</span><span class="w"> </span><span class="c1">with</span><span class="w"> </span><span class="c1">bufferData)</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Then</span><span class="w"> </span><span class="c1">do</span><span class="w"> </span><span class="c1">not</span><span class="w"> </span><span class="c1">forget</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">unmap</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">memory</span>
+<span class="w">    </span><span class="n">context</span><span class="o">-&gt;</span><span class="n">buffer</span><span class="p">.</span><span class="n">unmap</span><span class="p">();</span>
+<span class="p">};</span>
+
+<span class="n">Context</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">buffer2</span><span class="w"> </span><span class="p">};</span>
+<span class="n">wgpuBufferMapAsync</span><span class="p">(</span><span class="n">buffer2</span><span class="p">,</span><span class="w"> </span><span class="n">MapMode</span><span class="o">::</span><span class="n">Read</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="n">onBuffer2Mapped</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">context</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--8-input--2" name="tab-set--8" type="radio"><label class="tab-label" for="tab-set--8-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">context</span><span class="w"> </span><span class="c1">shared</span><span class="w"> </span><span class="c1">between</span><span class="w"> </span><span class="c1">this</span><span class="w"> </span><span class="c1">main</span><span class="w"> </span><span class="c1">function</span><span class="w"> </span><span class="c1">and</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">callback.</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">Context</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">WGPUBuffer</span><span class="w"> </span><span class="n">buffer</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">auto</span><span class="w"> </span><span class="n">onBuffer2Mapped</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[](</span><span class="n">WGPUBufferMapAsyncStatus</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">pUserData</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Context</span><span class="o">*</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">Context</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">pUserData</span><span class="p">);</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Buffer</span><span class="w"> </span><span class="s">2</span><span class="w"> </span><span class="s">mapped</span><span class="w"> </span><span class="s">with</span><span class="w"> </span><span class="s">status</span><span class="w"> </span><span class="s">&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">WGPUBufferMapAsyncStatus_Success</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Get</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">pointer</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">wherever</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">driver</span><span class="w"> </span><span class="c1">mapped</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">GPU</span><span class="w"> </span><span class="c1">memory</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">RAM</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">bufferData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span><span class="n">wgpuBufferGetMappedRange</span><span class="p">(</span><span class="n">context</span><span class="o">-&gt;</span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span><span class="w"> </span><span class="c1">(Do</span><span class="w"> </span><span class="c1">stuff</span><span class="w"> </span><span class="c1">with</span><span class="w"> </span><span class="c1">bufferData)</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Then</span><span class="w"> </span><span class="c1">do</span><span class="w"> </span><span class="c1">not</span><span class="w"> </span><span class="c1">forget</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">unmap</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">memory</span>
+<span class="w">    </span><span class="n">wgpuBufferUnmap</span><span class="p">(</span><span class="n">context</span><span class="o">-&gt;</span><span class="n">buffer</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="n">Context</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">buffer2</span><span class="w"> </span><span class="p">};</span>
+<span class="n">wgpuBufferMapAsync</span><span class="p">(</span><span class="n">buffer2</span><span class="p">,</span><span class="w"> </span><span class="n">WGPUMapMode_Read</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="n">onBuffer2Mapped</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">context</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>For instance we can just display the content of the buffer and check that it corresponds to our initially fed buffer data:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;bufferData</span><span class="w"> </span><span class="s">=</span><span class="w"> </span><span class="s">[&quot;</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;,</span><span class="w"> </span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">bufferData</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="p">}</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;]&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In such a simple example, we could spare ourselves the need to define a <code class="docutils literal notranslate"><span class="pre">Context</span> <span class="pre">struct</span></code> and just pass the address of the <code class="docutils literal notranslate"><span class="pre">buffer</span></code> object as the value of <code class="docutils literal notranslate"><span class="pre">pUserData</span></code> (or even the <code class="docutils literal notranslate"><span class="pre">buffer</span></code> object itself, as it is a pointer already).</p>
+</div>
+</section>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="playing-with-buffers.html#conclusion" title="Permalink to this heading">#</a></h2>
+<p>Congratulations! We were able to create a GPU-side memory buffer, upload data into it, copy it remotely (operation triggered from the CPU, but executed on the GPU) using the command queue and download data back from the GPU. We can now use a buffer to specify vertex attributes, in particular vertex positions!</p>
+<div class="tab-set docutils">
+<input checked="True" class="tab-input" id="tab-set--9-input--1" name="tab-set--9" type="radio"><label class="tab-label" for="tab-set--9-input--1">With webgpu.hpp</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step018"><code class="docutils literal notranslate"><span class="pre">step018</span></code></a></p>
+</div>
+<input class="tab-input" id="tab-set--9-input--2" name="tab-set--9" type="radio"><label class="tab-label" for="tab-set--9-input--2">Vanilla webgpu.h</label><div class="tab-content docutils">
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step018-vanilla"><code class="docutils literal notranslate"><span class="pre">step018-vanilla</span></code></a></p>
+</div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="a-first-vertex-attribute.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">A first Vertex Attribute</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Input Geometry</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022-2023, Élie Michel and contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/eliemichel/LearnWebGPU" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      <div class="toc-sticky toc-scroll">
+	<div class="toc-title-container">
+		<span class="toc-title">
+			On this page
+		</span>
+	</div>
+	<div class="toc-tree-container">
+		<div class="toc-tree">
+			<ul>
+<li><a class="reference internal" href="playing-with-buffers.html#">Playing with buffers</a><ul>
+<li><a class="reference internal" href="playing-with-buffers.html#creating-a-buffer">Creating a buffer</a></li>
+<li><a class="reference internal" href="playing-with-buffers.html#writing-to-a-buffer">Writing to a buffer</a></li>
+<li><a class="reference internal" href="playing-with-buffers.html#reading-from-a-buffer">Reading from a buffer</a><ul>
+<li><a class="reference internal" href="playing-with-buffers.html#mapping">Mapping</a></li>
+<li><a class="reference internal" href="playing-with-buffers.html#asynchronous-polling">Asynchronous polling</a></li>
+<li><a class="reference internal" href="playing-with-buffers.html#mapping-context">Mapping context</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="playing-with-buffers.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+		</div>
+	</div>
+	
+</div>
+    </aside>
+  </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/sphinx_literate.js"></script>
+    </body>
+</html>

@@ -1,0 +1,705 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content="Convolution Filters" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://eliemichel.github.io/basic-compute/image-processing/convolution-filters.html" />
+<meta property="og:site_name" content="Learn WebGPU for C++" />
+<meta property="og:description" content="Resulting code: step215 Many image processing algorithms are based on convolution filter operations somewhere in their pipeline. The concept is simple: the new value of each pixel is computed by lo..." />
+<meta property="og:image" content="https://eliemichel.github.io/images/webgpu-responsive.svg" />
+<meta property="og:image:alt" content="Learn WebGPU for C++" />
+<meta name="description" content="Resulting code: step215 Many image processing algorithms are based on convolution filter operations somewhere in their pipeline. The concept is simple: the new value of each pixel is computed by lo..." />
+    <link rel="icon" type="image/svg+xml" href="../../_static/favicon/favicon.svg">
+    <link rel="icon" sizes="16x16" href="../../_static/favicon/favicon-16x16.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="../../_static/favicon/favicon-32x32.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://eliemichel.github.io/LearnWebGPU/_static/favicon/apple-touch-icon-180x180.png" type="image/png"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Cubemap Conversion (🚧WIP)" href="cubemap-conversion.html" /><link rel="prev" title="Mipmap Generation" href="mipmap-generation.html" />
+
+    <!-- Generated with Sphinx 5.3.0 and Furo 2023.03.27 -->
+        <title>Convolution Filters - Learn WebGPU for C++ documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/extra.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx_literate.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  --color-brand-primary: #ac2800;
+  --color-brand-content: #007cac;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     <em>Important</em> This documentation is a work in progress! <a href="../../appendices/feedback-needed.html">Feedback needed!</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Learn WebGPU for C++  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/webgpu-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../_static/webgpu-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../getting-started/index.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/project-setup.html">Project setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/opening-a-window.html">Opening a window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/hello-webgpu.html">Hello WebGPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-adapter.html">The Adapter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-device.html">The Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/the-command-queue.html">The Command Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/first-color.html">First Color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started/cpp-idioms.html">C++ wrapper</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../basic-3d-rendering/index.html">Basic 3D Rendering</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../basic-3d-rendering/hello-triangle.html">Hello Triangle</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-3d-rendering/input-geometry/index.html">Input Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/input-geometry/playing-with-buffers.html">Playing with buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/input-geometry/a-first-vertex-attribute.html">A first Vertex Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/input-geometry/multiple-attributes.html">Multiple Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/input-geometry/index-buffer.html">Index Buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/input-geometry/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-3d-rendering/shader-uniforms/index.html">Shader Uniforms</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/shader-uniforms/a-first-uniform.html">A first uniform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/shader-uniforms/multiple-uniforms.html">More uniforms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/shader-uniforms/dynamic-uniforms.html">Dynamic uniforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-3d-rendering/3d-meshes/index.html">3D Meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/3d-meshes/a-simple-example.html">A simple example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/3d-meshes/depth-buffer.html">Depth buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/3d-meshes/transformation-matrices.html">Transformation matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/3d-meshes/projection-matrices.html">Projection matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/3d-meshes/basic-shading.html">Basic shading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/3d-meshes/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-3d-rendering/texturing/index.html">Texturing</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/texturing/a-first-texture.html">A first texture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/texturing/texture-mapping.html">Texture mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/texturing/sampler.html">Sampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/texturing/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-3d-rendering/some-interaction/index.html">Some interaction</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/some-interaction/refactoring.html">Refactoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/some-interaction/resizing-window.html">Resizing the window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/some-interaction/camera-control.html">Camera control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/some-interaction/simple-gui.html">Simple GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../basic-3d-rendering/lighting-and-material/index.html">Lighting and Material</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/lighting-and-material/recap.html">Recap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/lighting-and-material/specular.html">Specularity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/lighting-and-material/normal-mapping.html">Normal mapping (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/lighting-and-material/ibl.html">Image-Based Lighting (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/lighting-and-material/cubemap.html">Cube Maps (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../basic-3d-rendering/lighting-and-material/pbr.html">Physically-Based Materials (🚧WIP)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">Basic Compute</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../compute-pipeline.html">Compute Pipeline</a></li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">Image Processing</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="mipmap-generation.html">Mipmap Generation</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="convolution-filters.html#">Convolution Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cubemap-conversion.html">Cubemap Conversion (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cubemap-prefiltering.html">Cubemap Prefiltering (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../procedural-geometry/index.html">Procedural Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../procedural-geometry/deformation.html">Deformation (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../neural-networks.html">Neural Networks (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../advanced-techniques/index.html">Advanced Techniques</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/raii.html">RAII</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/hdr-textures.html">High Dynamic Range Textures (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/deferred-shading.html">Deferred Shading (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/benchmarking.html">Benchmarking (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/render-bundles.html">Render Bundles (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/multi-sampling.html">Multi-Sampling (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/scene-tree.html">Scene tree (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/screen-capture.html">Screen capture (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/shadow-maps.html">Shadow maps (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/tesselation.html">Tesselation (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced-techniques/raytracing.html">Raytracing (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../appendices/index.html">Appendices</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/teaching-native-graphics-in-2023.html">Teaching native graphics in 2023</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/feedback-needed.html">Feedback needed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/debugging.html">Debugging (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/building-for-the-web.html">Building for the Web (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/memory-model.html">Memory Model (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/custom-extensions.html">Custom Extensions (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/references.html">References (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../appendices/tmp.html">Temporary page</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="convolution-filters.html#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/eliemichel/LearnWebGPU/edit/main/./basic-compute/image-processing/convolution-filters.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="convolution-filters">
+<h1>Convolution Filters<a class="headerlink" href="convolution-filters.html#convolution-filters" title="Permalink to this heading">#</a></h1>
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step215"><code class="docutils literal notranslate"><span class="pre">step215</span></code></a></p>
+<p>Many <strong>image processing algorithms</strong> are based on convolution filter operations somewhere in their pipeline.</p>
+<p>The concept is simple: the new value of each pixel is computed by looking at a <strong>sliding window</strong> centered around the pixel, multiplying it by a fixed <strong>kernel</strong> and summing up.</p>
+<img alt="../../_images/problem-light.png" class="only-light align-center" src="../../_images/problem-light.png" />
+<img alt="../../_images/problem-dark.png" class="only-dark align-center" src="../../_images/problem-dark.png" />
+<p class="align-center">
+    <span class="caption-text"><em>An vertical Sobel filter is performed by sliding 1 pixel at a time a window of 3 by 3 pixels and multiplying its content with a given kernel.</em></span>
+</p>
+<p>The <strong>kernel</strong> defines the way each neighbor of the pixel of interest influences its output value. In particular, a kernel that is <span class="math notranslate nohighlight">\(1\)</span> in its center and <span class="math notranslate nohighlight">\(0\)</span> everywhere else defines a filter that does nothing.</p>
+<p>By changing the kernel, we can create a wide variety of filters. Some of them are <strong>well known</strong>, like the <strong>Sobel</strong> filter in the figure above or the <strong>Gaussian blur</strong> filter. Some others are <strong>algorithmically discovered</strong>, like the layers of <a class="reference external" href="https://en.wikipedia.org/wiki/Convolutional_neural_network">Convolutional Neural Networks</a>.</p>
+<section id="sobel-filter">
+<h2>Sobel filter<a class="headerlink" href="convolution-filters.html#sobel-filter" title="Permalink to this heading">#</a></h2>
+<p>We can start with the Sobel filter from the figure above. A Sobel filter is meant to <strong>detect edges</strong>, either vertical ones or horizontal ones depending on how we orient the kernel. For vertical edges, the kernel is:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}
+K =
+\left[\begin{array}{ccc}
+-1 &amp; 0 &amp; +1 \\
+-2 &amp; 0 &amp; +2 \\
+-1 &amp; 0 &amp; +1 \\
+\end{array}\right]
+\end{split}\]</div>
+</div>
+<p>Let us write the shader first, and then connect the dots:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="o">@</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">@</span><span class="n">binding</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">var</span><span class="w"> </span><span class="n">inputTexture</span>:<span class="w"> </span><span class="nc">texture_2d</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="o">@</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">@</span><span class="n">binding</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="n">var</span><span class="w"> </span><span class="n">outputTexture</span>:<span class="w"> </span><span class="nc">texture_storage_2d</span><span class="o">&lt;</span><span class="n">rgba8unorm</span><span class="p">,</span><span class="n">write</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="o">@</span><span class="n">compute</span><span class="w"> </span><span class="o">@</span><span class="n">workgroup_size</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">computeSobelX</span><span class="p">(</span><span class="o">@</span><span class="n">builtin</span><span class="p">(</span><span class="n">global_invocation_id</span><span class="p">)</span><span class="w"> </span><span class="n">id</span>:<span class="w"> </span><span class="nc">vec3</span><span class="o">&lt;</span><span class="kt">u32</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span>
+<span class="w">          </span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">textureLoad</span><span class="p">(</span><span class="n">inputTexture</span><span class="p">,</span><span class="w"> </span><span class="n">vec2</span><span class="o">&lt;</span><span class="kt">u32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">).</span><span class="n">rgb</span>
+<span class="w">        </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">textureLoad</span><span class="p">(</span><span class="n">inputTexture</span><span class="p">,</span><span class="w"> </span><span class="n">vec2</span><span class="o">&lt;</span><span class="kt">u32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">).</span><span class="n">rgb</span>
+<span class="w">        </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">textureLoad</span><span class="p">(</span><span class="n">inputTexture</span><span class="p">,</span><span class="w"> </span><span class="n">vec2</span><span class="o">&lt;</span><span class="kt">u32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">).</span><span class="n">rgb</span>
+<span class="w">        </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">textureLoad</span><span class="p">(</span><span class="n">inputTexture</span><span class="p">,</span><span class="w"> </span><span class="n">vec2</span><span class="o">&lt;</span><span class="kt">u32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">).</span><span class="n">rgb</span>
+<span class="w">        </span><span class="o">-</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">textureLoad</span><span class="p">(</span><span class="n">inputTexture</span><span class="p">,</span><span class="w"> </span><span class="n">vec2</span><span class="o">&lt;</span><span class="kt">u32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">).</span><span class="n">rgb</span>
+<span class="w">        </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">textureLoad</span><span class="p">(</span><span class="n">inputTexture</span><span class="p">,</span><span class="w"> </span><span class="n">vec2</span><span class="o">&lt;</span><span class="kt">u32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">).</span><span class="n">rgb</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">    </span><span class="n">textureStore</span><span class="p">(</span><span class="n">outputTexture</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">.</span><span class="n">xy</span><span class="p">,</span><span class="w"> </span><span class="n">vec4</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">(</span><span class="n">color</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Simple, right? All we need is the input and output textures. <strong>I leave it as an exercise</strong>, as it is very similar to the setup of the first part of the <a class="reference internal" href="mipmap-generation.html"><span class="std std-doc">Mipmap Generation</span></a> chapter, except that the output is a view of a different texture instead of being a different MIP level of the same one.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Don’t forget to change the entry point of the compute pipeline:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">computePipelineDesc</span><span class="p">.</span><span class="n">compute</span><span class="p">.</span><span class="n">entryPoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;computeSobelX&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<p>On <a class="reference download internal" download="" href="../../_downloads/11c4e4c3012ec060a30972500db52d47/pexels-petr-ganaj-4121222.jpg"><span class="xref download myst">this input image</span></a>, you should get the following result:</p>
+<figure class="align-center" id="id1">
+<img alt="../../_images/sobelX.jpg" class="with-shadow" src="../../_images/sobelX.jpg" />
+<figcaption>
+<p><span class="caption-text">The result of our vertical Sobel filter</span><a class="headerlink" href="convolution-filters.html#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is interesting to apply this filter to the different MIP levels independently, to detect edges at different scales.</p>
+</div>
+</section>
+<section id="gui">
+<h2>GUI<a class="headerlink" href="convolution-filters.html#gui" title="Permalink to this heading">#</a></h2>
+<div class="admonition-optional-section admonition">
+<p class="admonition-title">Optional section</p>
+<p>If you are only interested in the convolution filters themselves and that making a non-interactive command line tool is fine, you may skip this section.</p>
+</div>
+<section id="setup">
+<h3>Setup<a class="headerlink" href="convolution-filters.html#setup" title="Permalink to this heading">#</a></h3>
+<p>In order to quickly experiment with our filters, we reuse the GUI elements from the <a class="reference internal" href="../../basic-3d-rendering/some-interaction/simple-gui.html"><span class="std std-doc">Simple GUI</span></a> chapter.</p>
+<p>In a nutshell, we must:</p>
+<ul class="simple">
+<li><p>Add the <code class="docutils literal notranslate"><span class="pre">glfw</span></code>, <code class="docutils literal notranslate"><span class="pre">glfw3webgpu</span></code> and <code class="docutils literal notranslate"><span class="pre">imgui</span></code> library as dependencies (don’t forget to add a CMakeLists in the <code class="docutils literal notranslate"><span class="pre">imgui</span></code> directory).</p></li>
+<li><p>Add an <code class="docutils literal notranslate"><span class="pre">initWindow</span></code>, <code class="docutils literal notranslate"><span class="pre">initSwapChain</span></code> and <code class="docutils literal notranslate"><span class="pre">initGui</span></code> init steps (and matching teminate steps).</p></li>
+<li><p>Add a main application loop.</p></li>
+</ul>
+<p>I also add a <code class="docutils literal notranslate"><span class="pre">m_shouldCompute</span></code> boolean to instruct the main loop to call onCompute only when needed (i.e., when an input parameter changes):</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">Main</span><span class="w"> </span><span class="c1">frame</span>
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">app</span><span class="p">.</span><span class="n">isRunning</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">app</span><span class="p">.</span><span class="n">onFrame</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">app</span><span class="p">.</span><span class="n">shouldCompute</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">app</span><span class="p">.</span><span class="n">onCompute</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="displaying-textures">
+<h3>Displaying textures<a class="headerlink" href="convolution-filters.html#displaying-textures" title="Permalink to this heading">#</a></h3>
+<p>To <strong>avoid building our own render pipeline</strong>, we can use ImGui to draw texture views, by manually adding instructions to the <code class="docutils literal notranslate"><span class="pre">ImDrawList</span></code>:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">Application::onGui</span><span class="p">(</span><span class="n">RenderPassEncoder</span><span class="w"> </span><span class="n">renderPass</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span>
+
+<span class="w">    </span><span class="n">ImDrawList</span><span class="o">*</span><span class="w"> </span><span class="n">drawList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImGui</span><span class="o">::</span><span class="n">GetBackgroundDrawList</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Draw</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">red</span><span class="w"> </span><span class="c1">rectangle</span>
+<span class="w">    </span><span class="n">drawList</span><span class="o">-&gt;</span><span class="n">AddRectFilled</span><span class="p">({</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">ImColor</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">));</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Draw</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">texture</span><span class="w"> </span><span class="c1">view</span>
+<span class="w">    </span><span class="n">drawList</span><span class="o">-&gt;</span><span class="n">AddImage</span><span class="p">((</span><span class="n">ImTextureID</span><span class="p">)</span><span class="n">m_textureMipViews</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mi">220</span><span class="p">,</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="p">});</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">[...]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id2">
+<img alt="../../_images/drawList.png" class="with-shadow" src="../../_images/drawList.png" />
+<figcaption>
+<p><span class="caption-text">The red rectangle and the image are drawn by ImGui, no need for us to care about a render pipeline!</span><a class="headerlink" href="convolution-filters.html#id2" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>In the end our render pass in <code class="docutils literal notranslate"><span class="pre">onFrame</span></code> is simple:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="n">RenderPassEncoder</span><span class="w"> </span><span class="n">renderPass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">encoder</span><span class="p">.</span><span class="n">beginRenderPass</span><span class="p">(</span><span class="n">renderPassDesc</span><span class="p">);</span>
+<span class="n">onGui</span><span class="p">(</span><span class="n">renderPass</span><span class="p">);</span>
+<span class="n">renderPass</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>What ImGui calls <code class="docutils literal notranslate"><span class="pre">ImTextureID</span></code> depends on the drawing backend. In the case of our WebGPU-based backend, it must correspond to a valid <code class="docutils literal notranslate"><span class="pre">TextureView</span></code> object. Using a <code class="docutils literal notranslate"><span class="pre">Texture</span></code> instead leads to crashes.</p>
+</div>
+</section>
+<section id="uniforms">
+<h3>Uniforms<a class="headerlink" href="convolution-filters.html#uniforms" title="Permalink to this heading">#</a></h3>
+<p>We can add uniforms in order to drive the behavior of the filter from the UI.</p>
+<p>Note that all ImGui functions return a boolean telling whether the value they represent has been modified, we can use it to update our <code class="docutils literal notranslate"><span class="pre">m_shouldCompute</span></code> and <strong>run the compute shader only when needed</strong>:</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span><span class="w"> </span><span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="n">ImGui</span><span class="o">::</span><span class="n">Begin</span><span class="p">(</span><span class="s">&quot;Uniforms&quot;</span><span class="p">);</span>
+<span class="n">changed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImGui</span><span class="o">::</span><span class="n">SliderFloat</span><span class="p">(</span><span class="s">&quot;Test&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_uniforms</span><span class="p">.</span><span class="n">test</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">changed</span><span class="p">;</span>
+<span class="n">ImGui</span><span class="o">::</span><span class="n">End</span><span class="p">();</span>
+
+<span class="n">m_shouldCompute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">changed</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>You can then add a uniform for the <strong>kernel</strong>. Be careful with <a class="reference external" href="https://gpuweb.github.io/gpuweb/wgsl/#structure-member-layout">alignment rules</a> when using a <code class="docutils literal notranslate"><span class="pre">mat3x3</span></code>, because padding is needed between columns of the matrix:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">WGSL</span><span class="w"> </span><span class="c1">struct</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">Uniforms</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">kernel</span>:<span class="w"> </span><span class="nc">mat3x3</span><span class="o">&lt;</span><span class="kt">f32</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">test</span>:<span class="w"> </span><span class="kt">f32</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="c1">//</span><span class="w"> </span><span class="c1">C++</span><span class="w"> </span><span class="c1">struct</span><span class="w"> </span><span class="c1">with</span><span class="w"> </span><span class="c1">matching</span><span class="w"> </span><span class="c1">alignment</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">Uniforms</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">The</span><span class="w"> </span><span class="c1">mat3x3</span><span class="w"> </span><span class="c1">becomes</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">mat3x4</span><span class="w"> </span><span class="c1">because</span><span class="w"> </span><span class="c1">vec3</span><span class="w"> </span><span class="c1">columns</span><span class="w"> </span><span class="c1">are</span><span class="w"> </span><span class="c1">aligned</span><span class="w"> </span><span class="c1">as</span><span class="w"> </span><span class="c1">vec4</span>
+<span class="w">    </span><span class="n">mat3x4</span><span class="w"> </span><span class="n">kernel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mat3x4</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5f</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">//</span><span class="w"> </span><span class="c1">Add</span><span class="w"> </span><span class="c1">padding</span><span class="w"> </span><span class="c1">at</span><span class="w"> </span><span class="c1">the</span><span class="w"> </span><span class="c1">end</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">round</span><span class="w"> </span><span class="c1">up</span><span class="w"> </span><span class="c1">to</span><span class="w"> </span><span class="c1">a</span><span class="w"> </span><span class="c1">multiple</span><span class="w"> </span><span class="c1">of</span><span class="w"> </span><span class="c1">16</span><span class="w"> </span><span class="c1">bytes</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">_pad</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To assist you with this tedious alignment, I have started writing <a class="reference external" href="../../../WebGPU-AutoLayout">a little online tool</a>!</p>
+</div>
+<p>You can now dynamically play with the filter! Try for instance the Sobel filter on a different axis:</p>
+<figure class="align-center" id="id3">
+<img alt="../../_images/ui-uniforms.jpg" class="with-shadow" src="../../_images/ui-uniforms.jpg" />
+<figcaption>
+<p><span class="caption-text">The kernel is exposed as a uniform in the UI. Here we show an horizontal Sobel filter (left: input, right: output).</span><a class="headerlink" href="convolution-filters.html#id3" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="blur-filters">
+<h2>Blur filters<a class="headerlink" href="convolution-filters.html#blur-filters" title="Permalink to this heading">#</a></h2>
+<section id="box-blur">
+<h3>Box blur<a class="headerlink" href="convolution-filters.html#box-blur" title="Permalink to this heading">#</a></h3>
+<p>If we set all the weights of the kernel to <span class="math notranslate nohighlight">\(1/9\)</span>, we get a blur effect.</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}
+K = \frac{1}{9}
+\left[\begin{array}{ccc}
+1 &amp; 1 &amp; 1 \\
+1 &amp; 1 &amp; 1 \\
+1 &amp; 1 &amp; 1 \\
+\end{array}\right]
+\end{split}\]</div>
+</div>
+<figure class="align-center" id="id4">
+<img alt="../../_images/box-blur-insets.jpg" class="with-shadow" src="../../_images/box-blur-insets.jpg" />
+<figcaption>
+<p><span class="caption-text">A <strong>box blur</strong> is obtained by convolving with a <strong>uniform kernel</strong>.</span><a class="headerlink" href="convolution-filters.html#id4" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When the kernel is all non-negative, it is common to need to <strong>normalize</strong> its weights, i.e., to divide them by the total sum of weights. You may want to add <strong>a checkbox in the UI</strong> to do so.</p>
+</div>
+</section>
+<section id="separability">
+<h3>Separability<a class="headerlink" href="convolution-filters.html#separability" title="Permalink to this heading">#</a></h3>
+<p>If we want a <strong>stronger blur</strong>, we can simply use a <strong>larger kernel</strong>. However, this quickly reaches an unreasonable number of old texel fetch per new texel.</p>
+<p>Fortunately, the box filter is <strong>separable</strong>: it can be applied on <strong>one axis first</strong>, and on the second axis then, using non-square kernel of size <span class="math notranslate nohighlight">\(r \times 1\)</span> and <span class="math notranslate nohighlight">\(1 \times r\)</span>. This requires <span class="math notranslate nohighlight">\(2r\)</span> operations instead of <span class="math notranslate nohighlight">\(r^2\)</span>, huge savings! For instance for <span class="math notranslate nohighlight">\(r = 5\)</span>:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}
+K_1 = \frac{1}{5}
+\left[\begin{array}{c}
+1 \\
+1 \\
+1 \\
+1 \\
+1 \\
+\end{array}\right]
+\quad
+\text{then}
+\quad
+K_2 = \frac{1}{5}
+\left[\begin{array}{ccccc}
+1 &amp; 1 &amp; 1 &amp; 1 &amp; 1 \\
+\end{array}\right]
+\end{split}\]</div>
+</div>
+<p>The box blur is fine, but if you apply it with large kernels you will quickly see <strong>why it is called “box” blur</strong>. It transforms spikes in the signal into very noticeable squares.</p>
+</section>
+<section id="gaussian-blur">
+<h3>Gaussian blur<a class="headerlink" href="convolution-filters.html#gaussian-blur" title="Permalink to this heading">#</a></h3>
+<p>The Gaussian blur is the most natural type of blur (a.k.a. low-pass filter), it is found in a lot of different contexts and you have likely seen at least once its 1D kernel:</p>
+<figure class="align-center" id="id5">
+<img alt="../../_images/gaussians.png" class="with-shadow" src="../../_images/gaussians.png" />
+<figcaption>
+<p><span class="caption-text">Single-dimensional Gaussian kernels (a.k.a. normal distributions) of standard deviation <span class="math notranslate nohighlight">\(\sigma = 1.0\)</span> (red), <span class="math notranslate nohighlight">\(\sigma = 0.5\)</span> (green) and <span class="math notranslate nohighlight">\(\sigma = 0.25\)</span> (blue).</span><a class="headerlink" href="convolution-filters.html#id5" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>In theory a Gaussian blur requires an <strong>infinite kernel</strong>. But the influence of neighbors decreases exponentially, so we can quickly round weight to 0 and thus <strong>bound the size</strong> of the kernel. Here is a simple approximation of a 2D Gaussian kernel:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}
+K = \frac{1}{16}
+\left[\begin{array}{ccc}
+1 &amp; 2 &amp; 1 \\
+2 &amp; 4 &amp; 2 \\
+1 &amp; 2 &amp; 1 \\
+\end{array}\right]
+\end{split}\]</div>
+</div>
+<p>And <strong>good news</strong>: the Gaussian blur is also separable! It is actually the only blur that is <strong>both separable and circularly symmetric</strong> (<a class="reference external" href="https://www.sciencedirect.com/science/article/pii/089396599090151Z">proof</a>).</p>
+<p>To calculate the coefficients of a Gaussian blur (separated) kernel, you can use <a class="reference external" href="https://lisyarus.github.io/blog/graphics/2023/02/24/blur-coefficients-generator.html">this blur coefficients generator</a>: the <code class="docutils literal notranslate"><span class="pre">WEIGHTS</span></code> array it creates can directly be used in <code class="docutils literal notranslate"><span class="pre">writeBuffer</span></code> to communicate it to the compute shader.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>In order to save some texture reads, this generator assumes that you are using a linear <strong>sampler</strong> to get values from the input texture. In other terms, use <code class="docutils literal notranslate"><span class="pre">textureSample</span></code> rather than <code class="docutils literal notranslate"><span class="pre">textureLoad</span></code>.</p>
+</div>
+</section>
+</section>
+<section id="morphological-filters">
+<h2>Morphological filters<a class="headerlink" href="convolution-filters.html#morphological-filters" title="Permalink to this heading">#</a></h2>
+<p>Morphological filters are also based on a <strong>sliding window</strong>, except that after multiplying by the kernel, <strong>instead of summing</strong> the different neighbors, we collect the <strong>maximum</strong> or <strong>minimum</strong> (or yet another non-linear operations).</p>
+<p>A maximum tends to <strong>dilate</strong> the bright areas and inversely a minimum <strong>erodes</strong> the white pixels.</p>
+<p>The kernel is generally defined by a binary mask called the <strong>structuring element</strong> of the morphological operation. When the structuring element is a <strong>rectangle</strong>, the filter is <strong>separable</strong>.</p>
+<figure class="align-center" id="id6">
+<img alt="../../_images/morpho.jpg" class="with-shadow" src="../../_images/morpho.jpg" />
+<figcaption>
+<p><span class="caption-text">Morphological filters applied to an RGB image.</span><a class="headerlink" href="convolution-filters.html#id6" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is common to use morphological filters on black and white masks, for instance to filter out imperfection on contour detection.</p>
+</div>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="convolution-filters.html#conclusion" title="Permalink to this heading">#</a></h2>
+<p>Convolution filters are a good example of use of compute shaders (even though they can easily be emulated by drawing a full screen triangle and then using a fragment shader). They are also a building block for a lot of image processing tools.</p>
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step215"><code class="docutils literal notranslate"><span class="pre">step215</span></code></a></p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="cubemap-conversion.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Cubemap Conversion (🚧WIP)</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="mipmap-generation.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Mipmap Generation</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022-2023, Élie Michel and contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/eliemichel/LearnWebGPU" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      <div class="toc-sticky toc-scroll">
+	<div class="toc-title-container">
+		<span class="toc-title">
+			On this page
+		</span>
+	</div>
+	<div class="toc-tree-container">
+		<div class="toc-tree">
+			<ul>
+<li><a class="reference internal" href="convolution-filters.html#">Convolution Filters</a><ul>
+<li><a class="reference internal" href="convolution-filters.html#sobel-filter">Sobel filter</a></li>
+<li><a class="reference internal" href="convolution-filters.html#gui">GUI</a><ul>
+<li><a class="reference internal" href="convolution-filters.html#setup">Setup</a></li>
+<li><a class="reference internal" href="convolution-filters.html#displaying-textures">Displaying textures</a></li>
+<li><a class="reference internal" href="convolution-filters.html#uniforms">Uniforms</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="convolution-filters.html#blur-filters">Blur filters</a><ul>
+<li><a class="reference internal" href="convolution-filters.html#box-blur">Box blur</a></li>
+<li><a class="reference internal" href="convolution-filters.html#separability">Separability</a></li>
+<li><a class="reference internal" href="convolution-filters.html#gaussian-blur">Gaussian blur</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="convolution-filters.html#morphological-filters">Morphological filters</a></li>
+<li><a class="reference internal" href="convolution-filters.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+		</div>
+	</div>
+	
+</div>
+    </aside>
+  </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/sphinx_literate.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

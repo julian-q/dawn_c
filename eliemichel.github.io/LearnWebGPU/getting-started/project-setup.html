@@ -1,0 +1,597 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<meta property="og:title" content="Project setup" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://eliemichel.github.io/getting-started/project-setup.html" />
+<meta property="og:site_name" content="Learn WebGPU for C++" />
+<meta property="og:description" content="Resulting code: step000 In our running example, we use CMake to organize the compilation of the code. This is a very standard way of handling cross-platform builds, and we follow the idioms of mode..." />
+<meta property="og:image" content="https://eliemichel.github.io/images/webgpu-responsive.svg" />
+<meta property="og:image:alt" content="Learn WebGPU for C++" />
+<meta name="description" content="Resulting code: step000 In our running example, we use CMake to organize the compilation of the code. This is a very standard way of handling cross-platform builds, and we follow the idioms of mode..." />
+    <link rel="icon" type="image/svg+xml" href="../_static/favicon/favicon.svg">
+    <link rel="icon" sizes="16x16" href="../_static/favicon/favicon-16x16.png" type="image/png">
+    <link rel="icon" sizes="32x32" href="../_static/favicon/favicon-32x32.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://eliemichel.github.io/LearnWebGPU/_static/favicon/apple-touch-icon-180x180.png" type="image/png"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Opening a window" href="opening-a-window.html" /><link rel="prev" title="Getting Started" href="index.html" />
+
+    <!-- Generated with Sphinx 5.3.0 and Furo 2023.03.27 -->
+        <title>Project setup - Learn WebGPU for C++ documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../_static/extra.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_literate.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  --color-brand-primary: #ac2800;
+  --color-brand-content: #007cac;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #ce5733;
+  --color-brand-content: #38a6b9;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     <em>Important</em> This documentation is a work in progress! <a href="../appendices/feedback-needed.html">Feedback needed!</a> 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Learn WebGPU for C++  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../_static/webgpu-light.svg" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../_static/webgpu-dark.svg" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Getting Started</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="project-setup.html#">Project setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="opening-a-window.html">Opening a window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hello-webgpu.html">Hello WebGPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="the-adapter.html">The Adapter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="the-device.html">The Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="the-command-queue.html">The Command Queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="first-color.html">First Color</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpp-idioms.html">C++ wrapper</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../basic-3d-rendering/index.html">Basic 3D Rendering</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../basic-3d-rendering/hello-triangle.html">Hello Triangle</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/input-geometry/index.html">Input Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/playing-with-buffers.html">Playing with buffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/a-first-vertex-attribute.html">A first Vertex Attribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/multiple-attributes.html">Multiple Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/index-buffer.html">Index Buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/input-geometry/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/shader-uniforms/index.html">Shader Uniforms</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/shader-uniforms/a-first-uniform.html">A first uniform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/shader-uniforms/multiple-uniforms.html">More uniforms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/shader-uniforms/dynamic-uniforms.html">Dynamic uniforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/index.html">3D Meshes</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/a-simple-example.html">A simple example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/depth-buffer.html">Depth buffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/transformation-matrices.html">Transformation matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/projection-matrices.html">Projection matrices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/basic-shading.html">Basic shading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/3d-meshes/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/texturing/index.html">Texturing</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/texturing/a-first-texture.html">A first texture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/texturing/texture-mapping.html">Texture mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/texturing/sampler.html">Sampler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/texturing/loading-from-file.html">Loading from file</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/some-interaction/index.html">Some interaction</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/some-interaction/refactoring.html">Refactoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/some-interaction/resizing-window.html">Resizing the window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/some-interaction/camera-control.html">Camera control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/some-interaction/simple-gui.html">Simple GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/index.html">Lighting and Material</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/recap.html">Recap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/specular.html">Specularity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/normal-mapping.html">Normal mapping (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/ibl.html">Image-Based Lighting (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/cubemap.html">Cube Maps (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-3d-rendering/lighting-and-material/pbr.html">Physically-Based Materials (🚧WIP)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../basic-compute/index.html">Basic Compute</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../basic-compute/compute-pipeline.html">Compute Pipeline</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-compute/image-processing/index.html">Image Processing</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/image-processing/mipmap-generation.html">Mipmap Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/image-processing/convolution-filters.html">Convolution Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/image-processing/cubemap-conversion.html">Cubemap Conversion (🚧WIP)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/image-processing/cubemap-prefiltering.html">Cubemap Prefiltering (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../basic-compute/procedural-geometry/index.html">Procedural Geometry</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../basic-compute/procedural-geometry/deformation.html">Deformation (🚧WIP)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../basic-compute/neural-networks.html">Neural Networks (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../advanced-techniques/index.html">Advanced Techniques</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/raii.html">RAII</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/hdr-textures.html">High Dynamic Range Textures (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/deferred-shading.html">Deferred Shading (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/benchmarking.html">Benchmarking (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/render-bundles.html">Render Bundles (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/multi-sampling.html">Multi-Sampling (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/scene-tree.html">Scene tree (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/screen-capture.html">Screen capture (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/shadow-maps.html">Shadow maps (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/tesselation.html">Tesselation (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced-techniques/raytracing.html">Raytracing (🛑TODO)</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../appendices/index.html">Appendices</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/teaching-native-graphics-in-2023.html">Teaching native graphics in 2023</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/feedback-needed.html">Feedback needed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/debugging.html">Debugging (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/building-for-the-web.html">Building for the Web (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/memory-model.html">Memory Model (🛑TODO)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/custom-extensions.html">Custom Extensions (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/references.html">References (🚧WIP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../appendices/tmp.html">Temporary page</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="project-setup.html#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/eliemichel/LearnWebGPU/edit/main/./getting-started/project-setup.md" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="project-setup">
+<h1>Project setup<a class="headerlink" href="project-setup.html#project-setup" title="Permalink to this heading">#</a></h1>
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step000"><code class="docutils literal notranslate"><span class="pre">step000</span></code></a></p>
+<p>In our running example, we use <a class="reference external" href="https://cmake.org/">CMake</a> to organize the compilation of the code. This is a very standard way of handling cross-platform builds, and we follow the idioms of <a class="reference external" href="https://cliutils.gitlab.io/modern-cmake/">modern cmake</a>.</p>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="project-setup.html#requirements" title="Permalink to this heading">#</a></h2>
+<p>All we need is CMake and a C++ compiler, instructions are detailed below per OS.</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>After the installation, you can type <code class="docutils literal notranslate"><span class="pre">which</span> <span class="pre">cmake</span></code> (linux/macOS) or <code class="docutils literal notranslate"><span class="pre">where</span> <span class="pre">cmake</span></code> (Windows) to see whether your command line finds the full path to the <code class="docutils literal notranslate"><span class="pre">cmake</span></code> command. If not, make sure your <code class="docutils literal notranslate"><span class="pre">PATH</span></code> environment variable contains the directory where CMake is installed.</p>
+</div>
+<section id="linux">
+<h3>Linux<a class="headerlink" href="project-setup.html#linux" title="Permalink to this heading">#</a></h3>
+<p>If you are under an Ubuntu/Debian distribution, install the following packages:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>cmake<span class="w"> </span>build-essential
+</pre></div>
+</div>
+<p>Other distributions have equivalent packages, make sure you have the commands <code class="docutils literal notranslate"><span class="pre">cmake</span></code>, <code class="docutils literal notranslate"><span class="pre">make</span></code> and <code class="docutils literal notranslate"><span class="pre">g++</span></code> working.</p>
+</section>
+<section id="windows">
+<h3>Windows<a class="headerlink" href="project-setup.html#windows" title="Permalink to this heading">#</a></h3>
+<p>Download and install CMake from <a class="reference external" href="https://cmake.org/download/">the download page</a>. You may use either <a class="reference external" href="https://visualstudio.microsoft.com/downloads/">Visual Studio</a> or <a class="reference external" href="https://www.mingw-w64.org/">MinGW</a> as a compiler toolkit.</p>
+</section>
+<section id="macos">
+<h3>MacOS<a class="headerlink" href="project-setup.html#macos" title="Permalink to this heading">#</a></h3>
+<p>You can install CMake using <code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">cmake</span></code>, and <a class="reference external" href="https://developer.apple.com/xcode/">XCode</a> to build the project.</p>
+</section>
+</section>
+<section id="minimal-project">
+<h2>Minimal project<a class="headerlink" href="project-setup.html#minimal-project" title="Permalink to this heading">#</a></h2>
+<p>The most minimal project consists then in a <code class="docutils literal notranslate"><span class="pre">main.cpp</span></code> source file, and a <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> build file.</p>
+<p>Let us start with the classic hello world in <code class="docutils literal notranslate"><span class="pre">main.cpp</span></code>:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-0">
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">**</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Hello,</span><span class="w"> </span><span class="s">world!&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;file: main.cpp&quot;, &quot;permalink&quot;: &quot;#lit-0&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: []}"></lit-block-info></div>
+<p>In <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>, we specify that we want to create a <em>target</em> of type <em>executable</em>, called “App” (this will also be the name of the executable file), and whose source code is <code class="docutils literal notranslate"><span class="pre">main.cpp</span></code>:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-1">
+<div class="highlight-CMake notranslate"><div class="highlight"><pre><span></span><span class="nb">add_executable</span><span class="p">(</span><span class="s">App</span><span class="w"> </span><span class="s">main.cpp</span><span class="p">)</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Define app target&quot;, &quot;permalink&quot;: &quot;#lit-1&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;file: CMakeLists.txt&quot;, &quot;url&quot;: &quot;#lit-2&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>CMake also expects at the beginning of <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> to know the version of CMake the file is written for (minimum supported…your version) and some information about the project:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-2">
+<div class="highlight-CMake notranslate"><div class="highlight"><pre><span></span><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span><span class="w"> </span><span class="s">3.0...3.25</span><span class="p">)</span>
+<span class="nb">project</span><span class="p">(</span>
+<span class="w">    </span><span class="s">LearnWebGPU</span><span class="w"> </span><span class="c">#</span><span class="w"> </span><span class="c">name</span><span class="w"> </span><span class="c">of</span><span class="w"> </span><span class="c">the</span><span class="w"> </span><span class="c">project,</span><span class="w"> </span><span class="c">which</span><span class="w"> </span><span class="c">will</span><span class="w"> </span><span class="c">also</span><span class="w"> </span><span class="c">be</span><span class="w"> </span><span class="c">the</span><span class="w"> </span><span class="c">name</span><span class="w"> </span><span class="c">of</span><span class="w"> </span><span class="c">the</span><span class="w"> </span><span class="c">visual</span><span class="w"> </span><span class="c">studio</span><span class="w"> </span><span class="c">solution</span><span class="w"> </span><span class="c">if</span><span class="w"> </span><span class="c">you</span><span class="w"> </span><span class="c">use</span><span class="w"> </span><span class="c">it</span>
+<span class="w">    </span><span class="s">VERSION</span><span class="w"> </span><span class="s">0.1.0</span><span class="w"> </span><span class="c">#</span><span class="w"> </span><span class="c">any</span><span class="w"> </span><span class="c">version</span><span class="w"> </span><span class="c">number</span>
+<span class="w">    </span><span class="s">LANGUAGES</span><span class="w"> </span><span class="s">CXX</span><span class="w"> </span><span class="s">C</span><span class="w"> </span><span class="c">#</span><span class="w"> </span><span class="c">programming</span><span class="w"> </span><span class="c">languages</span><span class="w"> </span><span class="c">used</span><span class="w"> </span><span class="c">by</span><span class="w"> </span><span class="c">the</span><span class="w"> </span><span class="c">project</span>
+<span class="p">)</span>
+<span class="err"><lit-ref name="Define app target" href="#lit-1" lexer="CMake" hidden-link="false">{{<a href="project-setup.html#lit-1">Define app target</a>}}</lit-ref></span>
+<span class="err"><lit-ref name="Recommended extras" href="#lit-3" lexer="CMake" hidden-link="false">{{<a href="project-setup.html#lit-3">Recommended extras</a>}}</lit-ref></span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;file: CMakeLists.txt&quot;, &quot;permalink&quot;: &quot;#lit-2&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: []}"></lit-block-info></div>
+</section>
+<section id="building">
+<h2>Building<a class="headerlink" href="project-setup.html#building" title="Permalink to this heading">#</a></h2>
+<p>We are now ready to build our minimal project. Open a terminal and go to the directory where you have the <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> and <code class="docutils literal notranslate"><span class="pre">main.cpp</span></code> files:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>your/project/directory
+</pre></div>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>From a Windows explorer window showing your project’s directory, press Ctrl+L, then type <code class="docutils literal notranslate"><span class="pre">cmd</span></code> and hit return. This opens a terminal in the current directory.</p>
+</div>
+<p>Let us now ask CMake to create the build files for our project. We ask it to isolate the build files from our source code by placing them in a <em>build/</em> directory with the <code class="docutils literal notranslate"><span class="pre">-B</span> <span class="pre">build</span></code> option. This is very much recommended, in order to be able to easily distinguish these generated files from the ones we manually wrote (a.k.a. the source files):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>.<span class="w"> </span>-B<span class="w"> </span>build
+</pre></div>
+</div>
+<p>This creates the build files for either <code class="docutils literal notranslate"><span class="pre">make</span></code>, Visual Studio or XCode depending on your system (you can use the <code class="docutils literal notranslate"><span class="pre">-G</span></code> options to force a particular build system, see <code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">-h</span></code> for more info). To finally build the program and generate the <code class="docutils literal notranslate"><span class="pre">App</span></code> (or <code class="docutils literal notranslate"><span class="pre">App.exe</span></code>) executable, you can either open the generated Visual Studio or XCode solution, or type in the terminal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>--build<span class="w"> </span>build
+</pre></div>
+</div>
+<p>Then run the resulting program:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>build/App<span class="w">  </span><span class="c1"># linux/macOS</span>
+build<span class="se">\D</span>ebug<span class="se">\A</span>pp.exe<span class="w">  </span><span class="c1"># Windows</span>
+</pre></div>
+</div>
+</section>
+<section id="recommended-extras">
+<h2>Recommended extras<a class="headerlink" href="project-setup.html#recommended-extras" title="Permalink to this heading">#</a></h2>
+<p>We set up some properties of the target <code class="docutils literal notranslate"><span class="pre">App</span></code> by calling somewhere after <code class="docutils literal notranslate"><span class="pre">add_executable</span></code> the <code class="docutils literal notranslate"><span class="pre">set_target_properties</span></code> command.</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-3">
+<div class="highlight-CMake notranslate"><div class="highlight"><pre><span></span><span class="nb">set_target_properties</span><span class="p">(</span><span class="s">App</span><span class="w"> </span><span class="s">PROPERTIES</span>
+<span class="w">    </span><span class="s">CXX_STANDARD</span><span class="w"> </span><span class="s">17</span>
+<span class="w">    </span><span class="s">COMPILE_WARNING_AS_ERROR</span><span class="w"> </span><span class="s">ON</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Recommended extras&quot;, &quot;permalink&quot;: &quot;#lit-3&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [{&quot;name&quot;: &quot;Recommended extras&quot;, &quot;url&quot;: &quot;#lit-4&quot;, &quot;details&quot;: null}], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;file: CMakeLists.txt&quot;, &quot;url&quot;: &quot;#lit-2&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>The <code class="docutils literal notranslate"><span class="pre">CXX_STANDARD</span></code> property is set to 17 to mean that we require C++17 (this will enable us to use some syntactic tricks later on, but is not mandatory per se).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">COMPILE_WARNING_AS_ERROR</span></code> is turned on as a good practice, to make sure no warning is left ignored. Warnings are actually important, especially when learning a new language/library. To make sure we even have as many warnings as possible, we add some compile options:</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-4">
+<div class="highlight-CMake notranslate"><div class="highlight"><pre><span></span><span class="nb">if</span><span class="w"> </span><span class="p">(</span><span class="s">MSVC</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">target_compile_options</span><span class="p">(</span><span class="s">App</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">/W4</span><span class="p">)</span>
+<span class="nb">else</span><span class="p">()</span>
+<span class="w">    </span><span class="nb">target_compile_options</span><span class="p">(</span><span class="s">App</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">-Wall</span><span class="w"> </span><span class="s">-Wextra</span><span class="w"> </span><span class="s">-pedantic</span><span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Recommended extras&quot;, &quot;permalink&quot;: &quot;#lit-4&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [{&quot;name&quot;: &quot;Recommended extras&quot;, &quot;url&quot;: &quot;#lit-5&quot;, &quot;details&quot;: null}], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [{&quot;name&quot;: &quot;Recommended extras&quot;, &quot;url&quot;: &quot;#lit-3&quot;, &quot;details&quot;: null}], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;file: CMakeLists.txt&quot;, &quot;url&quot;: &quot;#lit-2&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the accompanying code, I hid these details in the <code class="docutils literal notranslate"><span class="pre">target_treat_all_warnings_as_errors()</span></code> function defined in <code class="docutils literal notranslate"><span class="pre">utils.cmake</span></code> and included at the beginning of the <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>.</p>
+</div>
+<p>On MacOS, CMake can generate XCode project files. However, by default, no <em>schemes</em> are
+created, and XCode itself generates a scheme for each CMake target – usually we only
+want a scheme for our main target. Therefore, we set the <code class="docutils literal notranslate"><span class="pre">XCODE_GENERATE_SCHEME</span></code> property.
+We will also already enable frame capture for GPU debugging.</p>
+<div class="literal-block-wrapper lit-block-wrapper docutils container" id="lit-5">
+<div class="highlight-CMake notranslate"><div class="highlight"><pre><span></span><span class="nb">if</span><span class="p">(</span><span class="s">XCODE</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">set_target_properties</span><span class="p">(</span><span class="s">App</span><span class="w"> </span><span class="s">PROPERTIES</span>
+<span class="w">        </span><span class="s">XCODE_GENERATE_SCHEME</span><span class="w"> </span><span class="s">ON</span>
+<span class="w">        </span><span class="s">XCODE_SCHEME_ENABLE_GPU_FRAME_CAPTURE_MODE</span><span class="w"> </span><span class="s2">&quot;Metal&quot;</span><span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+</pre></div>
+</div>
+<lit-block-info data="{&quot;name&quot;: &quot;Recommended extras&quot;, &quot;permalink&quot;: &quot;#lit-5&quot;, &quot;hidden&quot;: false, &quot;replaced by&quot;: [], &quot;completed in&quot;: [], &quot;prepended in&quot;: [], &quot;patched by&quot;: [], &quot;replacing&quot;: [], &quot;completing&quot;: [{&quot;name&quot;: &quot;Recommended extras&quot;, &quot;url&quot;: &quot;#lit-4&quot;, &quot;details&quot;: null}], &quot;prepending&quot;: [], &quot;inserted in&quot;: [], &quot;referenced in&quot;: [{&quot;name&quot;: &quot;file: CMakeLists.txt&quot;, &quot;url&quot;: &quot;#lit-2&quot;, &quot;details&quot;: null}]}"></lit-block-info></div>
+<p>We now have a good basic project configuration, that we’ll build upon in the next chapters. We are ready to move on to opening a window.</p>
+<p><em>Resulting code:</em> <a class="reference external" href="https://github.com/eliemichel/LearnWebGPU-Code/tree/step000"><code class="docutils literal notranslate"><span class="pre">step000</span></code></a></p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="opening-a-window.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Opening a window</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Getting Started</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022-2023, Élie Michel and contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/eliemichel/LearnWebGPU" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      <div class="toc-sticky toc-scroll">
+	<div class="toc-title-container">
+		<span class="toc-title">
+			On this page
+		</span>
+	</div>
+	<div class="toc-tree-container">
+		<div class="toc-tree">
+			<ul>
+<li><a class="reference internal" href="project-setup.html#">Project setup</a><ul>
+<li><a class="reference internal" href="project-setup.html#requirements">Requirements</a><ul>
+<li><a class="reference internal" href="project-setup.html#linux">Linux</a></li>
+<li><a class="reference internal" href="project-setup.html#windows">Windows</a></li>
+<li><a class="reference internal" href="project-setup.html#macos">MacOS</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="project-setup.html#minimal-project">Minimal project</a></li>
+<li><a class="reference internal" href="project-setup.html#building">Building</a></li>
+<li><a class="reference internal" href="project-setup.html#recommended-extras">Recommended extras</a></li>
+</ul>
+</li>
+</ul>
+
+		</div>
+	</div>
+	
+	<div class="toc-title-container">
+		<span class="toc-title">
+			Literate options
+		</span>
+	</div>
+	<div class="toc-tree-container">
+		<div class="toc-tree">
+			
+<ul>
+	<li>
+		<label for="lit-opts-show-block-name">
+			<input id="lit-opts-show-block-name" type="checkbox" checked />
+			Show block name
+		</label>
+	</li>
+	<li>
+		<label for="lit-opts-show-reference-details">
+			<input id="lit-opts-show-reference-details" type="checkbox" checked />
+			Show reference details
+		</label>
+	</li>
+	<li>
+		<label for="lit-opts-show-reference-links">
+			<input id="lit-opts-show-reference-links" type="checkbox" checked />
+			Highlight links
+		</label>
+	</li>
+	<li>
+		<label for="lit-opts-show-hidden-links">
+			<input id="lit-opts-show-hidden-links" type="checkbox" checked />
+			Show hidden links
+		</label>
+	</li>
+	<li>
+		<label for="lit-opts-show-hidden-blocks">
+			<input id="lit-opts-show-hidden-blocks" type="checkbox" checked />
+			Show hidden blocks
+		</label>
+	</li>
+</ul>
+
+		</div>
+	</div>
+	
+</div>
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/tabs.js"></script>
+    <script src="../_static/sphinx_literate.js"></script>
+    </body>
+</html>
