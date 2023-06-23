@@ -54,15 +54,16 @@ struct DeviceUserData {
 	bool requestEnded = false;
 };
 
+void onDeviceError(WGPUErrorType type, char const* message, void* /* pUserData */) {
+    printf("Uncaptured device error: type %u", type);
+    if (message) printf(" (%s)", message);
+    printf("\n");
+};
+
 void onDeviceRequestEnded(WGPURequestDeviceStatus status, WGPUDevice device, char const * message, void * pUserData) { 
 	DeviceUserData& userData = *reinterpret_cast<DeviceUserData*>(pUserData);
 	if (status == WGPURequestDeviceStatus_Success) {
 		userData.device = device;
-		auto onDeviceError = [](WGPUErrorType type, char const* message, void* /* pUserData */) {
-            printf("Uncaptured device error: type %u", type);
-			if (message) printf(" (%s)", message);
-            printf("\n");
-		};
 		wgpuDeviceSetUncapturedErrorCallback(device, onDeviceError, NULL /* pUserData */);
 	} else {
         printf("Could not get WebGPU device: %s\n", message);
@@ -91,6 +92,10 @@ WGPUDevice requestDevice(WGPUAdapter adapter, WGPUDeviceDescriptor const * descr
 
     return userData.device;
 }
+
+void onQueueWorkDone(WGPUQueueWorkDoneStatus status, void* /* pUserData */) {
+    printf("Queued work finished with status: %d\n", status);
+};
 
 int main (int, char**) {
     glfwInit();
@@ -131,9 +136,6 @@ int main (int, char**) {
     free(features);
 
 	WGPUQueue queue = wgpuDeviceGetQueue(device);
-	auto onQueueWorkDone = [](WGPUQueueWorkDoneStatus status, void* /* pUserData */) {
-        printf("Queued work finished with status: %d\n", status);
-	};
 	// why does below give status 3 at the end of the program?
 	// maybe something to do with the fact that we must provide the extra status
 	// argument in the second slot? is zero the right value?
