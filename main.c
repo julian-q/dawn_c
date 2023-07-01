@@ -151,6 +151,88 @@ int main (int argc, char** argv) {
 	WGPUSwapChain swapChain = wgpuDeviceCreateSwapChain(device, surface, &swapChainDesc);
     printf("Swapchain: %p\n", (void*)swapChain);
 
+	// shaderModule defined here
+	const char* shaderSource = "@vertex\n\
+fn vs_main(@builtin(vertex_index) in_vertex_index: u32) -> @builtin(position) vec4f {\n\
+    var p = vec2f(0.0, 0.0);\n\
+    if (in_vertex_index == 0u) {\n\
+        p = vec2f(-0.5, -0.5);\n\
+    } else if (in_vertex_index == 1u) {\n\
+        p = vec2f(0.5, -0.5);\n\
+    } else {\n\
+        p = vec2f(0.0, 0.5);\n\
+    }\n\
+    return vec4f(p, 0.0, 1.0);\n\
+}\n\
+\n\
+@fragment\n\
+fn fs_main() -> @location(0) vec4f {\n\
+    return vec4f(0.0, 0.4, 1.0, 1.0);\n\
+}";
+
+	WGPUShaderModuleDescriptor shaderDesc = (WGPUShaderModuleDescriptor) {};
+	WGPUShaderModuleWGSLDescriptor shaderCodeDesc = (WGPUShaderModuleWGSLDescriptor) {}; 
+	shaderCodeDesc.chain.next = NULL;
+	shaderCodeDesc.chain.sType = WGPUSType_ShaderModuleWGSLDescriptor;
+	shaderCodeDesc.source = shaderSource;
+	shaderDesc.nextInChain = &shaderCodeDesc.chain;
+	WGPUShaderModule shaderModule = wgpuDeviceCreateShaderModule(device, &shaderDesc);
+
+    WGPURenderPipelineDescriptor pipelineDesc = (WGPURenderPipelineDescriptor) {};
+    pipelineDesc.nextInChain = NULL;
+
+	// vertex state
+    pipelineDesc.vertex.bufferCount = 0;
+    pipelineDesc.vertex.buffers = NULL;
+	pipelineDesc.vertex.module = shaderModule;
+	pipelineDesc.vertex.entryPoint = "vs_main";
+	pipelineDesc.vertex.constantCount = 0;
+	pipelineDesc.vertex.constants = NULL;
+
+    pipelineDesc.primitive.topology = WGPUPrimitiveTopology_TriangleList;
+    pipelineDesc.primitive.stripIndexFormat = WGPUIndexFormat_Undefined;
+    pipelineDesc.primitive.frontFace = WGPUFrontFace_CCW;
+    pipelineDesc.primitive.cullMode = WGPUCullMode_None;
+
+	// fragment state
+    WGPUFragmentState fragmentState = (WGPUFragmentState) {};
+    fragmentState.module = shaderModule;
+    fragmentState.entryPoint = "fs_main";
+    fragmentState.constantCount = 0;
+    fragmentState.constants = NULL;
+    pipelineDesc.fragment = &fragmentState;
+	pipelineDesc.depthStencil = NULL;
+
+	// blend state
+    WGPUBlendState blendState = (WGPUBlendState) {};
+	blendState.color.srcFactor = WGPUBlendFactor_SrcAlpha;
+	blendState.color.dstFactor = WGPUBlendFactor_OneMinusSrcAlpha;
+	blendState.color.operation = WGPUBlendOperation_Add;
+	blendState.alpha.srcFactor = WGPUBlendFactor_Zero;
+	blendState.alpha.dstFactor = WGPUBlendFactor_One;
+	blendState.alpha.operation = WGPUBlendOperation_Add;
+
+	// color state
+    WGPUColorTargetState colorTarget = (WGPUColorTargetState) {};
+	colorTarget.format = swapChainDesc.format;
+	colorTarget.blend = &blendState;
+	colorTarget.writeMask = WGPUColorWriteMask_All;
+	fragmentState.targetCount = 1;
+	fragmentState.targets = &colorTarget;
+
+	// multisampling
+	pipelineDesc.multisample.count = 1;
+	pipelineDesc.multisample.mask = ~0u;
+	pipelineDesc.multisample.alphaToCoverageEnabled = false;
+
+	pipelineDesc.layout = NULL;
+
+    WGPURenderPipeline pipeline = wgpuDeviceCreateRenderPipeline(device, &pipelineDesc);
+
+
+
+
+
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
 		WGPUTextureView nextTexture = wgpuSwapChainGetCurrentTextureView(swapChain);
@@ -181,6 +263,13 @@ int main (int argc, char** argv) {
  		renderPassDesc.nextInChain = NULL;
 
  		WGPURenderPassEncoder renderPass = wgpuCommandEncoderBeginRenderPass(encoder, &renderPassDesc);
+
+		// actually run the render pass i guess
+		wgpuRenderPassEncoderSetPipeline(renderPass, pipeline);
+		wgpuRenderPassEncoderDraw(renderPass, 3, 1, 0, 0);
+
+
+
  		wgpuRenderPassEncoderEnd(renderPass);
 
 		wgpuTextureViewRelease(nextTexture);
