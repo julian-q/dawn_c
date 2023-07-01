@@ -1,26 +1,25 @@
 #include <GLFW/glfw3.h>
 #include <webgpu/webgpu.h>
 #include <glfw3webgpu.h>
-// #include <assert.h>
+#include <assert.h>
 #include <stdio.h>
-#include <cassert>
-#include <iostream>
+#include <stdlib.h>
 
 // A simple structure holding the local information shared with the
 // onAdapterRequestEnded callback.
 struct AdapterUserData {
-	WGPUAdapter adapter = NULL;
-	bool requestEnded = false;
+	WGPUAdapter adapter;
+	bool requestEnded;
 };
 
 void onAdapterRequestEnded(WGPURequestAdapterStatus status, WGPUAdapter adapter, char const * message, void * pUserData) {
-	AdapterUserData& userData = *(AdapterUserData*)(pUserData);
+	struct AdapterUserData * userData = (struct AdapterUserData*)(pUserData);
 	if (status == WGPURequestAdapterStatus_Success) {
-		userData.adapter = adapter;
+		userData->adapter = adapter;
 	} else {
         printf("Could not get WebGPU adapter: %s\n", message);
 	}
-	userData.requestEnded = true;
+	userData->requestEnded = true;
 }
 
 /**
@@ -30,7 +29,7 @@ void onAdapterRequestEnded(WGPURequestAdapterStatus status, WGPUAdapter adapter,
  *     const adapter = await navigator.gpu.requestAdapter(options);
  */
 WGPUAdapter requestAdapter(WGPUInstance instance, WGPURequestAdapterOptions const * options) {
-    AdapterUserData userData;
+    struct AdapterUserData userData;
 
     // Call to the WebGPU request adapter procedure
     wgpuInstanceRequestAdapter(
@@ -50,25 +49,25 @@ WGPUAdapter requestAdapter(WGPUInstance instance, WGPURequestAdapterOptions cons
 }
 
 struct DeviceUserData {
-	WGPUDevice device = NULL;
-	bool requestEnded = false;
+	WGPUDevice device;
+	bool requestEnded;
 };
 
-void onDeviceError(WGPUErrorType type, char const* message, void* /* pUserData */) {
+void onDeviceError(WGPUErrorType type, char const* message, void* pUserData) {
     printf("Uncaptured device error: type %u", type);
     if (message) printf(" (%s)", message);
     printf("\n");
-};
+}
 
 void onDeviceRequestEnded(WGPURequestDeviceStatus status, WGPUDevice device, char const * message, void * pUserData) { 
-	DeviceUserData& userData = *(DeviceUserData*)(pUserData);
+	struct DeviceUserData * userData = (struct DeviceUserData*)(pUserData);
 	if (status == WGPURequestDeviceStatus_Success) {
-		userData.device = device;
+		userData->device = device;
 		wgpuDeviceSetUncapturedErrorCallback(device, onDeviceError, NULL /* pUserData */);
 	} else {
         printf("Could not get WebGPU device: %s\n", message);
 	}
-	userData.requestEnded = true;
+	userData->requestEnded = true;
 }
 
 /**
@@ -79,7 +78,7 @@ void onDeviceRequestEnded(WGPURequestDeviceStatus status, WGPUDevice device, cha
  * It is very similar to requestAdapter
  */
 WGPUDevice requestDevice(WGPUAdapter adapter, WGPUDeviceDescriptor const * descriptor) {
-    DeviceUserData userData;
+    struct DeviceUserData userData;
 
     wgpuAdapterRequestDevice(
         adapter,
@@ -93,29 +92,29 @@ WGPUDevice requestDevice(WGPUAdapter adapter, WGPUDeviceDescriptor const * descr
     return userData.device;
 }
 
-void onQueueWorkDone(WGPUQueueWorkDoneStatus status, void* /* pUserData */) {
+void onQueueWorkDone(WGPUQueueWorkDoneStatus status, void* pUserData) {
     printf("Queued work finished with status: %d\n", status);
-};
+}
 
-int main (int, char**) {
+int main (int argc, char** argv) {
     glfwInit();
 
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); 
     GLFWwindow* window = glfwCreateWindow(640, 480, "Learn WebGPU", NULL, NULL);
 
-    WGPUInstanceDescriptor desc = {}; // must initialize structs!!
+    WGPUInstanceDescriptor desc;
     desc.nextInChain = NULL;   
     WGPUInstance instance = wgpuCreateInstance(&desc);
 
 	WGPUSurface surface = glfwGetWGPUSurface(instance, window);
-	WGPURequestAdapterOptions adapterOpts = {};
+	WGPURequestAdapterOptions adapterOpts = (WGPURequestAdapterOptions) {};
 	adapterOpts.nextInChain = NULL;
 	adapterOpts.compatibleSurface = surface;
 	WGPUAdapter adapter = requestAdapter(instance, &adapterOpts);
     printf("Got adapter: %p\n", (void*)adapter);
 
-	WGPUDeviceDescriptor deviceDesc = {};
+	WGPUDeviceDescriptor deviceDesc = (WGPUDeviceDescriptor) {};
 	deviceDesc.nextInChain = NULL;
 	deviceDesc.label = "My Device"; // anything works here, that's your call
 	deviceDesc.requiredFeaturesCount = 0; // we do not require any specific feature
@@ -141,7 +140,7 @@ int main (int, char**) {
 	// argument in the second slot? is zero the right value?
 	wgpuQueueOnSubmittedWorkDone(queue, 0, onQueueWorkDone, NULL /* pUserData */);
 
-	WGPUSwapChainDescriptor swapChainDesc = {};
+	WGPUSwapChainDescriptor swapChainDesc = (WGPUSwapChainDescriptor) {};
 	swapChainDesc.nextInChain = NULL;
 	swapChainDesc.width = 640;
 	swapChainDesc.height = 480;
@@ -161,19 +160,19 @@ int main (int, char**) {
 			break;
 		}
 
-		WGPUCommandEncoderDescriptor encoderDesc = {};
+		WGPUCommandEncoderDescriptor encoderDesc = (WGPUCommandEncoderDescriptor) {};
 		encoderDesc.nextInChain = NULL;
 		encoderDesc.label = "My command encoder";
 		WGPUCommandEncoder encoder = wgpuDeviceCreateCommandEncoder(device, &encoderDesc);
 
- 		WGPURenderPassColorAttachment renderPassColorAttachment = {};
+ 		WGPURenderPassColorAttachment renderPassColorAttachment = (WGPURenderPassColorAttachment) {};
  		renderPassColorAttachment.view = nextTexture;
  		renderPassColorAttachment.resolveTarget = NULL;
  		renderPassColorAttachment.loadOp = WGPULoadOp_Clear;
  		renderPassColorAttachment.storeOp = WGPUStoreOp_Store;
- 		renderPassColorAttachment.clearValue = WGPUColor{0.9, 0.1, 0.2, 1.0};
+ 		renderPassColorAttachment.clearValue = (WGPUColor) {0.9, 0.1, 0.2, 1.0};
  
- 		WGPURenderPassDescriptor renderPassDesc = {};
+ 		WGPURenderPassDescriptor renderPassDesc = (WGPURenderPassDescriptor) {};
  		renderPassDesc.colorAttachmentCount = 1;
  		renderPassDesc.colorAttachments = &renderPassColorAttachment;
  		renderPassDesc.depthStencilAttachment = NULL;
@@ -186,7 +185,7 @@ int main (int, char**) {
 
 		wgpuTextureViewRelease(nextTexture);
 
-		WGPUCommandBufferDescriptor cmdBufferDescriptor = {};
+		WGPUCommandBufferDescriptor cmdBufferDescriptor = (WGPUCommandBufferDescriptor) {};
 		cmdBufferDescriptor.nextInChain = NULL;
 		cmdBufferDescriptor.label = "Command buffer";
 		WGPUCommandBuffer command = wgpuCommandEncoderFinish(encoder, &cmdBufferDescriptor);

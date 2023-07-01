@@ -4,10 +4,9 @@ project(
     VERSION 0.1.0 # any version number
     LANGUAGES CXX C # programming languages used by the project
 )
-add_executable(App main.cpp)
+add_executable(App main.c)
 set_target_properties(App PROPERTIES
-    CXX_STANDARD 17
-    COMPILE_WARNING_AS_ERROR ON
+    COMPILE_WARNING_AS_ERROR OFF
 )
 if (MSVC)
     target_compile_options(App PRIVATE /W4)
